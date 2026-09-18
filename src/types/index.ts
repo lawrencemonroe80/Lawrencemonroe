@@ -1,4 +1,4 @@
-export type Size = 'S' | 'M' | 'L' | 'XL';
+export type Size = 'S' | 'M' | 'L' | 'XL' | 'XXL';
 
 export type ProductColor = {
   name: string;
@@ -127,7 +127,7 @@ export interface CatalogVariation {
   stock: number;
 }
 
-/** Normalized Square catalog item (mirrors netlify/functions/lib/square.ts). */
+/** Normalized Square catalog item (mirrors api/lib/square.ts). */
 export interface CatalogItem {
   squareItemId: string;
   name: string;

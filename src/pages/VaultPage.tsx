@@ -126,7 +126,7 @@ export const VaultPage: React.FC = () => {
             className="group grid grid-cols-1 lg:grid-cols-12 border border-line bg-graphite/40 mb-10 sm:mb-14 hover:border-gold/60 transition-colors cursor-pointer"
             onClick={() => setOpenStory(featured)}
             data-cursor="view"
-            data-cursor-label="OPEN DOSSIER"
+            data-cursor-label="EXPLORE"
           >
             <div className="lg:col-span-7 relative aspect-[16/10] lg:aspect-auto lg:min-h-[440px] overflow-hidden">
               <OptimizedImage
@@ -180,7 +180,7 @@ export const VaultPage: React.FC = () => {
               animate="visible"
               onClick={() => setOpenStory(story)}
               data-cursor="view"
-              data-cursor-label="OPEN DOSSIER"
+              data-cursor-label="EXPLORE"
               className={`group cursor-pointer border border-line bg-graphite/40 hover:border-gold/60 transition-colors flex flex-col ${
                 i % 3 === 1 ? 'md:col-span-5' : 'md:col-span-7'
               } ${i === 0 ? 'md:col-span-12' : ''}`}

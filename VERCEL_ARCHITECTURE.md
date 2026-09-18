@@ -21,8 +21,9 @@ lawrencemonroe.com
 ├── /shop .................... SHOP / COLLECTION CATALOG
 │     ├── Sort: NEW ARRIVALS · ESSENTIALS · LOOKBOOK EXCLUSIVES (+ price)
 │     ├── Live Square pricing, size variations (S–XXL), inventory badges
+│     ├── Interactive variant selection + QUICK ADD per card
 │     ├── Macro-zoom inspection on card hover
-│     └── Slide-over Cart Drawer → /checkout (Square Web Payments SDK)
+│     └── Cart Drawer → INSTANT inline Square checkout OR full /checkout
 │
 ├── /shop/:slug .............. PRODUCT DOSSIER (detail page)
 │
@@ -32,9 +33,11 @@ lawrencemonroe.com
 │     └── Dossier modals with gallery plates + SHOP THE STORY links
 │
 ├── /telemetry ............... RAW FEEDS / SOCIAL HUB
-│     ├── Official @LawrenceMonroe Instagram (live via /api/instagram)
+│     ├── Official @LawrenceMonroe Instagram (Behold or Graph, via /api/instagram)
 │     ├── Curated community archive
-│     └── SHOP THE LOOK tags mapped to Square Item IDs
+│     ├── Asymmetrical grid — hover zoom, timestamps, "VIEW POST" cursor state
+│     ├── Light-box viewer — high-res plates, keyboard nav, SHOP THE LOOK
+│     └── Tags mapped to Square Item IDs
 │
 ├── /about ................... BRAND MANIFESTO (high typography)
 ├── /checkout ................ Square Web Payments SDK checkout
@@ -79,8 +82,11 @@ Lawrencemonroe/
 │   │   │   ├── OptimizedImage.tsx    # /_vercel/image WebP/AVIF + srcset
 │   │   │   ├── AssetInspector.tsx    # macro zoom lens
 │   │   │   ├── CustomCursor.tsx      # magnetic cursor w/ state pills
-│   │   │   ├── CartDrawer.tsx        # slide-over, blur(20px), Square-bound
+│   │   │   ├── CartDrawer.tsx        # slide-over: BAG / EXPRESS / SUCCESS
 │   │   │   └── ...
+│   │   ├── checkout/
+│   │   │   ├── InlineSquareCheckout.tsx  # WPSDK card form inside the drawer
+│   │   │   └── SquarePaymentForm.tsx     # full /checkout page form
 │   │   └── home/ (hero rig, lookbook stack, drag gallery, network, …)
 │   ├── motion/tokens.ts          # design tokens (easings/springs/triggers)
 │   └── data/ (bundled fallbacks: products, vault, feed, frames)
@@ -177,7 +183,28 @@ const order = await fetch('/api/square/checkout', {
 }).then((r) => r.json());
 ```
 
-### 2.3 `api/instagram.ts` — live feed with product tagging (excerpt)
+### 2.3 `api/instagram.ts` — live feed with product tagging
+
+Two providers, first match wins — both keep tokens off the client:
+
+| Provider | Env | Notes |
+|---|---|---|
+| **Behold** (recommended) | `BEHOLD_FEED_ID` | behold.so manages token refresh + API churn upstream; endpoint is just `https://feed.behold.so/{feedId}` |
+| **Instagram Graph API** | `INSTAGRAM_ACCESS_TOKEN` | direct Graph calls (`instagram_basic` + `instagram_manage_insights`) |
+
+```ts
+// Provider dispatch
+const provider = beholdFeedId ? 'behold' : 'graph';
+const rawPosts = beholdFeedId
+  ? await fetchFromBehold(beholdFeedId)      // GET feed.behold.so/{id}
+  : await fetchFromGraph(igToken);           // GET graph.instagram.com/v21.0
+
+// SHOP THE LOOK — match captions/SKUs against the live Square catalog
+const posts = rawPosts.map((m) => ({ ...m, tags: matchTags(m.caption, catalog.items) }));
+return res.json({ source: 'live', provider, posts });   // soft-fail → curated fallback
+```
+
+Full Graph flow for reference:
 
 ```ts
 export default async function handler(req, res) {
@@ -281,6 +308,7 @@ Steps:
 | `SQUARE_ENVIRONMENT` | `production` (or `sandbox` for staging) | lib/square |
 | `SQUARE_WEBHOOK_SIGNATURE_KEY` | Square Dashboard → Developer → Webhooks → Signature key | api/square/webhook |
 | `INSTAGRAM_ACCESS_TOKEN` | Meta developers → Instagram Graph API token (instagram_basic) | api/instagram |
+| `BEHOLD_FEED_ID` *(optional)* | behold.so feed id — takes priority over the Graph token | api/instagram |
 | `SANITY_WEBHOOK_SECRET` | long random string — same value in the Sanity webhook | api/revalidate |
 | `SITE_URL` | `https://lawrencemonroe.com` | webhooks, revalidate |
 
@@ -381,7 +409,48 @@ Reduced-motion: the curtain is skipped; only the 340ms content cross-fade remain
 </motion.div>
 ```
 
-### 6.3 Supporting tokens (`src/motion/tokens.ts`)
+### 6.3 Quick-add + variant selection (ShopCard, `/shop`)
+
+```tsx
+const [selectedSize, setSelectedSize] = useState<Size>(firstAvailable);
+
+<button /* size chip */
+  onClick={() => setSelectedSize(v.size)}
+  disabled={!v.available}                       // live Square variation stock
+  className={isSelected ? 'border-gold bg-gold text-black'
+             : v.available ? 'border-line hover:border-smoke'
+             : 'line-through cursor-not-allowed'}>
+  {v.label}
+</button>
+
+<button onClick={handleQuickAdd} disabled={!selectedVariant?.available}>
+  <Plus size={13} /> QUICK ADD {selectedSize}   // addItem(...) + openCart()
+</button>                                       // drawer carries the WPSDK form
+```
+
+### 6.4 Telemetry light-box (glass viewer, keyboard nav)
+
+```tsx
+<motion.div  /* fluid scale-up through blur(20px) glass */
+  initial={{ opacity: 0, scale: 0.92, y: 26, filter: 'blur(10px)' }}
+  animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
+  exit={{ opacity: 0, scale: 0.94, y: 14, filter: 'blur(8px)' }}
+  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+  className="glass-panel-heavy max-w-5xl flex flex-col lg:flex-row">
+  <AnimatePresence mode="wait">                 {/* plate swap: blur-in/out */}
+    <motion.img key={post.id}
+      initial={{ opacity: 0, scale: 1.015, filter: 'blur(6px)' }}
+      animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }} />
+  </AnimatePresence>
+  …SHOP THE LOOK chips → tagHref(tag) → /shop/:slug
+</motion.div>
+
+// Keyboard: ← / → cycle frames, Esc closes (window keydown while open)
+// Grid tiles advertise `data-cursor="view" data-cursor-label="VIEW POST"`
+// (vault dossiers use the "EXPLORE" state) — see CustomCursor state machine.
+```
+
+### 6.5 Supporting tokens (`src/motion/tokens.ts`)
 `EASE.cinematicOut [0.16,1,0.3,1]` · `EASE.aperture [0.83,0,0.17,1]` · springs `cursorCore 900/50/.1`, `magnetic 180/14/.4`, `parallaxRig 60/20/1.2`, `inspectorLens 400/32/.5`. Full token tables: **DESIGN_FRAMEWORK.md §4**.
 
 ---
@@ -405,7 +474,8 @@ Reduced-motion: the curtain is skipped; only the 340ms content cross-fade remain
     → subscribe: inventory.count.updated, payment.updated, order.created
 □ Sanity: project + dataset → VITE_SANITY_PROJECT_ID
 □ Sanity webhook → https://lawrencemonroe.com/api/revalidate (+ secret)
-□ Meta/Instagram: token with instagram_basic → INSTAGRAM_ACCESS_TOKEN
+□ Instagram provider — EITHER Behold (BEHOLD_FEED_ID) OR Meta token
+    with instagram_basic → INSTAGRAM_ACCESS_TOKEN
 □ Redeploy with env vars → verify /api/square/catalog returns source:'square'
 □ Test order end-to-end → confirm it appears in Square Dashboard → Orders
 ```

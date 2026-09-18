@@ -1,9 +1,34 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Trash2, Plus, Minus, ArrowRight, ShoppingBag } from 'lucide-react';
+import {
+  X,
+  Trash2,
+  Plus,
+  Minus,
+  ArrowRight,
+  ShoppingBag,
+  Zap,
+  CheckCircle2,
+} from 'lucide-react';
 import { useCartStore } from '../../store/cartStore';
 import { formatCurrency } from '../../utils/format';
+import { InlineSquareCheckout } from '../checkout/InlineSquareCheckout';
+
+/**
+ * CART DRAWER — slide-over bag + INSTANT SQUARE CHECKOUT
+ * ------------------------------------------------------
+ * Modes:
+ *   BAG     — line items, quantity steppers, subtotal → full /checkout
+ *   EXPRESS — inline Square Web Payments SDK card form; tokenize + charge
+ *             through /api/square/checkout without leaving the overlay
+ *   SUCCESS — order confirmation receipt (order id, continue links)
+ *
+ * Motion: spring slide (210/30/0.9) + spec-exact blur(20px) backdrop,
+ * gold seam on the leading edge.
+ */
+
+type DrawerMode = 'BAG' | 'EXPRESS' | 'SUCCESS';
 
 export const CartDrawer: React.FC = () => {
   const {
@@ -13,19 +38,21 @@ export const CartDrawer: React.FC = () => {
     removeItem,
     updateQuantity,
     getSubtotal,
-    getItemCount
+    getItemCount,
+    clearCart,
   } = useCartStore();
 
   const navigate = useNavigate();
+  const [mode, setMode] = useState<DrawerMode>('BAG');
+  const [lastOrderId, setLastOrderId] = useState<string | null>(null);
+
   const subtotal = getSubtotal();
   const itemCount = getItemCount();
 
   // Escape key listener
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isCartOpen) {
-        closeCart();
-      }
+      if (e.key === 'Escape' && isCartOpen) closeCart();
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -33,19 +60,29 @@ export const CartDrawer: React.FC = () => {
 
   // Lock body scroll when cart is open
   useEffect(() => {
-    if (isCartOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    document.body.style.overflow = isCartOpen ? 'hidden' : 'unset';
     return () => {
       document.body.style.overflow = 'unset';
     };
   }, [isCartOpen]);
 
+  // Reset to BAG whenever the drawer closes
+  useEffect(() => {
+    if (!isCartOpen) {
+      const t = setTimeout(() => setMode('BAG'), 400);
+      return () => clearTimeout(t);
+    }
+  }, [isCartOpen]);
+
   const handleCheckout = () => {
     closeCart();
     navigate('/checkout');
+  };
+
+  const handleExpressSuccess = (orderId: string) => {
+    setLastOrderId(orderId);
+    clearCart();
+    setMode('SUCCESS');
   };
 
   const handleContinueShopping = () => {
@@ -57,12 +94,12 @@ export const CartDrawer: React.FC = () => {
     <AnimatePresence>
       {isCartOpen && (
         <div className="fixed inset-0 z-50 overflow-hidden" role="dialog" aria-modal="true" aria-label="Shopping Cart">
-          {/* Backdrop */}
+          {/* Backdrop — spec-exact glass blur */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.3, ease: [0.83, 0, 0.17, 1] }}
             onClick={closeCart}
             className="fixed inset-0 bg-black/60 backdrop-blur-[20px]"
           />
@@ -82,12 +119,30 @@ export const CartDrawer: React.FC = () => {
               {/* Drawer Header */}
               <div className="p-6 border-b border-line flex items-center justify-between bg-black/40">
                 <div className="flex items-center space-x-3">
-                  <span className="font-mono text-xs text-gold tracking-widest uppercase">
-                    BAG ALLOCATION
-                  </span>
-                  <span className="font-mono text-[10px] text-smoke">
-                    [{itemCount} {itemCount === 1 ? 'PIECE' : 'PIECES'}]
-                  </span>
+                  {mode === 'EXPRESS' ? (
+                    <>
+                      <Zap size={13} className="text-gold" />
+                      <span className="font-mono text-xs text-gold tracking-widest uppercase font-bold">
+                        EXPRESS CHECKOUT
+                      </span>
+                    </>
+                  ) : mode === 'SUCCESS' ? (
+                    <>
+                      <CheckCircle2 size={13} className="text-gold" />
+                      <span className="font-mono text-xs text-gold tracking-widest uppercase font-bold">
+                        ALLOCATION CONFIRMED
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="font-mono text-xs text-gold tracking-widest uppercase">
+                        BAG ALLOCATION
+                      </span>
+                      <span className="font-mono text-[10px] text-smoke">
+                        [{itemCount} {itemCount === 1 ? 'PIECE' : 'PIECES'}]
+                      </span>
+                    </>
+                  )}
                 </div>
 
                 <button
@@ -100,8 +155,46 @@ export const CartDrawer: React.FC = () => {
               </div>
 
               {/* Drawer Body */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                {items.length === 0 ? (
+              <div className="flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar">
+                {mode === 'SUCCESS' ? (
+                  /* ---- SUCCESS RECEIPT ---- */
+                  <div className="h-full flex flex-col items-center justify-center text-center py-12 space-y-5">
+                    <div className="w-16 h-16 border border-gold/60 bg-black/60 flex items-center justify-center">
+                      <CheckCircle2 size={26} className="text-gold" />
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="font-display text-xl font-bold text-bone uppercase tracking-wide">
+                        ORDER SECURED.
+                      </h3>
+                      <p className="font-mono text-[11px] text-smoke leading-relaxed max-w-xs">
+                        A CONFIRMATION RECORD HAS BEEN DISPATCHED TO YOUR EMAIL. FULFILLMENT
+                        TELEMETRY FOLLOWS VIA THE SQUARE ORDER DESK.
+                      </p>
+                      {lastOrderId && (
+                        <div className="inline-block font-mono text-[10px] text-gold border border-gold/50 bg-black/60 px-3 py-1.5 mt-2 tracking-[0.2em]">
+                          REF: {lastOrderId}
+                        </div>
+                      )}
+                    </div>
+                    <div className="space-y-2 pt-2">
+                      <button
+                        onClick={closeCart}
+                        className="border border-gold bg-black px-6 py-3 font-mono text-xs font-bold text-gold hover:bg-gold hover:text-black transition-colors uppercase tracking-widest"
+                      >
+                        CONTINUE EXPLORING
+                      </button>
+                      <div>
+                        <button
+                          onClick={() => navigate('/shop')}
+                          className="font-mono text-[10px] text-smoke hover:text-bone tracking-widest uppercase transition-colors"
+                        >
+                          RETURN TO CATALOG →
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : items.length === 0 ? (
+                  /* ---- EMPTY STATE ---- */
                   <div className="h-full flex flex-col items-center justify-center text-center py-12 space-y-4">
                     <div className="w-16 h-16 border border-line flex items-center justify-center text-smoke/50 bg-black/40">
                       <ShoppingBag size={24} />
@@ -122,7 +215,16 @@ export const CartDrawer: React.FC = () => {
                       <ArrowRight size={14} />
                     </button>
                   </div>
+                ) : mode === 'EXPRESS' ? (
+                  /* ---- INLINE SQUARE EXPRESS CHECKOUT ---- */
+                  <InlineSquareCheckout
+                    items={items}
+                    subtotal={subtotal}
+                    onSuccess={handleExpressSuccess}
+                    onCancel={() => setMode('BAG')}
+                  />
                 ) : (
+                  /* ---- BAG LINE ITEMS ---- */
                   <div className="space-y-4">
                     {items.map((item) => (
                       <div
@@ -201,8 +303,8 @@ export const CartDrawer: React.FC = () => {
                 )}
               </div>
 
-              {/* Drawer Footer with Subtotal & Checkout */}
-              {items.length > 0 && (
+              {/* Drawer Footer with Subtotal & Checkout — BAG mode only */}
+              {items.length > 0 && mode === 'BAG' && (
                 <div className="p-6 border-t border-line bg-black/60 space-y-4">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between font-mono text-xs text-smoke">
@@ -211,18 +313,25 @@ export const CartDrawer: React.FC = () => {
                     </div>
                     <div className="flex items-center justify-between font-mono text-sm text-bone pt-1 border-t border-line/40">
                       <span className="font-bold tracking-wider">SUBTOTAL</span>
-                      <span className="font-bold text-gold text-base">
-                        {formatCurrency(subtotal)}
-                      </span>
+                      <span className="font-bold text-gold text-base">{formatCurrency(subtotal)}</span>
                     </div>
                   </div>
 
-                  {/* Checkout Button */}
+                  {/* Instant pay — Square inline form inside the drawer */}
+                  <button
+                    onClick={() => setMode('EXPRESS')}
+                    className="w-full group relative bg-black border border-gold text-gold hover:bg-gold hover:text-black py-3.5 px-6 font-mono text-xs font-bold tracking-[0.25em] uppercase flex items-center justify-center space-x-2 transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                  >
+                    <Zap size={13} />
+                    <span>INSTANT CHECKOUT — PAY IN BAG</span>
+                  </button>
+
+                  {/* Full checkout with shipping details */}
                   <button
                     onClick={handleCheckout}
                     className="w-full relative group overflow-hidden bg-bone text-black py-3.5 px-6 font-mono text-xs font-bold tracking-widest uppercase flex items-center justify-center space-x-2 hover:bg-gold transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
                   >
-                    <span>SECURE CHECKOUT</span>
+                    <span>FULL SECURE CHECKOUT</span>
                     <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                   </button>
 
