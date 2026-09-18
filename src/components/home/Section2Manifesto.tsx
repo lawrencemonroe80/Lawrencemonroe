@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { brandAssets } from '../../data/assets';
+import { VelocityText } from '../common/VelocityText';
 
 export const Section2Manifesto: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -49,10 +50,13 @@ export const Section2Manifesto: React.FC = () => {
         {/* Massive Stacked Statement */}
         <motion.div style={{ y: textY }} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
           <div className="lg:col-span-8 space-y-4">
-            <h2 className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-ink leading-[0.88] tracking-tighter uppercase">
-              BUILT TO<br />
-              HOLD<br />
-              ITS FORM.
+            {/* Scroll-velocity variable-font distortion — the headline
+                physically strains (wght 760→480 / wdth 82→125) as the
+                page accelerates. See <VelocityText /> + motion tokens. */}
+            <h2 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.92] uppercase text-ink">
+              <VelocityText>BUILT TO</VelocityText>
+              <VelocityText>HOLD</VelocityText>
+              <VelocityText>ITS FORM.</VelocityText>
             </h2>
           </div>
 

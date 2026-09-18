@@ -48,22 +48,23 @@ export const LightboxModal: React.FC = () => {
           aria-modal="true"
           aria-label="Contact Sheet Lightbox"
         >
-          {/* Backdrop */}
+          {/* Backdrop — dark-mode glassmorphism, 20px blur per motion spec */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.32, ease: [0.83, 0, 0.17, 1] }}
             onClick={closeLightbox}
-            className="fixed inset-0 bg-black/95 backdrop-blur-md"
+            className="fixed inset-0 bg-black/60 backdrop-blur-[20px]"
           />
 
-          {/* Modal Container */}
+          {/* Modal Container — fluid scale-up through the glass */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.3 }}
-            className="relative z-10 w-full max-w-6xl max-h-[90vh] bg-graphite border border-line flex flex-col lg:flex-row overflow-hidden shadow-2xl"
+            initial={{ opacity: 0, scale: 0.92, y: 26, filter: 'blur(10px)' }}
+            animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, scale: 0.94, y: 14, filter: 'blur(8px)' }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="glass-panel-heavy relative z-10 w-full max-w-6xl max-h-[90vh] flex flex-col lg:flex-row overflow-hidden shadow-2xl"
           >
             {/* Top Close Button (Absolute) */}
             <button
@@ -81,10 +82,10 @@ export const LightboxModal: React.FC = () => {
                   key={currentFrame.id}
                   src={currentFrame.image}
                   alt={currentFrame.title}
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 1.02 }}
-                  transition={{ duration: 0.25 }}
+                  initial={{ opacity: 0, scale: 1.015, filter: 'blur(6px)' }}
+                  animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, scale: 1.02, filter: 'blur(4px)' }}
+                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                   className="max-h-[70vh] w-auto max-w-full object-contain filter contrast-105"
                 />
               </AnimatePresence>

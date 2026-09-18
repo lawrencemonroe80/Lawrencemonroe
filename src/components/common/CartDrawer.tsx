@@ -64,7 +64,7 @@ export const CartDrawer: React.FC = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             onClick={closeCart}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/60 backdrop-blur-[20px]"
           />
 
           <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
@@ -73,7 +73,7 @@ export const CartDrawer: React.FC = () => {
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ type: 'spring', stiffness: 210, damping: 30, mass: 0.9 }}
               className="w-screen max-w-md bg-graphite border-l border-line shadow-2xl flex flex-col justify-between relative"
             >
               {/* Fine gold edge seam line */}

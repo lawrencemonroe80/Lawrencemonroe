@@ -1,35 +1,119 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, Lock, SlidersHorizontal } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ArrowUpRight, Lock } from 'lucide-react';
 import { RELEASED_PRODUCTS } from '../data/products';
 import { formatCurrency } from '../utils/format';
 import { useCartStore } from '../store/cartStore';
 import { brandAssets } from '../data/assets';
+import { useCatalogFeed } from '../services/squareCatalog';
+import { AssetInspector } from '../components/common/AssetInspector';
+import { VelocityText } from '../components/common/VelocityText';
+import { revealUp } from '../motion/tokens';
+import type { CatalogItem, Product } from '../types';
+
+/**
+ * SHOP / COLLECTION CATALOG — /shop
+ * ---------------------------------
+ * Grid-based luxury catalog. Product cards pull live pricing, size
+ * variations (S–XXL) and inventory status from the Square Catalog API
+ * via `/api/square/catalog` when credentials are configured; otherwise
+ * the bundled Release 001 dossier renders identically.
+ *
+ * Sorting: NEW ARRIVALS / ESSENTIALS / LOOKBOOK EXCLUSIVES + price sorts.
+ * Card hover: macro-zoom inspection lens (AssetInspector).
+ */
+
+type Collection = 'new' | 'essentials' | 'lookbook';
+
+/** Curated collection membership for the bundled catalog; live Square
+ *  items default to NEW ARRIVALS (most recently published first). */
+const COLLECTIONS: Record<string, Collection[]> = {
+  'lm-shorts-001': ['new', 'essentials'],
+  'lm-shorts-002': ['essentials', 'lookbook'],
+};
+
+const COLLECTION_TABS: { id: 'ALL' | Collection; label: string }[] = [
+  { id: 'ALL', label: 'ALL SPECIMENS' },
+  { id: 'new', label: 'NEW ARRIVALS' },
+  { id: 'essentials', label: 'ESSENTIALS' },
+  { id: 'lookbook', label: 'LOOKBOOK EXCLUSIVES' },
+];
+
+interface ShopCard {
+  product: Product;
+  live?: CatalogItem;
+}
 
 export const ShopPage: React.FC = () => {
-  const [activeFilter, setActiveFilter] = useState<'ALL' | 'BLACK' | 'BONE' | 'AVAILABLE'>('ALL');
+  const [activeCollection, setActiveCollection] = useState<'ALL' | Collection>('ALL');
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc'>('featured');
   const { openRequestAccess } = useCartStore();
+  const { feed, loading: feedLoading } = useCatalogFeed();
 
-  const filteredProducts = useMemo(() => {
-    let list = [...RELEASED_PRODUCTS];
+  /** Merge the bundled product dossiers with the live Square catalog. */
+  const cards: ShopCard[] = useMemo(() => {
+    const merged: ShopCard[] = RELEASED_PRODUCTS.map((product) => {
+      const live = feed.items.find(
+        (i) =>
+          i.squareItemId === product.id ||
+          i.name.replace(/\s+/g, '').toUpperCase() === product.name.replace(/\s+/g, '').toUpperCase()
+      );
+      return { product, live };
+    });
 
-    if (activeFilter === 'BLACK') {
-      list = list.filter((p) => p.selectedColorDefault.toLowerCase().includes('black') || p.code.includes('BLK'));
-    } else if (activeFilter === 'BONE') {
-      list = list.filter((p) => p.selectedColorDefault.toLowerCase().includes('grey') || p.code.includes('GRY') || p.code.includes('BNE'));
-    } else if (activeFilter === 'AVAILABLE') {
-      list = list.filter((p) => p.status === 'ACTIVE');
+    // Square items with no bundled dossier (owner added a new product in
+    // the Square Dashboard) → synthesized cards
+    for (const item of feed.items) {
+      const known = merged.some(
+        (c) =>
+          c.live?.squareItemId === item.squareItemId ||
+          c.product.name.replace(/\s+/g, '').toUpperCase() === item.name.replace(/\s+/g, '').toUpperCase()
+      );
+      if (!known) {
+        merged.push({
+          product: {
+            ...RELEASED_PRODUCTS[0], // structural template
+            id: item.squareItemId,
+            slug: '', // routes to catalog index until a dossier page exists
+            code: item.squareItemId.toUpperCase().slice(-8),
+            name: item.name,
+            price: item.minPriceCents / 100,
+            release: 'SQUARE LIVE',
+            status: item.available ? 'ACTIVE' : 'SOLD OUT',
+            stockCount: item.maxStock,
+            heroImage: item.imageUrl ?? RELEASED_PRODUCTS[0].heroImage,
+            cutoutImage: item.imageUrl ?? RELEASED_PRODUCTS[0].cutoutImage,
+            shortDescription: item.description ?? 'Published live from the Square Dashboard.',
+            sizes: item.variations.map((v) => ({
+              size: v.name as Product['sizes'][number]['size'],
+              available: v.available,
+              stock: v.stock,
+            })),
+          },
+          live: item,
+        });
+      }
     }
 
-    if (sortBy === 'price-asc') {
-      list.sort((a, b) => a.price - b.price);
-    } else if (sortBy === 'price-desc') {
-      list.sort((a, b) => b.price - a.price);
-    }
+    return merged;
+  }, [feed]);
 
+  const filteredCards = useMemo(() => {
+    let list = [...cards];
+    if (activeCollection !== 'ALL') {
+      list = list.filter((c) => {
+        const collections = COLLECTIONS[c.product.id] ?? ['new'];
+        return collections.includes(activeCollection);
+      });
+    }
+    if (sortBy === 'price-asc') list.sort((a, b) => a.product.price - b.product.price);
+    if (sortBy === 'price-desc') list.sort((a, b) => b.product.price - a.product.price);
     return list;
-  }, [activeFilter, sortBy]);
+  }, [cards, activeCollection, sortBy]);
+
+  const liveSyncLabel =
+    feed.source === 'square' ? 'SQUARE / LIVE SYNC' : feedLoading ? 'SYNCING…' : 'LOCAL ARCHIVE';
 
   return (
     <div className="min-h-screen bg-black text-bone pt-28 sm:pt-36 pb-24">
@@ -47,56 +131,56 @@ export const ShopPage: React.FC = () => {
                   RELEASE 001 / CATALOG DOSSIER
                 </span>
               </div>
-              <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-bone uppercase">
-                ACTIVE PIECES.
+              <h1 className="text-5xl sm:text-7xl md:text-8xl uppercase text-bone leading-[0.92]">
+                <VelocityText>ACTIVE PIECES</VelocityText>
               </h1>
               <p className="font-utility text-xs sm:text-sm text-smoke max-w-lg">
                 Exclusive limited allocation. All shorts constructed from 480GSM cotton with official insignia badges and raw hemline.
               </p>
             </div>
 
-            {/* Release metadata counters */}
-            <div className="flex items-center space-x-6 font-mono text-xs text-smoke">
-              <div className="border border-line bg-graphite/40 px-3 py-2">
-                <span className="text-smoke/60">ALLOCATED: </span>
-                <span className="text-gold font-bold">{RELEASED_PRODUCTS.length} EDITIONS</span>
+            {/* Live sync + release metadata */}
+            <div className="flex items-center space-x-4 font-mono text-xs text-smoke">
+              <div className="border border-line bg-graphite/40 px-3 py-2 flex items-center gap-2">
+                <span
+                  className={`w-1.5 h-1.5 ${
+                    feed.source === 'square' ? 'bg-gold animate-pulse-subtle' : 'bg-smoke'
+                  }`}
+                />
+                <span className={feed.source === 'square' ? 'text-gold font-bold' : ''}>
+                  {liveSyncLabel}
+                </span>
               </div>
-              <div className="border border-line bg-graphite/40 px-3 py-2">
-                <span className="text-smoke/60">STATUS: </span>
-                <span className="text-bone">ACTIVE RELEASE</span>
+              <div className="border border-line bg-graphite/40 px-3 py-2 hidden sm:block">
+                <span className="text-smoke/60">ALLOCATED: </span>
+                <span className="text-gold font-bold">{filteredCards.length} EDITIONS</span>
               </div>
             </div>
           </div>
 
-          {/* Filter and Sort Toolbar */}
+          {/* Collection + Sort Toolbar */}
           <div className="mt-10 pt-6 border-t border-line/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            {/* Minimal Filter Tabs */}
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-[10px] text-smoke uppercase tracking-wider mr-2 hidden sm:inline">
-                FILTER:
-              </span>
-              {(['ALL', 'BLACK', 'BONE', 'AVAILABLE'] as const).map((tab) => (
+              {COLLECTION_TABS.map((tab) => (
                 <button
-                  key={tab}
-                  onClick={() => setActiveFilter(tab)}
-                  className={`px-3.5 py-1.5 font-mono text-xs uppercase tracking-wider transition-colors border ${
-                    activeFilter === tab
+                  key={tab.id}
+                  onClick={() => setActiveCollection(tab.id)}
+                  className={`px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.15em] transition-colors border ${
+                    activeCollection === tab.id
                       ? 'border-gold bg-gold text-black font-bold'
                       : 'border-line bg-graphite/40 text-smoke hover:text-bone hover:border-smoke'
                   }`}
                 >
-                  {tab === 'BONE' ? 'HEATHER GREY' : tab}
+                  {tab.label}
                 </button>
               ))}
             </div>
 
-            {/* Sort Options */}
             <div className="flex items-center space-x-2 font-mono text-xs">
-              <SlidersHorizontal size={13} className="text-gold" />
               <span className="text-smoke">SORT:</span>
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
+                onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
                 className="bg-black border border-line text-bone px-3 py-1.5 font-mono text-xs focus:border-gold focus:outline-none uppercase"
               >
                 <option value="featured">FEATURED CURATION</option>
@@ -107,49 +191,84 @@ export const ShopPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Released Products Grid: Editorial Asymmetry */}
+        {/* Product Grid: Editorial Asymmetry */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-24">
-          {filteredProducts.map((product) => {
+          {filteredCards.map(({ product, live }, idx) => {
             const isHeather = product.id === 'lm-shorts-002';
             const badgeSrc = isHeather ? brandAssets.blueBadge : brandAssets.whiteBadge;
+            const macroImage = product.images.find((i) => i.type === 'macro')?.url ?? product.images[3]?.url;
+            const livePrice = live ? live.minPriceCents / 100 : product.price;
+            const liveStock = live ? live.maxStock : product.stockCount;
+            const soldOut = live ? !live.available : product.status === 'SOLD OUT';
+            const lowStock = !soldOut && liveStock <= 4;
 
             return (
-              <div
+              <motion.div
                 key={product.id}
-                className="group bg-graphite/40 border border-line hover:border-gold transition-all duration-500 flex flex-col justify-between"
+                variants={revealUp(idx * 0.08)}
+                initial="hidden"
+                animate="visible"
+                className={`group bg-graphite/40 border transition-all duration-500 flex flex-col justify-between ${
+                  soldOut ? 'border-line/50 opacity-70' : 'border-line hover:border-gold'
+                }`}
               >
                 {/* Product Header Bar */}
                 <div className="p-4 border-b border-line flex items-center justify-between font-mono text-[10px]">
-                  <span className="text-gold tracking-widest font-bold">
-                    SPEC: {product.code}
-                  </span>
-                  <span className="text-smoke bg-black/60 px-2 py-0.5 border border-line/40">
-                    {product.release}
+                  <span className="text-gold tracking-widest font-bold">SPEC: {product.code}</span>
+                  <span
+                    className={`px-2 py-0.5 border ${
+                      soldOut
+                        ? 'text-archive-red border-archive-red/40 bg-archive-red/10'
+                        : lowStock
+                          ? 'text-gold border-gold/40 bg-gold/10 font-bold'
+                          : 'text-smoke bg-black/60 border-line/40'
+                    }`}
+                  >
+                    {soldOut ? 'SOLD OUT' : lowStock ? `LOW STOCK — ${liveStock} LEFT` : product.release}
                   </span>
                 </div>
 
-                {/* Main Media Stage */}
-                <Link to={`/shop/${product.slug}`} className="block relative aspect-[4/5] bg-black overflow-hidden">
-                  <img
-                    src={product.heroImage}
+                {/* Main Media Stage — macro inspection on hover */}
+                <Link
+                  to={`/shop/${product.slug}`}
+                  className="block relative aspect-[4/5] bg-black overflow-hidden"
+                >
+                  <AssetInspector
+                    image={product.heroImage}
+                    macroImage={macroImage}
+                    zoom={2.4}
                     alt={product.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 filter brightness-95 contrast-105"
+                    className="absolute inset-0"
+                    imgClassName="object-cover brightness-95 contrast-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
-
-                  {/* Official Pill Badge Stamp */}
-                  <div className="absolute top-4 left-4 z-20 w-32 sm:w-36">
-                    <img
-                      src={badgeSrc}
-                      alt="LawrenceMonroe"
-                      className="w-full h-auto object-contain drop-shadow-md"
-                    />
-                  </div>
-
-                  {/* Micro Detail Inset on Hover */}
-                  <div className="absolute bottom-4 right-4 font-mono text-[10px] text-smoke bg-black/80 border border-line px-3 py-1.5 flex items-center space-x-1 group-hover:text-gold group-hover:border-gold transition-colors">
-                    <span>INSPECT SPEC</span>
-                    <ArrowUpRight size={13} />
+                  <div className="absolute inset-0 pointer-events-none z-[8]">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
+                    {/* Official Pill Badge Stamp */}
+                    <div className="absolute top-4 left-4 w-32 sm:w-36">
+                      <img src={badgeSrc} alt="LawrenceMonroe" className="w-full h-auto object-contain drop-shadow-md" />
+                    </div>
+                    {/* Size telemetry rail — live variations */}
+                    <div className="absolute bottom-4 left-4 flex items-center gap-1.5">
+                      {(live?.variations ?? product.sizes.map((s) => ({ name: s.size, available: s.available, stock: s.stock })))
+                        .slice(0, 5)
+                        .map((v) => (
+                          <span
+                            key={v.name}
+                            className={`font-mono text-[9px] font-bold px-1.5 py-0.5 border ${
+                              v.available
+                                ? 'text-bone/90 border-bone/30 bg-black/70'
+                                : 'text-smoke/50 line-through border-line/40 bg-black/50'
+                            }`}
+                          >
+                            {v.name}
+                          </span>
+                        ))}
+                    </div>
+                    {/* Inspect spec hint */}
+                    <div className="absolute bottom-4 right-4 font-mono text-[10px] text-smoke bg-black/80 border border-line px-3 py-1.5 flex items-center space-x-1 group-hover:text-gold group-hover:border-gold transition-colors">
+                      <span>INSPECT SPEC</span>
+                      <ArrowUpRight size={13} />
+                    </div>
                   </div>
                 </Link>
 
@@ -162,7 +281,7 @@ export const ShopPage: React.FC = () => {
                       </h2>
                     </Link>
                     <span className="font-mono text-lg sm:text-xl font-bold text-bone">
-                      {formatCurrency(product.price)}
+                      {formatCurrency(livePrice)}
                     </span>
                   </div>
 
@@ -174,14 +293,18 @@ export const ShopPage: React.FC = () => {
                   <div className="pt-2">
                     <Link
                       to={`/shop/${product.slug}`}
-                      className="w-full bg-bone hover:bg-gold text-black py-3.5 px-6 font-mono text-xs font-bold tracking-widest uppercase transition-colors flex items-center justify-center space-x-2"
+                      className={`w-full py-3.5 px-6 font-mono text-xs font-bold tracking-widest uppercase transition-colors flex items-center justify-center space-x-2 ${
+                        soldOut
+                          ? 'bg-ash text-smoke cursor-not-allowed'
+                          : 'bg-bone hover:bg-gold text-black'
+                      }`}
                     >
-                      <span>VIEW DOSSIER & ORDER</span>
-                      <ArrowUpRight size={14} />
+                      <span>{soldOut ? 'ALLOCATION CLOSED' : 'VIEW DOSSIER & ORDER'}</span>
+                      {!soldOut && <ArrowUpRight size={14} />}
                     </Link>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

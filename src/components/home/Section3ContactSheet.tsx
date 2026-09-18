@@ -100,6 +100,8 @@ export const Section3ContactSheet: React.FC = () => {
                 onMouseEnter={() => setActiveHoverId(frame.id)}
                 onMouseLeave={() => setActiveHoverId(null)}
                 onClick={() => handleFrameClick(index)}
+                data-cursor="view"
+                data-cursor-label="INSPECT FRAME"
                 className="group relative cursor-pointer flex-shrink-0 w-72 sm:w-80 md:w-96 bg-graphite border border-line hover:border-gold transition-all duration-300 flex flex-col"
               >
                 {/* Contact Frame Header Label */}

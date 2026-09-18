@@ -29,10 +29,24 @@ const MENU_ITEMS = [
     code: 'ARC-002'
   },
   {
+    title: 'EDITORIAL VAULT',
+    subtitle: 'CAMPAIGNS / GEN EFFECTS / SILVER-GELATIN',
+    href: '/vault',
+    image: '/images/campaign-contact-fabric.jpg',
+    code: 'ARC-001'
+  },
+  {
+    title: 'RAW FEEDS',
+    subtitle: 'INSTAGRAM LIVE / COMMUNITY TELEMETRY',
+    href: '/telemetry',
+    image: '/images/campaign-contact-stride.jpg',
+    code: 'TEL-001'
+  },
+  {
     title: 'BRAND MANIFESTO',
     subtitle: 'RELEASE AS IMAGE / PRIVATE LABEL',
     href: '/about',
-    image: '/images/campaign-contact-fabric.jpg',
+    image: '/images/campaign-hero-motion.jpg',
     code: 'DOC-001'
   }
 ];
@@ -132,13 +146,27 @@ export const Navigation: React.FC = () => {
 
           {/* Right: SHOP & Cart trigger + Menu trigger */}
           <div className="flex items-center space-x-3 sm:space-x-6">
-            <Link
-              to="/shop"
-              className="hidden sm:inline-flex items-center space-x-1 font-mono text-xs text-smoke hover:text-bone tracking-widest uppercase transition-colors relative py-1 focus:outline-none focus-visible:ring-1 focus-visible:ring-gold"
-            >
-              <span>SHOP</span>
-              <span className="text-gold text-[9px] font-mono font-bold">001</span>
-            </Link>
+            <nav className="hidden lg:flex items-center gap-6">
+              <Link
+                to="/shop"
+                className="inline-flex items-center gap-1 font-mono text-xs text-smoke hover:text-bone tracking-widest uppercase transition-colors py-1 focus:outline-none focus-visible:ring-1 focus-visible:ring-gold"
+              >
+                <span>SHOP</span>
+                <span className="text-gold text-[9px] font-mono font-bold">001</span>
+              </Link>
+              <Link
+                to="/vault"
+                className="font-mono text-xs text-smoke hover:text-bone tracking-widest uppercase transition-colors py-1 focus:outline-none focus-visible:ring-1 focus-visible:ring-gold"
+              >
+                VAULT
+              </Link>
+              <Link
+                to="/telemetry"
+                className="font-mono text-xs text-smoke hover:text-bone tracking-widest uppercase transition-colors py-1 focus:outline-none focus-visible:ring-1 focus-visible:ring-gold"
+              >
+                TELEMETRY
+              </Link>
+            </nav>
 
             {/* Cart Button */}
             <button

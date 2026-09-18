@@ -14,6 +14,10 @@ export default {
         bone: "#E7E1D7",
         paper: "#F1ECE3",
         smoke: "#9A958D",
+        /* Canonical campaign palette (DESIGN_FRAMEWORK.md §0) */
+        void: "#0D0D0D",
+        concrete: "#888888",
+        bleach: "#F4F4F0",
         line: "rgba(231, 225, 215, 0.17)",
         "line-dark": "rgba(10, 10, 10, 0.12)",
         gold: {

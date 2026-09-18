@@ -19,6 +19,11 @@
 
   --archive-red: #743530;
   --silver: #A6A6A2;
+
+  /* Canonical campaign palette — see DESIGN_FRAMEWORK.md */
+  --void: #0D0D0D;
+  --concrete: #888888;
+  --bleach: #F4F4F0;
 }
 
 @layer base {
@@ -131,6 +136,163 @@
   background-image: 
     linear-gradient(to right, rgba(231, 225, 215, 0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(231, 225, 215, 0.03) 1px, transparent 1px);
+}
+
+/* ------------------------------------------------------------------ */
+/* LM MOTION SYSTEM v2 — NOIR TEXTURE / GLASS / KINETIC TYPE LAYERS    */
+/* Consumed tokens mirror src/motion/tokens.ts (see DESIGN_FRAMEWORK)  */
+/* ------------------------------------------------------------------ */
+
+/* Hide scrollbars on horizontal tracks (drag + native fallback) */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Native cursor is replaced by the magnetic custom cursor on fine
+   pointers only. Body class is toggled by <CustomCursor />. */
+@media (pointer: fine) {
+  body.lm-cursor-active,
+  body.lm-cursor-active * {
+    cursor: none !important;
+  }
+}
+
+/* — 35mm SILVER-GELATIN FILM GRAIN —
+   Animated feTurbulence tile, stepped like a film projector. */
+.fx-grain {
+  position: relative;
+}
+.fx-grain::after {
+  content: '';
+  position: absolute;
+  inset: -100%;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain-shift 0.9s steps(4) infinite;
+}
+@keyframes grain-shift {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-2%, 1.4%); }
+  50% { transform: translate(1.6%, -1.2%); }
+  75% { transform: translate(-1.2%, -1.8%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* — VHS SCANLINES + HEAD-SWEEP —
+   Lay over full-bleed campaign frames. */
+.fx-scanlines {
+  position: relative;
+}
+.fx-scanlines::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(244, 244, 240, 0.028) 0px,
+    rgba(244, 244, 240, 0.028) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+.fx-scanlines::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 18%;
+  z-index: 4;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(244, 244, 240, 0.045) 45%,
+    rgba(244, 244, 240, 0.09) 50%,
+    rgba(244, 244, 240, 0.045) 55%,
+    transparent
+  );
+  animation: vhs-sweep 7s cubic-bezier(0.83, 0, 0.17, 1) infinite;
+}
+@keyframes vhs-sweep {
+  0% { top: -20%; opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { top: 110%; opacity: 0; }
+}
+
+/* — SCANNER MOIRÉ ACCENT —
+   Interference stripes for glitch moments on hover. */
+.fx-moire {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(244, 244, 240, 0.05) 0px,
+    rgba(244, 244, 240, 0.05) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+}
+.fx-moire-hover {
+  transition: opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.group:hover .fx-moire-hover,
+.fx-moire-hover:hover {
+  opacity: 0.5;
+  transform: translateX(2px);
+}
+
+/* — GLASSMORPHISM PANELS (dark-mode, blur 20px per spec) — */
+.glass-panel {
+  background: rgba(13, 13, 13, 0.55);
+  -webkit-backdrop-filter: blur(20px) saturate(120%);
+  backdrop-filter: blur(20px) saturate(120%);
+  border: 1px solid rgba(244, 244, 240, 0.09);
+}
+.glass-panel-heavy {
+  background: rgba(13, 13, 13, 0.72);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(244, 244, 240, 0.12);
+}
+
+/* — CHROMATIC ABERRATION on hover (RGB split via drop-shadow) — */
+.fx-chromatic {
+  transition: filter 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.group:hover .fx-chromatic {
+  filter: drop-shadow(1px 0 0 rgba(173, 138, 72, 0.35))
+    drop-shadow(-1px 0 0 rgba(116, 53, 48, 0.3));
+}
+
+/* — KINETIC VARIABLE TYPE (Archivo: wght 100–900 / wdth 62–125) —
+   <VelocityText /> drives these axes from scroll velocity. */
+.font-kinetic {
+  font-family: 'Archivo', 'Syne', sans-serif;
+  font-variation-settings: 'wght' 760, 'wdth' 82;
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+/* Outlined display ghost type (used behind lookbook stacks) */
+.text-hollow {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(244, 244, 240, 0.16);
+}
+
+/* Hide grain/scanline overlays fromReduced-motion users */
+@media (prefers-reduced-motion: reduce) {
+  .fx-grain::after,
+  .fx-scanlines::after {
+    animation: none !important;
+  }
 }
 
 /* Reduced motion rules */

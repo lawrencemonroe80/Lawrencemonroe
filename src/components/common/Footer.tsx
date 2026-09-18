@@ -99,6 +99,16 @@ export const Footer: React.FC = () => {
                   </Link>
                 </li>
                 <li>
+                  <Link to="/vault" className="hover:text-bone transition-colors block">
+                    EDITORIAL VAULT
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/telemetry" className="hover:text-bone transition-colors block">
+                    RAW FEEDS
+                  </Link>
+                </li>
+                <li>
                   <Link to="/about" className="hover:text-bone transition-colors block">
                     MANIFESTO
                   </Link>
