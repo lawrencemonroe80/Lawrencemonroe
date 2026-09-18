@@ -7,6 +7,8 @@ import { VelocityText } from '../components/common/VelocityText';
 import { OptimizedImage } from '../components/common/OptimizedImage';
 import { EASE, badgeBlurIn, revealUp } from '../motion/tokens';
 import { RELEASED_PRODUCTS } from '../data/products';
+import { SectionLookbookStack } from '../components/home/SectionLookbookStack';
+import { SectionHorizontalGallery } from '../components/home/SectionHorizontalGallery';
 import type { VaultCategory, VaultStory } from '../types';
 
 /**
@@ -222,6 +224,10 @@ export const VaultPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* ---- Motion archive (relocated from the homepage v2 restructure) ---- */}
+      <SectionLookbookStack />
+      <SectionHorizontalGallery />
 
       {/* ---- Dossier modal (glass) ---- */}
       <AnimatePresence>

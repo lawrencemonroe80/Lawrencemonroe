@@ -23,9 +23,9 @@ scroll mechanics, component specs, motion tokens, code snippets).
 ## Pages
 | Route | Page |
 |---|---|
-| `/` | Index — hero reel, capsule drop, network transitions |
+| `/` | Index — light editorial entrance, capsule drop, statement, network |
 | `/shop` · `/shop/:slug` | Live Square catalog + product dossiers |
-| `/vault` | Editorial vault (Sanity-powered lookbooks) |
+| `/vault` | Editorial vault (Sanity lookbooks + motion archive) |
 | `/telemetry` | RAW FEEDS — live Instagram + community, SHOP THE LOOK tagging |
 | `/about` | Brand manifesto |
 | `/checkout` | Square Web Payments SDK checkout |

@@ -8,9 +8,9 @@ import { Wordmark, MonogramMark } from './BrandLogo';
 
 const MENU_ITEMS = [
   {
-    title: 'RELEASE 001',
-    subtitle: 'ACTIVE PRIVATE RELEASE',
-    href: '/#pieces',
+    title: 'THE DROP',
+    subtitle: 'CAPSULE 001 / LIVE ALLOCATION',
+    href: '/#capsule',
     image: '/images/shorts-001-cutout.jpg',
     code: 'REL-001'
   },
@@ -20,13 +20,6 @@ const MENU_ITEMS = [
     href: '/shop',
     image: '/images/shorts-002-cutout.jpg',
     code: 'CAT-001'
-  },
-  {
-    title: 'ARCHIVE NEXT',
-    subtitle: 'UNRELEASED CONCEPTS & SPECIMENS',
-    href: '/#archive',
-    image: '/images/archive-shirt-teaser.jpg',
-    code: 'ARC-002'
   },
   {
     title: 'EDITORIAL VAULT',
@@ -57,6 +50,8 @@ export const Navigation: React.FC = () => {
   const [hoveredMenuIndex, setHoveredMenuIndex] = useState<number>(0);
   const location = useLocation();
   const navigate = useNavigate();
+  // Homepage runs the light editorial theme — chrome adapts
+  const light = location.pathname === '/';
 
   const { getItemCount, openCart } = useCartStore();
   const itemCount = getItemCount();
@@ -112,7 +107,9 @@ export const Navigation: React.FC = () => {
       <header
         className={`fixed top-0 left-0 w-full z-40 transition-all duration-500 ${
           isScrolled
-            ? 'bg-black/95 backdrop-blur-md border-b border-line py-3.5 shadow-2xl'
+            ? light
+              ? 'bg-paper/90 backdrop-blur-md border-b border-line-dark py-3.5 shadow-sm'
+              : 'bg-black/95 backdrop-blur-md border-b border-line py-3.5 shadow-2xl'
             : 'bg-transparent py-6 md:py-8'
         }`}
       >
@@ -124,8 +121,8 @@ export const Navigation: React.FC = () => {
               className="group flex items-center space-x-2.5 focus:outline-none focus-visible:ring-1 focus-visible:ring-gold"
               aria-label="Lawrence Monroe Home"
             >
-              <MonogramMark className="w-8 h-8 group-hover:border-gold transition-colors" />
-              <span className="hidden sm:inline-block font-mono text-[10px] text-smoke tracking-ultra">
+              <MonogramMark tone={light ? 'light' : 'dark'} className="w-8 h-8 group-hover:border-gold transition-colors" />
+              <span className={`hidden sm:inline-block font-mono text-[10px] tracking-ultra ${light ? 'text-ash' : 'text-smoke'}`}>
                 [001]
               </span>
             </Link>
@@ -138,6 +135,7 @@ export const Navigation: React.FC = () => {
               className="group inline-block focus:outline-none focus-visible:ring-1 focus-visible:ring-gold"
             >
               <Wordmark
+                color={light ? '#0A0A0A' : '#FFFFFF'}
                 className={isScrolled ? 'scale-90 transition-transform' : 'scale-100 transition-transform'}
               />
               <div className="w-0 group-hover:w-full h-[1px] bg-gold mx-auto transition-all duration-300 mt-0.5" />
@@ -149,20 +147,20 @@ export const Navigation: React.FC = () => {
             <nav className="hidden lg:flex items-center gap-6">
               <Link
                 to="/shop"
-                className="inline-flex items-center gap-1 font-mono text-xs text-smoke hover:text-bone tracking-widest uppercase transition-colors py-1 focus:outline-none focus-visible:ring-1 focus-visible:ring-gold"
+                className={`inline-flex items-center gap-1 font-mono text-xs tracking-widest uppercase transition-colors py-1 focus:outline-none focus-visible:ring-1 focus-visible:ring-gold ${light ? 'text-ash hover:text-ink' : 'text-smoke hover:text-bone'}`}
               >
                 <span>SHOP</span>
                 <span className="text-gold text-[9px] font-mono font-bold">001</span>
               </Link>
               <Link
                 to="/vault"
-                className="font-mono text-xs text-smoke hover:text-bone tracking-widest uppercase transition-colors py-1 focus:outline-none focus-visible:ring-1 focus-visible:ring-gold"
+                className={`font-mono text-xs tracking-widest uppercase transition-colors py-1 focus:outline-none focus-visible:ring-1 focus-visible:ring-gold ${light ? 'text-ash hover:text-ink' : 'text-smoke hover:text-bone'}`}
               >
                 VAULT
               </Link>
               <Link
                 to="/telemetry"
-                className="font-mono text-xs text-smoke hover:text-bone tracking-widest uppercase transition-colors py-1 focus:outline-none focus-visible:ring-1 focus-visible:ring-gold"
+                className={`font-mono text-xs tracking-widest uppercase transition-colors py-1 focus:outline-none focus-visible:ring-1 focus-visible:ring-gold ${light ? 'text-ash hover:text-ink' : 'text-smoke hover:text-bone'}`}
               >
                 TELEMETRY
               </Link>
@@ -171,10 +169,10 @@ export const Navigation: React.FC = () => {
             {/* Cart Button */}
             <button
               onClick={openCart}
-              className="group flex items-center space-x-2 border border-line bg-graphite/40 hover:border-gold px-3 py-1.5 transition-all duration-300 focus:outline-none focus-visible:ring-1 focus-visible:ring-gold"
+              className={`group flex items-center space-x-2 border hover:border-gold px-3 py-1.5 transition-all duration-300 focus:outline-none focus-visible:ring-1 focus-visible:ring-gold ${light ? 'border-line-dark bg-white/50' : 'border-line bg-graphite/40'}`}
               aria-label={`Shopping Cart with ${itemCount} items`}
             >
-              <span className="font-mono text-xs text-bone tracking-widest uppercase group-hover:text-gold transition-colors">
+              <span className={`font-mono text-xs tracking-widest uppercase group-hover:text-gold transition-colors ${light ? 'text-ink' : 'text-bone'}`}>
                 BAG
               </span>
               <span className="inline-flex items-center justify-center font-mono text-[10px] font-bold text-black bg-gold px-1.5 py-0.2 min-w-[18px] rounded-none">
@@ -185,7 +183,7 @@ export const Navigation: React.FC = () => {
             {/* Hamburger / Campaign Menu Trigger */}
             <button
               onClick={() => setIsMobileMenuOpen(true)}
-              className="p-1.5 border border-line bg-graphite/40 hover:border-gold transition-colors text-bone hover:text-gold focus:outline-none focus-visible:ring-1 focus-visible:ring-gold"
+              className={`p-1.5 border hover:border-gold transition-colors hover:text-gold focus:outline-none focus-visible:ring-1 focus-visible:ring-gold ${light ? 'border-line-dark bg-white/50 text-ink' : 'border-line bg-graphite/40 text-bone'}`}
               aria-label="Open Navigation Menu"
             >
               <Menu size={18} />

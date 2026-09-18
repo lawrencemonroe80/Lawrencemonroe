@@ -13,10 +13,11 @@ Everything in this document is implemented in this repository. The storefront is
 ```
 lawrencemonroe.com
 │
-├── / ........................ INDEX / THE ENTRANCE
-│     ├── Campaign hero reel (3D parallax rig, Ken Burns plates)
-│     ├── Featured capsule drop — top 4 items, live Square pricing/stock
-│     └── THE NETWORK — transition links to all inner pages
+├── / ........................ INDEX / THE ENTRANCE (v2 light editorial)
+│     ├── Single mounted print + ink wordmark on paper grain
+│     ├── THE DROP — capsule, top items, live Square pricing/stock
+│     ├── THE STATEMENT — one typographic moment (velocity type)
+│     └── THE NETWORK — four channel index rows + closing CTA
 │
 ├── /shop .................... SHOP / COLLECTION CATALOG
 │     ├── Sort: NEW ARRIVALS · ESSENTIALS · LOOKBOOK EXCLUSIVES (+ price)
@@ -30,6 +31,7 @@ lawrencemonroe.com
 ├── /vault ................... EDITORIAL VAULT / THE ARCHIVE
 │     ├── Campaign lookbooks · Gen Effects Vol 1 · Silver-Gelatin stories
 │     ├── Sanity Studio–powered with bundled local fallback
+│     ├── Sticky stacking lookbook + speed-index drag gallery
 │     └── Dossier modals with gallery plates + SHOP THE STORY links
 │
 ├── /telemetry ............... RAW FEEDS / SOCIAL HUB
@@ -87,7 +89,8 @@ Lawrencemonroe/
 │   │   ├── checkout/
 │   │   │   ├── InlineSquareCheckout.tsx  # WPSDK card form inside the drawer
 │   │   │   └── SquarePaymentForm.tsx     # full /checkout page form
-│   │   └── home/ (hero rig, lookbook stack, drag gallery, network, …)
+│   │   └── home/ (light hero, capsule drop, statement, network
+│   │       + lookbook stack & drag gallery — served on /vault)
 │   ├── motion/tokens.ts          # design tokens (easings/springs/triggers)
 │   └── data/ (bundled fallbacks: products, vault, feed, frames)
 │

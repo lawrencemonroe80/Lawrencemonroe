@@ -114,13 +114,17 @@ Each LOOK is a `position: sticky; top: 88px` card inside a tall runway. Incoming
 - **Cursor contract**: track = `DRAG` pill; plate surfaces = `INSPECT` pill (innermost `data-cursor` wins).
 - Six plates: two model angles (macro: fabric weave), stride study, cantilever rest, two `CLASSIFIED` archive plates (red signal, no macro — sealed).
 
-### 2.3 Section Rhythm (homepage scroll narrative)
+### 2.3 Section Rhythm — Homepage v2 (Light Editorial Redux)
 ```
-HERO (rig) → MANIFESTO (velocity type, paper) → CONTACT SHEET (scroll-parallax strip)
-→ LOOKBOOK STACK (sticky) → THE PIECES (product grid) → SPEED INDEX (drag gallery)
-→ OBJECT IN MOTION → ARCHIVE NEXT → FINAL CTA
+THE ENTRANCE (single mounted print, ink wordmark, paper grain)
+→ THE DROP (capsule, live Square pricing — /#capsule)
+→ THE STATEMENT (velocity type, one typographic moment)
+→ THE NETWORK (four channel index rows + closing CTA)
 ```
-Alternating ground: void black ↔ bleached paper at the manifesto for tonal snap.
+Ground: bleached paper (#F4F4F0) with `.fx-grain-light` throughout; ink type,
+hairline `line-dark` rules, gold used only as a scalpel. The heavy motion
+pieces relocated to inner pages — the stacking lookbook and speed-index drag
+gallery now live on `/vault`; the full product grid on `/shop`. See §8.
 
 ---
 
@@ -371,10 +375,13 @@ const sy = useSpring(y, { stiffness: 180, damping: 14, mass: 0.4 });
 | Feature | File |
 |---|---|
 | Motion tokens (§4) | `src/motion/tokens.ts` |
-| Hero 3D rig (§1) | `src/components/home/Section1Hero.tsx` |
-| Velocity type (§2.3/§5.4) | `src/components/common/VelocityText.tsx` + `Section2Manifesto.tsx` |
-| Sticky lookbook stack (§2.1) | `src/components/home/SectionLookbookStack.tsx` |
-| Inertia drag gallery (§2.2) | `src/components/home/SectionHorizontalGallery.tsx` |
+| Hero — light editorial v2 (§8) | `src/components/home/LightHero.tsx` |
+| Capsule drop (live Square) | `src/components/home/CapsuleDrop.tsx` |
+| Editorial statement (velocity type) | `src/components/home/EditorialStatement.tsx` |
+| Network index rows + close | `src/components/home/NetworkLinks.tsx` |
+| Velocity type (§5.4) | `src/components/common/VelocityText.tsx` |
+| Sticky lookbook stack (§2.1) — now on /vault | `src/components/home/SectionLookbookStack.tsx` |
+| Inertia drag gallery (§2.2) — now on /vault | `src/components/home/SectionHorizontalGallery.tsx` |
 | Asset inspector (§3.2) | `src/components/common/AssetInspector.tsx` |
 | Magnetic cursor + states (§3.4) | `src/components/common/CustomCursor.tsx` |
 | Magnetic wrapper (§5.6) | `src/components/common/Magnetic.tsx` |
@@ -383,3 +390,32 @@ const sy = useSpring(y, { stiffness: 180, damping: 14, mass: 0.4 });
 | Variable font load | `index.html` (Archivo `wdth 62..125, wght 100..900`) |
 
 **Type scale of one** — every duration, spring, and curve in the build traces back to §4. If a value isn't in the tokens, it doesn't ship.
+
+
+---
+
+## §8 — HOMEPAGE V2: LIGHT EDITORIAL REDUX
+
+**Diagnosis (v1):** ~10 dense sections, all void-black, every layer
+competing — multi-plate 3D rig, contact strips, stacks, drag galleries,
+archive teasers stacked end to end. Scroll fatigue and visual noise.
+
+**Prescription (v2):**
+1. **Brighter ground** — bleached paper (#F4F4F0) with `.fx-grain-light`
+   (the same silver-halide noise at 0.05 opacity, slower 1.4s cadence).
+2. **One idea per section** — four sections, each a single gesture.
+3. **Restraint over density** — one mounted print instead of four plates;
+   index rows instead of image cards; hairlines instead of chrome.
+4. **Motion retained, volume lowered** — gentle parallax + Ken Burns on
+   the hero print, velocity type on the statement, magnetic buttons on
+   the close. The marquee mechanics (sticky stack, drag gallery) moved
+   to /vault where depth is expected.
+5. **Adaptive chrome** — the fixed nav runs light ink/paper treatment on
+   `/` and the noir treatment everywhere else; the cursor ring blends
+   by difference so it reads on both grounds.
+
+**Retired from the homepage:** the v1 3D multi-plate rig (spec preserved
+in §1 as archive reference), contact sheet, object-in-motion, archive
+teasers, and the duplicate product blocks. Nothing was deleted from the
+system — everything either relocated or was redundant with /shop,
+/vault, or /telemetry.

@@ -287,9 +287,26 @@
   -webkit-text-stroke: 1px rgba(244, 244, 240, 0.16);
 }
 
+/* — LIGHT EDITORIAL GRAIN (paper sections, homepage v2) —
+   Same silver-halide noise, tuned down for bleached paper grounds. */
+.fx-grain-light {
+  position: relative;
+}
+.fx-grain-light::after {
+  content: '';
+  position: absolute;
+  inset: -100%;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain-shift 1.4s steps(4) infinite;
+}
+
 /* Hide grain/scanline overlays fromReduced-motion users */
 @media (prefers-reduced-motion: reduce) {
   .fx-grain::after,
+  .fx-grain-light::after,
   .fx-scanlines::after {
     animation: none !important;
   }

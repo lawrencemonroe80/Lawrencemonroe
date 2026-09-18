@@ -144,7 +144,7 @@ export const CustomCursor: React.FC = () => {
         style={{ x: coreX, y: coreY }}
       >
         <motion.div
-          className="-translate-x-1/2 -translate-y-1/2 rounded-full bg-gold mix-blend-difference"
+          className="-translate-x-1/2 -translate-y-1/2 rounded-full bg-gold"
           animate={{
             width: isPill ? 4 : 6,
             height: isPill ? 4 : 6,
@@ -165,7 +165,7 @@ export const CustomCursor: React.FC = () => {
           style={{ scaleX, scaleY }}
         >
           <motion.div
-            className="relative flex items-center justify-center rounded-full border"
+            className={`relative flex items-center justify-center rounded-full border ${isPill ? '' : 'mix-blend-difference'}`}
             initial={false}
             animate={{
               width: isPill ? 118 : state === 'link' ? 44 : 26,

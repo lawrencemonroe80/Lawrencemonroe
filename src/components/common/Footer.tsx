@@ -84,8 +84,8 @@ export const Footer: React.FC = () => {
               </div>
               <ul className="space-y-2 font-mono text-xs text-smoke">
                 <li>
-                  <Link to="/#pieces" className="hover:text-bone transition-colors block">
-                    RELEASE 001
+                  <Link to="/#capsule" className="hover:text-bone transition-colors block">
+                    THE DROP
                   </Link>
                 </li>
                 <li>
@@ -93,11 +93,7 @@ export const Footer: React.FC = () => {
                     ACTIVE SHOP
                   </Link>
                 </li>
-                <li>
-                  <Link to="/#archive" className="hover:text-bone transition-colors block">
-                    ARCHIVE NEXT
-                  </Link>
-                </li>
+
                 <li>
                   <Link to="/vault" className="hover:text-bone transition-colors block">
                     EDITORIAL VAULT
