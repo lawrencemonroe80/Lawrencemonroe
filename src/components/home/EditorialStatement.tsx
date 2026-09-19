@@ -65,7 +65,7 @@ export const EditorialStatement: React.FC = () => {
             >
               Read the manifesto — PAGE 18
             </Link>
-            <div className="font-mono text-[9px] tracking-[0.2em] text-smoke/80 uppercase">
+            <div className="font-mono text-[9px] tracking-[0.2em] text-indigo uppercase">
               WORDS — THE STUDIO · PLATES — 35MM ARCHIVE
             </div>
           </motion.div>

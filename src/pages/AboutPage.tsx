@@ -15,10 +15,10 @@ export const AboutPage: React.FC = () => {
           <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black text-ink tracking-tighter uppercase leading-none">
             RELEASE AS IMAGE.
           </h1>
-          <p className="pullquote mt-6">
+          <p className="pullquote pullquote-indigo mt-6">
             “The garment, the visual fragment, and the motion become one unified experience.”
           </p>
-          <div className="font-mono text-[9px] tracking-[0.25em] text-ash uppercase mt-4">
+          <div className="font-mono text-[9px] tracking-[0.25em] text-indigo uppercase mt-4">
             FROM THE EDITOR — ISSUE 001, AUTUMN 2026
           </div>
         </div>

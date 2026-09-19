@@ -13,10 +13,11 @@ This document is the single source of truth for the Lawrence Monroe digital camp
 
 | Token | Hex | Role | Implementation alias |
 |---|---|---|---|
-| **Matte Void Black** | `#0D0D0D` | Primary ground, glass panels | `void` / `black` `#050505`, `ink` `#0A0A0A` |
-| **Raw Concrete Grey** | `#888888` | Structural mid-tone, ambience washes | `concrete` / `smoke` `#9A958D`, `ash` `#303030` |
+| **Matte Void Black** | `#111111` | Primary ground, glass panels, type | `void` / `ink` `#111111`, `black` `#000000` |
+| **Raw Concrete Grey** | `#999999` | Structural mid-tone, ambience washes | `smoke` `#999999`, `ash` `#333333`, `iron` `#666666`, `concrete` `#888888` |
 | **Bleached Paper White** | `#F4F4F0` | Type & paper sections, texture overlays | `bleach` / `paper` `#F1ECE3`, `bone` `#E7E1D7` |
-| **Warm Metallic (Antique Gold)** | `#AD8A48` | Accent only — never fills >5% of viewport | `gold` (`soft` `#C4A565`, `dark` `#60471E`) |
+| **Warm Metallic (Brand Gold)** | `#C79F3D` | Accent only — never fills >5% of viewport | `gold` (`core` `#C79F3D`, `soft` `#C4A565`, `dark` `#683B16`) |
+| **Slate Indigo (Spot Ink №2)** | `#3D5089` | Editor's ink — folio, bylines, one pull quote | `indigo` (§11) |
 | **Archive Red** | `#743530` | Restricted signal — "CLASSIFIED / NEXT" only | `archive.red` |
 
 Rule of ratio: **90% void · 8% paper/concrete · 2% gold**. Gold is a scalpel, not a paint bucket.
@@ -433,7 +434,7 @@ system — everything either relocated or was redundant with /shop,
 :root {
   /* Aged 18K yellow gold / brushed champagne */
   --gold-hi: #FCF6BA;      /* champagne specular highlight */
-  --gold-core: #D4AF37;    /* 18K core */
+  --gold-core: #C79F3D;    /* brand core */
   --gold-aged: #AA771C;    /* aged deep */
   --gold-brush-a: #BF953F;
   --gold-brush-b: #B38728;
@@ -452,16 +453,16 @@ system — everything either relocated or was redundant with /shop,
 
 ```js
 // tailwind.config.js
-colors: { gold: { hi:'#FCF6BA', core:'#D4AF37', aged:'#AA771C',
+colors: { gold: { hi:'#FCF6BA', core:'#C79F3D', aged:'#AA771C',
                   brushA:'#BF953F', brushB:'#B38728', brushC:'#FBF5B7', wire:'#5B4812' } },
 boxShadow: {
   material:
     '0px 20px 50px -10px rgba(0,0,0,0.9), 0px 2px 4px 0px rgba(0,0,0,0.95), inset 0px 1px 1px 0px rgba(255,255,255,0.15), inset 0px -1px 1px 0px rgba(0,0,0,0.8)',
-  'metal-glow': '0px 0px 12px rgba(212, 175, 55, 0.25)',
+  'metal-glow': '0px 0px 12px rgba(199, 159, 61, 0.25)',
 },
 backgroundImage: {
   'gold-hi':   'linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%)',
-  'gold-wire': 'linear-gradient(180deg, #D4AF37 0%, #5B4812 100%)',
+  'gold-wire': 'linear-gradient(180deg, #C79F3D 0%, #5B4812 100%)',
 },
 ```
 
@@ -492,7 +493,7 @@ hover** (a moving specular reflection sweep):
 
 /* Muted gold wireframe (gallery plates) */
 .metal-wire { border: 1px solid transparent;
-  border-image: linear-gradient(180deg, #D4AF37 0%, #5B4812 100%) 1; }
+  border-image: linear-gradient(180deg, #C79F3D 0%, #5B4812 100%) 1; }
 
 /* Brushed-metal micro-scratches (tactile texture) */
 .fx-brushed::after { background: repeating-linear-gradient(105deg,
@@ -581,7 +582,7 @@ pointers.
 
 ### 9.5 Material rules
 1. **Gold is a material, not a color** — always a gradient (never flat
-   `#D4AF37` fills on dark surfaces); flat gold survives only for text
+   `#C79F3D` fills on dark surfaces); flat gold survives only for text
    accents.
 2. **One shadow architecture** — every elevated surface uses the §9.1
    stack; never a single `box-shadow`.
@@ -686,3 +687,51 @@ variant). Product media stages, overlays on photography, and the
    (`PAGE 06 / THE EDIT — …`) keep the reader oriented.
 5. **Reduced motion** disables the page-turn sheet and Ken Burns; the
    contents spread opens without stagger.
+
+
+## §11 — BRAND PALETTE ALIGNMENT (ISSUE 001)
+
+The client brand set was aligned to the live tokens — every near-match
+now carries the **exact brand hex**, and the two genuinely new values
+entered the system as named spot inks.
+
+### 11.1 Mapping (brand hex → token)
+
+| Brand hex | Token(s) | Role |
+| --- | --- | --- |
+| `#000000` | `black` | Darkest ground — overlays, dark stages |
+| `#111111` | `ink`, `void` | Type on paper; dark surfaces & glass panels |
+| `#333333` | `ash` | Secondary type, dark-surface body text |
+| `#666666` | `iron` *(new)* | Mid-gray step — captions on dark, dividers |
+| `#999999` | `smoke` | Muted type, placeholders, overlay meta |
+| `#ffffff` | `white` | Card mounts on paper (`bg-white/60–70`), type on dark |
+| `#C79F3D` | `gold.DEFAULT`, `gold.core` | The gold — flat accents on dark, metallic core |
+| `#3D5089` | `indigo` *(new)* | **Spot ink №2** — the editor's voice (§11.2) |
+| `#683B16` | `gold.dark` | Russet print-ink — gold on paper surfaces |
+
+Retired values: `#050505 #0A0A0A #0D0D0D #303030 #9A958D #AD8A48
+#D4AF37 #60471E` (all absorbed by the brand hexes above). The §9
+metallurgy **brush sweep** (`#BF953F → #FBF5B7`) is untouched — it is
+the gold *material*, not the gold *color*.
+
+### 11.2 Spot ink №2 — slate indigo `#3D5089`
+
+A two-ink issue: **gold is commerce and the cover; indigo is the
+editor.** Indigo appears in exactly five places, never as a fill:
+
+1. **Running folio** — the `LM·001` prefix on every page's folio chip
+2. **Contents spread** — the `PAGE nn` mark on the hover plate
+3. **Feature byline** — "WORDS — THE STUDIO · PLATES — 35MM ARCHIVE"
+4. **Manifesto byline** — "FROM THE EDITOR — ISSUE 001"
+5. **One pull quote** — `.pullquote-indigo` on the /about opener
+
+Rules: never two indigo elements in the same viewport; never on CTAs,
+prices, or stock states (gold-dark owns those); if a sixth use seems
+necessary, the answer is no.
+
+### 11.3 What did not change
+
+`paper #F1ECE3` remains the page ground and `bone #E7E1D7` the warm
+white — the magazine's stock is its concept. `graphite #171717`,
+`concrete #888888`, `bleach #F4F4F0`, the silver family, and
+`archive.red` continue as system support colors.

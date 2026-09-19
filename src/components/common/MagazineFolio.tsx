@@ -17,7 +17,7 @@ export const MagazineFolio: React.FC = () => {
       aria-hidden
       className="fixed bottom-3 left-3 z-30 hidden sm:flex items-center gap-2.5 bg-paper/90 backdrop-blur-sm border border-line-dark px-2.5 py-1.5 font-mono text-[9px] tracking-[0.18em] uppercase text-ash shadow-paper pointer-events-none select-none"
     >
-      <span className="font-bold text-gold-dark">LM·{ISSUE.number}</span>
+      <span className="font-bold text-indigo">LM·{ISSUE.number}</span>
       <span className="w-px h-3 bg-line-dark" />
       <span>
         PAGE {folio.page} — {folio.title}

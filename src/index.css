@@ -3,25 +3,29 @@
 @tailwind utilities;
 
 :root {
-  --ink: #0A0A0A;
-  --black: #050505;
+  --ink: #111111;
+  --black: #000000;
   --graphite: #171717;
-  --ash: #303030;
+  --ash: #333333;
   --bone: #E7E1D7;
   --paper: #F1ECE3;
-  --smoke: #9A958D;
+  --smoke: #999999;
   --line: rgba(231, 225, 215, 0.17);
-  --line-dark: rgba(10, 10, 10, 0.12);
+  --line-dark: rgba(17, 17, 17, 0.12);
 
-  --gold: #AD8A48;
+  --gold: #C79F3D;
   --gold-soft: #C4A565;
-  --gold-dark: #60471E;
+  --gold-dark: #683B16;
 
   --archive-red: #743530;
   --silver: #A6A6A2;
 
+  /* Brand spot inks — Issue 001 (see DESIGN_FRAMEWORK.md §11) */
+  --indigo: #3D5089;
+  --iron: #666666;
+
   /* Canonical campaign palette — see DESIGN_FRAMEWORK.md */
-  --void: #0D0D0D;
+  --void: #111111;
   --concrete: #888888;
   --bleach: #F4F4F0;
 }
@@ -47,14 +51,14 @@
     height: 5px;
   }
   ::-webkit-scrollbar-track {
-    background: #050505;
+    background: #000000;
   }
   ::-webkit-scrollbar-thumb {
-    background: #303030;
+    background: #333333;
     border-radius: 2px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #AD8A48;
+    background: #C79F3D;
   }
 }
 
@@ -316,7 +320,7 @@
 :root {
   /* Aged 18K yellow gold / brushed champagne */
   --gold-hi: #FCF6BA;      /* champagne specular highlight */
-  --gold-core: #D4AF37;    /* 18K core */
+  --gold-core: #C79F3D;    /* brand core */
   --gold-aged: #AA771C;    /* aged deep */
   --gold-brush-a: #BF953F;
   --gold-brush-b: #B38728;
@@ -356,7 +360,7 @@
   --metal-angle: 135deg;
   border: 1px solid transparent;
   background:
-    linear-gradient(#141414, #0D0D0D) padding-box,
+    linear-gradient(#141414, #111111) padding-box,
     linear-gradient(
       var(--metal-angle),
       #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%
@@ -372,14 +376,14 @@
 .metal-frame-silver {
   border: 1px solid transparent;
   background:
-    linear-gradient(#141414, #0D0D0D) padding-box,
+    linear-gradient(#141414, #111111) padding-box,
     linear-gradient(135deg, #8F8F89 0%, #F4F4F0 30%, #7C7C76 55%, #D9D9D3 80%, #6E6E68 100%) border-box;
 }
 
 /* Muted gold wireframe — static vertical brush */
 .metal-wire {
   border: 1px solid transparent;
-  border-image: linear-gradient(180deg, #D4AF37 0%, #5B4812 100%) 1;
+  border-image: linear-gradient(180deg, #C79F3D 0%, #5B4812 100%) 1;
 }
 
 /* — Brushed-metal micro-scratch texture (tactile surfaces) — */
@@ -434,7 +438,7 @@
 }
 /* Obsidian base */
 .btn-metal {
-  background: linear-gradient(180deg, #1D1D1D 0%, #0D0D0D 100%);
+  background: linear-gradient(180deg, #1D1D1D 0%, #111111 100%);
   color: #E7E1D7;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14),
     inset 0 -1px 0 rgba(0, 0, 0, 0.85), inset 1px 0 0 rgba(255, 255, 255, 0.05);
@@ -443,20 +447,20 @@
 .btn-metal-gold {
   background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%);
   background-size: 220% 220%;
-  color: #0D0D0D;
+  color: #111111;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4),
     inset 0 -1px 0 rgba(0, 0, 0, 0.35);
 }
 /* Bleached bone base */
 .btn-metal-bone {
   background: linear-gradient(180deg, #FCFCF9 0%, #E9E9E1 100%);
-  color: #0D0D0D;
+  color: #111111;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7),
     inset 0 -1px 0 rgba(0, 0, 0, 0.18);
 }
 /* Ink base for light paper surfaces */
 .btn-metal-light {
-  background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
+  background: linear-gradient(180deg, #1A1A1A 0%, #111111 100%);
   color: #F4F4F0;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16),
     inset 0 -1px 0 rgba(0, 0, 0, 0.85);
@@ -478,7 +482,7 @@
   );
   background-size: 220% 220%;
   background-position: 100% 0;
-  color: #0D0D0D;
+  color: #111111;
 }
 .btn-metal-gold:hover { background-position: 100% 100%; }
 
@@ -524,7 +528,7 @@
   line-height: 0.78;
   padding-right: 0.09em;
   padding-top: 0.06em;
-  color: #60471E;
+  color: #683B16;
 }
 
 /* Pull quote — oversized serif italic between hairline rules */
@@ -533,10 +537,17 @@
   font-style: italic;
   font-size: clamp(1.5rem, 3vw, 2.1rem);
   line-height: 1.25;
-  color: #0A0A0A;
-  border-top: 1px solid rgba(10, 10, 10, 0.75);
-  border-bottom: 1px solid rgba(10, 10, 10, 0.75);
+  color: #111111;
+  border-top: 1px solid rgba(17, 17, 17, 0.75);
+  border-bottom: 1px solid rgba(17, 17, 17, 0.75);
   padding: 1.1rem 0;
+}
+
+/* Indigo spot variant — the issue's second editorial ink (§11) */
+.pullquote-indigo {
+  color: #3D5089;
+  border-top-color: rgba(61, 80, 137, 0.65);
+  border-bottom-color: rgba(61, 80, 137, 0.65);
 }
 
 /* Contents dotted leader */
@@ -558,11 +569,11 @@
   height: 34px;
   background: repeating-linear-gradient(
     90deg,
-    #0A0A0A 0 2px, transparent 2px 4px,
-    #0A0A0A 4px 5px, transparent 5px 9px,
-    #0A0A0A 9px 12px, transparent 12px 13px,
-    #0A0A0A 13px 14px, transparent 14px 18px,
-    #0A0A0A 18px 21px, transparent 21px 23px
+    #111111 0 2px, transparent 2px 4px,
+    #111111 4px 5px, transparent 5px 9px,
+    #111111 9px 12px, transparent 12px 13px,
+    #111111 13px 14px, transparent 14px 18px,
+    #111111 18px 21px, transparent 21px 23px
   );
 }
 

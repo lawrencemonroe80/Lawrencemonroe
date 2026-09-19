@@ -227,7 +227,7 @@ export const Navigation: React.FC = () => {
                         />
                       </div>
                       <div className="flex items-center justify-between px-1 pt-2.5 pb-1 font-mono text-[9px] tracking-[0.2em] text-ash uppercase">
-                        <span className="text-gold-dark font-bold">PAGE {CONTENTS[hoveredIndex].page}</span>
+                        <span className="text-indigo font-bold">PAGE {CONTENTS[hoveredIndex].page}</span>
                         <span>{CONTENTS[hoveredIndex].subtitle.toUpperCase()}</span>
                       </div>
                     </motion.div>
