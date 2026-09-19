@@ -511,6 +511,61 @@
   );
 }
 
+/* ================================================================== */
+/* §10 MAGAZINE SYSTEM — folios, drop caps, leaders, paper mounts      */
+/* ================================================================== */
+
+/* Drop cap — gold-dark serif initial on article openers */
+.dropcap::first-letter {
+  font-family: 'Cormorant Garamond', 'Didot', serif;
+  font-weight: 700;
+  float: left;
+  font-size: 3.6em;
+  line-height: 0.78;
+  padding-right: 0.09em;
+  padding-top: 0.06em;
+  color: #60471E;
+}
+
+/* Pull quote — oversized serif italic between hairline rules */
+.pullquote {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  line-height: 1.25;
+  color: #0A0A0A;
+  border-top: 1px solid rgba(10, 10, 10, 0.75);
+  border-bottom: 1px solid rgba(10, 10, 10, 0.75);
+  padding: 1.1rem 0;
+}
+
+/* Contents dotted leader */
+.toc-leader {
+  flex: 1 1 auto;
+  min-width: 24px;
+  margin: 0 14px;
+  border-bottom: 1px dotted rgba(10, 10, 10, 0.4);
+  transform: translateY(-6px);
+}
+
+/* Paper mount shadow — physical but print-weight (not the §9 dark stack) */
+.shadow-paper {
+  box-shadow: 0 1px 2px rgba(10, 10, 10, 0.06), 0 14px 34px -14px rgba(10, 10, 10, 0.22);
+}
+
+/* Barcode block — cover + colophon */
+.barcode {
+  height: 34px;
+  background: repeating-linear-gradient(
+    90deg,
+    #0A0A0A 0 2px, transparent 2px 4px,
+    #0A0A0A 4px 5px, transparent 5px 9px,
+    #0A0A0A 9px 12px, transparent 12px 13px,
+    #0A0A0A 13px 14px, transparent 14px 18px,
+    #0A0A0A 18px 21px, transparent 21px 23px
+  );
+}
+
 /* Hide grain/scanline overlays fromReduced-motion users */
 @media (prefers-reduced-motion: reduce) {
   .fx-grain::after,

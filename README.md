@@ -24,10 +24,10 @@ scroll mechanics, component specs, motion tokens, code snippets).
 | Route | Page |
 |---|---|
 | `/` | Index — light editorial entrance, capsule drop, statement, network |
-| `/shop` · `/shop/:slug` | Live Square catalog + product dossiers |
-| `/vault` | Editorial vault (Sanity lookbooks + motion archive) |
-| `/telemetry` | RAW FEEDS — live Instagram + community, SHOP THE LOOK tagging |
-| `/about` | Brand manifesto |
+| `/shop` · `/shop/:slug` | P.06 THE EDIT — live Square catalog + product dossiers |
+| `/vault` | P.10 THE PLATES — editorial vault (Sanity lookbooks + motion archive) |
+| `/telemetry` | P.14 THE FEED — live Instagram + community, SHOP THE LOOK tagging |
+| `/about` | P.18 THE MANIFESTO — brand doctrine with drop caps + pull quotes |
 | `/checkout` | Square Web Payments SDK checkout |
 
 ## Serverless API (Vercel)

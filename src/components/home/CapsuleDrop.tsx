@@ -64,7 +64,7 @@ export const CapsuleDrop: React.FC = () => {
 
   return (
     <section
-      id="capsule"
+      id="drop"
       className="fx-grain-light relative bg-paper text-ink py-24 sm:py-28 border-t border-line-dark overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-5 sm:px-8 md:px-12 relative z-10">
@@ -80,11 +80,11 @@ export const CapsuleDrop: React.FC = () => {
             <div className="flex items-center gap-3">
               <span className="w-1.5 h-1.5 bg-gold inline-block" />
               <span className="font-mono text-[11px] text-ash tracking-[0.3em] uppercase font-semibold">
-                The Drop / Capsule 001
+                Page 04 / The Drop — Capsule 001
               </span>
             </div>
             <h2 className="font-serif font-bold uppercase text-4xl sm:text-6xl text-ink leading-[0.95] tracking-[-0.01em]">
-              Release 001.
+              Two pieces. One uniform.
             </h2>
           </div>
           <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-ash flex items-center gap-2 border border-line-dark bg-white/50 px-3 py-2 w-fit">
@@ -121,7 +121,7 @@ export const CapsuleDrop: React.FC = () => {
                     className="h-full w-full object-cover grayscale contrast-120 group-hover:scale-[1.04] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
                   />
                   <div className="absolute top-3 left-3 font-mono text-[9px] tracking-[0.2em] uppercase bg-paper/85 px-2 py-0.5 border border-line-dark text-ink">
-                    SPEC {item.code}
+                    PLATE {String(i + 1).padStart(2, '0')} · {item.code}
                   </div>
                   {!item.soldOut && item.stock <= 4 && (
                     <div className="absolute bottom-3 left-3 font-mono text-[9px] tracking-[0.18em] uppercase text-gold-dark border border-gold-dark/40 bg-paper/85 px-2 py-0.5 font-bold">

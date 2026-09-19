@@ -20,7 +20,7 @@ const STRIP = [
 export const EditorialStatement: React.FC = () => {
   return (
     <section
-      id="manifesto"
+      id="feature"
       className="fx-grain-light relative bg-paper text-ink py-24 sm:py-32 border-t border-line-dark overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-5 sm:px-8 md:px-12 relative z-10">
@@ -35,7 +35,7 @@ export const EditorialStatement: React.FC = () => {
             <div className="flex items-center gap-3">
               <span className="w-1.5 h-1.5 bg-gold inline-block" />
               <span className="font-mono text-[11px] text-ash tracking-[0.3em] uppercase font-semibold">
-                001 / The Manifesto
+                Page 02 / The Feature
               </span>
             </div>
             <h2 className="text-5xl sm:text-7xl lg:text-8xl uppercase text-ink leading-[0.94]">
@@ -52,10 +52,10 @@ export const EditorialStatement: React.FC = () => {
             className="lg:col-span-4 space-y-6 lg:pb-3"
           >
             <div className="w-12 h-[2px] bg-gold-dark" />
-            <p className="font-serif italic text-xl text-ash leading-relaxed">
+            <p className="pullquote max-w-md">
               “A limited release built around silhouette, weight, and repeat wear.”
             </p>
-            <p className="font-utility text-xs text-smoke uppercase tracking-wide leading-relaxed">
+            <p className="dropcap font-utility text-xs text-smoke uppercase tracking-wide leading-relaxed">
               Rejecting synthetic collapse in favor of heavyweight pure cotton. Each piece maintains
               rigid architectural lines across daily movement.
             </p>
@@ -63,8 +63,11 @@ export const EditorialStatement: React.FC = () => {
               to="/about"
               className="gold-line-sweep inline-block font-mono text-[11px] font-bold tracking-[0.25em] uppercase text-ink hover:text-gold-dark transition-colors"
             >
-              Read the manifesto
+              Read the manifesto — PAGE 18
             </Link>
+            <div className="font-mono text-[9px] tracking-[0.2em] text-smoke/80 uppercase">
+              WORDS — THE STUDIO · PLATES — 35MM ARCHIVE
+            </div>
           </motion.div>
         </div>
 

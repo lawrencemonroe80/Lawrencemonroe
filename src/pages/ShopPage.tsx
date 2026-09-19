@@ -121,20 +121,20 @@ const ProductCard: React.FC<{ card: ShopCard; index: number }> = ({ card: { prod
       variants={revealUp(index * 0.08)}
       initial="hidden"
       animate="visible"
-      className={`group metal-frame shadow-material fx-brushed transition-all duration-500 flex flex-col justify-between ${
+      className={`group bg-white/70 border border-line-dark shadow-paper hover:border-gold-dark/70 transition-all duration-500 flex flex-col justify-between ${
         soldOut ? 'opacity-70 saturate-50' : ''
       }`}
     >
       {/* Product Header Bar */}
-      <div className="p-4 border-b border-line flex items-center justify-between font-mono text-[10px]">
-        <span className="text-gold tracking-widest font-bold">SPEC: {product.code}</span>
+      <div className="p-4 border-b border-line-dark flex items-center justify-between font-mono text-[10px]">
+        <span className="text-gold-dark tracking-widest font-bold">PLATE {product.code}</span>
         <span
           className={`px-2 py-0.5 border ${
             soldOut
               ? 'text-archive-red border-archive-red/40 bg-archive-red/10'
               : lowStock
-                ? 'text-gold border-gold/40 bg-gold/10 font-bold'
-                : 'text-smoke bg-black/60 border-line/40'
+                ? 'text-gold-dark border-gold-dark/40 bg-gold-dark/10 font-bold'
+                : 'text-ash bg-white/70 border-line-dark'
           }`}
         >
           {soldOut ? 'SOLD OUT' : lowStock ? `LOW STOCK — ${liveStock} LEFT` : product.release}
@@ -171,27 +171,27 @@ const ProductCard: React.FC<{ card: ShopCard; index: number }> = ({ card: { prod
       </TiltCard>
 
       {/* Footer — details, variant selection, quick add */}
-      <div className="p-6 bg-black/60 border-t border-line space-y-4">
+      <div className="p-6 bg-white/40 border-t border-line-dark space-y-4">
         <div className="flex items-baseline justify-between">
           <Link to={product.slug ? `/shop/${product.slug}` : '/shop'}>
-            <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-bone group-hover:text-gold transition-colors uppercase tracking-tight">
+            <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-ink group-hover:text-gold-dark transition-colors uppercase tracking-tight">
               {product.name}
             </h2>
           </Link>
-          <span className="font-mono text-lg sm:text-xl font-bold text-bone">
+          <span className="font-mono text-lg sm:text-xl font-bold text-ink">
             {formatCurrency(livePrice)}
           </span>
         </div>
 
-        <p className="font-utility text-xs text-smoke leading-relaxed line-clamp-2">
+        <p className="font-utility text-xs text-ash leading-relaxed line-clamp-2">
           {product.shortDescription}
         </p>
 
         {/* Live variant selection — S through XXL */}
         <div className="space-y-2 pt-1">
-          <div className="flex items-center justify-between font-mono text-[9px] text-smoke tracking-[0.18em] uppercase">
+          <div className="flex items-center justify-between font-mono text-[9px] text-ash tracking-[0.18em] uppercase">
             <span>Select size — live stock</span>
-            <span className="text-gold/80">
+            <span className="text-gold-dark/90">
               {selectedVariant?.available ? `${selectedVariant.stock} AVAILABLE` : 'UNAVAILABLE'}
             </span>
           </div>
@@ -206,10 +206,10 @@ const ProductCard: React.FC<{ card: ShopCard; index: number }> = ({ card: { prod
                   aria-pressed={isSelected}
                   className={`font-mono text-[11px] font-bold px-2.5 py-1.5 border transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-gold ${
                     isSelected
-                      ? 'border-gold bg-gold text-black'
+                      ? 'border-ink bg-ink text-paper'
                       : v.available
-                        ? 'border-line text-bone/85 bg-black/50 hover:border-smoke'
-                        : 'border-line/40 text-smoke/40 line-through bg-black/30 cursor-not-allowed'
+                        ? 'border-line-dark text-ink/80 bg-white/50 hover:border-ink/40'
+                        : 'border-line-dark/60 text-smoke/50 line-through bg-white/30 cursor-not-allowed'
                   }`}
                 >
                   {v.label}
@@ -246,7 +246,7 @@ const ProductCard: React.FC<{ card: ShopCard; index: number }> = ({ card: { prod
           </button>
           <Link
             to={product.slug ? `/shop/${product.slug}` : '/shop'}
-            className="btn-metal-ghost flex-1 py-3 px-4 font-mono text-[11px] font-bold tracking-[0.2em] uppercase flex items-center justify-center gap-2"
+            className="btn-metal-light flex-1 py-3 px-4 font-mono text-[11px] font-bold tracking-[0.2em] uppercase flex items-center justify-center gap-2"
           >
             VIEW DOSSIER <ArrowUpRight size={13} />
           </Link>
@@ -326,40 +326,40 @@ export const ShopPage: React.FC = () => {
   const liveSyncLabel = feed.source === 'square' ? 'SQUARE / LIVE SYNC' : feedLoading ? 'SYNCING…' : 'LOCAL ARCHIVE';
 
   return (
-    <div className="min-h-screen bg-black text-bone pt-28 sm:pt-36 pb-24">
+    <div className="min-h-screen bg-paper text-ink pt-28 sm:pt-36 pb-24 selection:bg-gold-dark selection:text-paper">
       {/* Background Archival Grid */}
       <div className="absolute inset-0 bg-archival-grid opacity-25 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 md:px-12 relative z-10">
         {/* Page Header */}
-        <div className="border-b border-line pb-8 mb-12 sm:mb-16">
+        <div className="border-b border-line-dark pb-8 mb-12 sm:mb-16">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-3">
               <div className="flex items-center space-x-2">
                 <span className="w-2 h-2 bg-gold inline-block" />
-                <span className="font-mono text-xs text-gold tracking-widest uppercase font-bold">
-                  RELEASE 001 / CATALOG DOSSIER
+                <span className="font-mono text-xs text-gold-dark tracking-widest uppercase font-bold">
+                  PAGE 06 / THE EDIT — THE CATALOG
                 </span>
               </div>
-              <h1 className="text-5xl sm:text-7xl md:text-8xl uppercase text-bone leading-[0.92]">
+              <h1 className="text-5xl sm:text-7xl md:text-8xl uppercase text-ink leading-[0.92]">
                 <VelocityText>ACTIVE PIECES</VelocityText>
               </h1>
-              <p className="font-utility text-xs sm:text-sm text-smoke max-w-lg">
+              <p className="font-utility text-xs sm:text-sm text-ash max-w-lg">
                 Exclusive limited allocation. All shorts constructed from 480GSM cotton with official insignia badges and raw hemline.
               </p>
             </div>
 
             {/* Live sync + release metadata */}
-            <div className="flex items-center space-x-4 font-mono text-xs text-smoke">
-              <div className="border border-line bg-graphite/40 px-3 py-2 flex items-center gap-2">
+            <div className="flex items-center space-x-4 font-mono text-xs text-ash">
+              <div className="border border-line-dark bg-white/60 px-3 py-2 flex items-center gap-2">
                 <span
                   className={`w-1.5 h-1.5 ${feed.source === 'square' ? 'bg-gold animate-pulse-subtle' : 'bg-smoke'}`}
                 />
-                <span className={feed.source === 'square' ? 'text-gold font-bold' : ''}>{liveSyncLabel}</span>
+                <span className={feed.source === 'square' ? 'text-gold-dark font-bold' : ''}>{liveSyncLabel}</span>
               </div>
-              <div className="border border-line bg-graphite/40 px-3 py-2 hidden sm:block">
-                <span className="text-smoke/60">ALLOCATED: </span>
-                <span className="text-gold font-bold">{filteredCards.length} EDITIONS</span>
+              <div className="border border-line-dark bg-white/60 px-3 py-2 hidden sm:block">
+                <span className="text-ash/70">ON THE RACK: </span>
+                <span className="text-gold-dark font-bold">{filteredCards.length} EDITIONS</span>
               </div>
             </div>
           </div>
@@ -373,8 +373,8 @@ export const ShopPage: React.FC = () => {
                   onClick={() => setActiveCollection(tab.id)}
                   className={`px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.15em] transition-colors border ${
                     activeCollection === tab.id
-                      ? 'border-gold bg-gold text-black font-bold'
-                      : 'border-line bg-graphite/40 text-smoke hover:text-bone hover:border-smoke'
+                      ? 'border-ink bg-ink text-paper font-bold'
+                      : 'border-line-dark bg-white/50 text-ash hover:text-ink hover:border-ink/40'
                   }`}
                 >
                   {tab.label}
@@ -383,11 +383,11 @@ export const ShopPage: React.FC = () => {
             </div>
 
             <div className="flex items-center space-x-2 font-mono text-xs">
-              <span className="text-smoke">SORT:</span>
+              <span className="text-ash">SORT:</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-                className="bg-black border border-line text-bone px-3 py-1.5 font-mono text-xs focus:border-gold focus:outline-none uppercase"
+                className="bg-white border border-line-dark text-ink px-3 py-1.5 font-mono text-xs focus:border-gold-dark focus:outline-none uppercase"
               >
                 <option value="featured">FEATURED CURATION</option>
                 <option value="price-asc">PRICE: LOW TO HIGH</option>

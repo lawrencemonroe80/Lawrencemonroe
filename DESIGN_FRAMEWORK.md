@@ -593,3 +593,96 @@ pointers.
 5. **Reduced motion freezes the sweep** — the `--metal-angle`
    transition and texture animations are disabled under
    `prefers-reduced-motion`.
+
+## §10 — THE MAGAZINE SYSTEM (ISSUE 001)
+
+Turn 6 re-conceives the entire site as **a single printed issue** —
+*ISSUE 001 — THE FORM ISSUE*. Navigation, section identity, and flow are
+expressed as **pages of one document** rather than routes of a website.
+The single source of truth is `src/data/magazine.ts`:
+
+| Export | Purpose |
+| --- | --- |
+| `ISSUE` | Issue metadata — number `001`, title `THE FORM ISSUE`, date `AUTUMN 2026`, `EST. MMXXVI`, price line `$165 / ISSUE` |
+| `CONTENTS` | The 7-entry table of contents driving nav, cover lines, and the colophon index |
+| `routeFolio(pathname)` | Returns `{ page, title }` for every route — the running folio and page-turn labels read from this |
+
+### 10.1 The page plan
+
+| Page | Folio | Route |
+| --- | --- | --- |
+| 01 | THE COVER | `/` (Cover component — masthead, cover lines, barcode) |
+| 02 | THE FEATURE | `/#feature` (EditorialStatement — drop cap, pull quote) |
+| 04 | THE DROP | `/#drop` (CapsuleDrop — live Square pricing) |
+| 06 | THE EDIT | `/shop` |
+| 08 | THE SPECIMEN | `/shop/:id` (dossier modal) |
+| 10 | THE PLATES | `/vault` |
+| 14 | THE FEED | `/telemetry` |
+| 18 | THE MANIFESTO | `/about` |
+| 19 | THE COUNTER | `/checkout` |
+| 20 | COLOPHON | footer (id=`colophon`) |
+
+Section ids on the homepage were renamed to match the contents model:
+`#hero → #cover`, `#capsule → #drop`, `#manifesto → #feature`
+(`#network` retired with the v2 NetworkLinks component).
+
+### 10.2 Editorial chrome
+
+- **Masthead navigation** (`Navigation.tsx`) — micro folio strip (issue
+  no. / season / established) over a serif masthead bar; the menu is the
+  **CONTENTS spread**: `P.02 … title …… subtitle` rows with dotted
+  `.toc-leader` fill and a sticky hover plate that swaps the preview
+  image. `INDEX` opens it; `ESC` or `CLOSE` dismisses; body scroll
+  locks while open.
+- **Page-turn transition** (`PageTransition.tsx`) — on route change a
+  paper sheet with a gold leading seam sweeps the viewport carrying the
+  destination folio (`PAGE 06 · THE EDIT`). Disabled under
+  `prefers-reduced-motion` (plain cross-fade remains).
+- **Running folio** (`MagazineFolio.tsx`) — a fixed paper chip
+  bottom-left on every route: `LM·001 | PAGE 06 — THE EDIT`. Hidden on
+  phones (`hidden sm:flex`).
+- **The cover** (`Cover.tsx`) — issue strip with price line, serif
+  masthead, mounted cover plate (`shadow-paper`, 35mm caption, face
+  blur), cover lines that reference contents pages, and a real barcode
+  block via `.barcode`.
+- **The back page** (`BackPage.tsx`) — closing statement, primary CTA,
+  and an "IN THIS ISSUE" index with page references.
+- **Colophon footer** (`Footer.tsx`) — masthead statement, contents
+  recap, studio credits (type/photography/commerce), client services,
+  the private-dispatch signup, and the printing line ("PRINTED ON THE
+  VERCEL EDGE NETWORK").
+
+### 10.3 Editorial typography utilities (index.css §10)
+
+| Class | Effect |
+| --- | --- |
+| `.dropcap` | Gold-dark serif initial, floats into the paragraph (first tenet of `/about`, feature column) |
+| `.pullquote` | Serif italic with gold top/bottom hairlines and generous margins |
+| `.toc-leader` | Flexible dotted baseline fill between title and page number |
+| `.shadow-paper` | Print-weight flat shadow for mounted cards/plates on paper |
+| `.barcode` | CSS barcode block (repeating-linear-gradient) + barcode numeral |
+
+### 10.4 Paper stock everywhere
+
+`/shop`, `/vault`, and `/telemetry` flipped from noir to paper stock:
+paper page grounds (`bg-paper`), white/60–70 mounted cards with
+`border-line-dark` + `.shadow-paper` replacing `metal-frame` mounts,
+ink/ash typography replacing bone/smoke, `gold-dark` accent replacing
+metallic gold. The material system (§9) survives where glass and metal
+are diegetic: the cart drawer, dossier modals, the lightbox, and the
+chamfered CTA family (`btn-metal-light` now carries the ink-on-paper
+variant). Product media stages, overlays on photography, and the
+`/shop` archive teaser remain dark — plates inside the issue.
+
+### 10.5 Magazine rules
+
+1. **One issue, one model** — every page number, nav label, cover line,
+   and folio reads from `magazine.ts`; never hard-code a folio.
+2. **Paper is the ground** — light surfaces get `.shadow-paper` mounts,
+   never metallic frames; metals live only on CTAs and glass.
+3. **Gold on paper is always `gold-dark`** (print ink), never the
+   metallic gradient.
+4. **Every page declares itself** — the running folio and page labels
+   (`PAGE 06 / THE EDIT — …`) keep the reader oriented.
+5. **Reduced motion** disables the page-turn sheet and Ken Burns; the
+   contents spread opens without stagger.

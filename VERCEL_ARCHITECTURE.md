@@ -13,36 +13,39 @@ Everything in this document is implemented in this repository. The storefront is
 ```
 lawrencemonroe.com
 │
-├── / ........................ INDEX / THE ENTRANCE (v2 light editorial)
-│     ├── Single mounted print + ink wordmark on paper grain
-│     ├── THE DROP — capsule, top items, live Square pricing/stock
-│     ├── THE STATEMENT — one typographic moment (velocity type)
-│     └── THE NETWORK — four channel index rows + closing CTA
+├── / ........................ PAGE 01 — THE COVER (ISSUE 001)
+│     ├── Masthead + issue strip (№001 / THE FORM ISSUE / $165)
+│     ├── PAGE 02 — THE FEATURE (velocity type, drop cap, pull quote)
+│     ├── PAGE 04 — THE DROP — capsule, top items, live Square pricing/stock
+│     └── THE BACK PAGE — closing statement + IN THIS ISSUE index
 │
-├── /shop .................... SHOP / COLLECTION CATALOG
+│     (Site chrome: CONTENTS overlay nav · page-turn transitions ·
+│      running folio chip LM·001 · colophon footer = PAGE 20)
+│
+├── /shop .................... PAGE 06 — THE EDIT (catalog on paper stock)
 │     ├── Sort: NEW ARRIVALS · ESSENTIALS · LOOKBOOK EXCLUSIVES (+ price)
 │     ├── Live Square pricing, size variations (S–XXL), inventory badges
 │     ├── Interactive variant selection + QUICK ADD per card
 │     ├── Macro-zoom inspection on card hover
 │     └── Cart Drawer → INSTANT inline Square checkout OR full /checkout
 │
-├── /shop/:slug .............. PRODUCT DOSSIER (detail page)
+├── /shop/:slug .............. PAGE 08 — THE SPECIMEN (product dossier)
 │
-├── /vault ................... EDITORIAL VAULT / THE ARCHIVE
+├── /vault ................... PAGE 10 — THE PLATES (editorial archive)
 │     ├── Campaign lookbooks · Gen Effects Vol 1 · Silver-Gelatin stories
 │     ├── Sanity Studio–powered with bundled local fallback
 │     ├── Sticky stacking lookbook + speed-index drag gallery
 │     └── Dossier modals with gallery plates + SHOP THE STORY links
 │
-├── /telemetry ............... RAW FEEDS / SOCIAL HUB
+├── /telemetry ............... PAGE 14 — THE FEED (social hub)
 │     ├── Official @LawrenceMonroe Instagram (Behold or Graph, via /api/instagram)
 │     ├── Curated community archive
 │     ├── Asymmetrical grid — hover zoom, timestamps, "VIEW POST" cursor state
 │     ├── Light-box viewer — high-res plates, keyboard nav, SHOP THE LOOK
 │     └── Tags mapped to Square Item IDs
 │
-├── /about ................... BRAND MANIFESTO (high typography)
-├── /checkout ................ Square Web Payments SDK checkout
+├── /about ................... PAGE 18 — THE MANIFESTO (drop cap + pull quotes)
+├── /checkout ................ PAGE 19 — THE COUNTER (Square Web Payments SDK)
 └── /api/* ................... Vercel Serverless Functions (see §2)
 ```
 
@@ -67,10 +70,10 @@ Lawrencemonroe/
 │
 ├── src/
 │   ├── pages/
-│   │   ├── HomePage.tsx          # / (hero, capsule, network)
-│   │   ├── ShopPage.tsx          # /shop (Square live)
+│   │   ├── HomePage.tsx          # / the issue — cover, feature, drop, back page
+│   │   ├── ShopPage.tsx          # /shop THE EDIT (Square live, paper stock)
 │   │   ├── ProductDetailPage.tsx # /shop/:slug
-│   │   ├── VaultPage.tsx         # /vault (Sanity live)
+│   │   ├── VaultPage.tsx         # /vault THE PLATES (Sanity live, paper stock)
 │   │   ├── TelemetryPage.tsx     # /telemetry (Instagram live)
 │   │   ├── AboutPage.tsx         # /about
 │   │   └── CheckoutPage.tsx      # /checkout (Square WPSDK)

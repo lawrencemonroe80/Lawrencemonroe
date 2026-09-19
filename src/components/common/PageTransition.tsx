@@ -1,24 +1,27 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { EASE } from '../../motion/tokens';
+import { ISSUE, routeFolio } from '../../data/magazine';
 
 /**
- * PAGE TRANSITIONS — dark curtain slide + content fade.
- * ----------------------------------------------------
- * On every route change a two-layer curtain sweeps across the viewport:
- * a matte void-black panel with an antique-gold leading seam, entering
- * from the right and exiting left (like a gallery scrim being pulled).
- * The new page fades up 12px underneath as the curtain clears.
+ * PAGE-TURN TRANSITION — the magazine flip.
+ * -----------------------------------------
+ * On every route change a sheet of paper sweeps the viewport (gold
+ * leading seam) carrying the destination folio — "PAGE 06 · THE EDIT" —
+ * so navigation feels like turning to a section of the issue. The new
+ * page fades up beneath the clearing sheet.
  *
- * Reduced-motion: curtain disabled, simple 150ms cross-fade only.
+ * Reduced motion: sheet disabled, simple cross-fade only.
  */
 
-const CURTAIN_DURATION = 0.72; // s — enter 45%, hold 10%, exit 45%
+const SHEET_DURATION = 0.66;
 
-const RouteCurtain: React.FC<{ pathname: string }> = ({ pathname }) => {
+const TurnSheet: React.FC<{ pathname: string }> = ({ pathname }) => {
   const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   if (reduced) return null;
+
+  const folio = routeFolio(pathname);
 
   return (
     <AnimatePresence mode="wait">
@@ -28,18 +31,26 @@ const RouteCurtain: React.FC<{ pathname: string }> = ({ pathname }) => {
         initial={{ x: '100%' }}
         animate={{ x: ['100%', '0%', '0%', '-100%'] }}
         transition={{
-          duration: CURTAIN_DURATION,
+          duration: SHEET_DURATION,
           times: [0, 0.45, 0.55, 1],
           ease: EASE.cinematicOut,
         }}
       >
-        {/* Antique gold leading seam */}
-        <div className="absolute inset-y-0 left-0 w-[2px] bg-gradient-to-b from-gold via-gold/60 to-gold" />
-        {/* Curtain face */}
-        <div className="absolute inset-0 bg-void" />
-        {/* Curtain pass-line telemetry */}
-        <div className="absolute bottom-8 right-8 font-mono text-[9px] tracking-[0.3em] text-smoke/70 uppercase">
-          LM / ROUTE CHANGE
+        {/* Gold leading seam */}
+        <div className="absolute inset-y-0 left-0 w-[2px] bg-gradient-to-b from-gold-core via-gold-hi to-gold-core" />
+        {/* The sheet */}
+        <div className="absolute inset-0 bg-paper" />
+        {/* Folio label — where the reader is turning to */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center space-y-2">
+            <div className="font-mono text-[10px] tracking-[0.4em] text-ash uppercase">
+              ISSUE {ISSUE.number}
+            </div>
+            <div className="font-serif font-bold uppercase text-2xl sm:text-4xl text-ink tracking-[0.02em]">
+              PAGE {folio.page} · {folio.title}
+            </div>
+            <div className="mx-auto w-10 h-[2px] bg-gold-dark" />
+          </div>
         </div>
       </motion.div>
     </AnimatePresence>
@@ -49,26 +60,21 @@ const RouteCurtain: React.FC<{ pathname: string }> = ({ pathname }) => {
 export const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
   const firstRender = useRef(true);
-  const [, setTick] = useState(0);
 
-  // Curtain only fires on actual navigation (not the initial mount)
   useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      setTick((t) => t + 1);
-    }
+    firstRender.current = false;
   }, []);
 
   return (
     <>
-      <RouteCurtain pathname={location.pathname} />
+      <TurnSheet pathname={location.pathname} />
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={location.pathname}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.34, ease: EASE.cinematicOut, delay: 0.18 }}
+          transition={{ duration: 0.34, ease: EASE.cinematicOut, delay: 0.16 }}
         >
           {children}
         </motion.div>

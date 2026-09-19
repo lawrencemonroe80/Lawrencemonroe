@@ -7,6 +7,7 @@ import { RequestAccessModal } from './components/common/RequestAccessModal';
 import { LightboxModal } from './components/common/LightboxModal';
 import { SizeGuideModal } from './components/common/SizeGuideModal';
 import { PageTransition } from './components/common/PageTransition';
+import { MagazineFolio } from './components/common/MagazineFolio';
 import { VaultPage } from './pages/VaultPage';
 import { TelemetryPage } from './pages/TelemetryPage';
 import { CustomCursor } from './components/common/CustomCursor';
@@ -37,8 +38,11 @@ export const App: React.FC = () => {
         {/* Custom High-Fashion Cursor (Desktop only, reduced-motion aware) */}
         <CustomCursor />
 
-        {/* Global Navigation */}
+        {/* Global Navigation (magazine masthead) */}
         <Navigation />
+
+        {/* Running folio — issue / page / section */}
+        <MagazineFolio />
 
         {/* Main Routed Page Content — curtain page transitions */}
         <main className="flex-grow">

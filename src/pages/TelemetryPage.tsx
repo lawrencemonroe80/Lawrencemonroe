@@ -45,7 +45,7 @@ const FeedTile: React.FC<{
       onClick={onOpen}
       data-cursor="view"
       data-cursor-label="VIEW POST"
-      className={`group relative overflow-hidden border border-line bg-graphite/50 hover:border-gold/60 transition-colors cursor-pointer ${SPAN[post.aspect]}`}
+      className={`group relative overflow-hidden border border-line-dark bg-white/60 hover:border-gold-dark/70 transition-colors cursor-pointer ${SPAN[post.aspect]}`}
     >
       {/* Media plate — hover zoom reveals grain/fabric detail */}
       <div className="absolute inset-0 overflow-hidden">
@@ -309,50 +309,50 @@ export const TelemetryPage: React.FC = () => {
   }, [openIndex]);
 
   return (
-    <div className="min-h-screen bg-black text-bone pt-28 sm:pt-36 pb-24 selection:bg-gold selection:text-black">
+    <div className="min-h-screen bg-paper text-ink pt-28 sm:pt-36 pb-24 selection:bg-gold-dark selection:text-paper">
       <div className="absolute inset-0 bg-archival-grid opacity-25 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 md:px-12 relative z-10">
         {/* Header */}
-        <motion.div variants={revealUp()} initial="hidden" animate="visible" className="border-b border-line pb-8 mb-10">
+        <motion.div variants={revealUp()} initial="hidden" animate="visible" className="border-b border-line-dark pb-8 mb-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 bg-gold inline-block animate-pulse-subtle" />
-                <span className="font-mono text-xs text-gold tracking-[0.25em] uppercase font-bold">
-                  RAW FEEDS / SOCIAL TELEMETRY
+                <span className="font-mono text-xs text-gold-dark tracking-[0.25em] uppercase font-bold">
+                  PAGE 14 / THE FEED — RAW POSTS
                 </span>
               </div>
-              <h1 className="text-5xl sm:text-7xl md:text-8xl uppercase text-bone">
+              <h1 className="text-5xl sm:text-7xl md:text-8xl uppercase text-ink">
                 <VelocityText>THE TELEMETRY</VelocityText>
               </h1>
-              <p className="font-serif italic text-lg sm:text-xl text-smoke max-w-xl">
+              <p className="font-serif italic text-lg sm:text-xl text-ash max-w-xl">
                 The official feed and the community archive, tagged to the catalog.
               </p>
             </div>
 
             <div className="font-mono text-[10px] tracking-[0.18em] uppercase flex items-center gap-4">
-              <div className="flex items-center gap-2 border border-line bg-graphite/40 px-3 py-2">
+              <div className="flex items-center gap-2 border border-line-dark bg-white/60 px-3 py-2">
                 {source === 'LIVE' ? (
                   <>
                     <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse-subtle" />
-                    <span className="text-gold font-bold">INSTAGRAM / LIVE SYNC</span>
+                    <span className="text-gold-dark font-bold">INSTAGRAM / LIVE SYNC</span>
                   </>
                 ) : (
                   <>
                     <span className="w-1.5 h-1.5 bg-smoke" />
-                    <span className="text-smoke">CURATED ARCHIVE MODE</span>
+                    <span className="text-ash">CURATED ARCHIVE MODE</span>
                   </>
                 )}
               </div>
             </div>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-line/50 flex flex-wrap items-center justify-between gap-3 font-mono text-[10px] tracking-[0.2em] text-smoke uppercase">
+          <div className="mt-8 pt-6 border-t border-line/50 flex flex-wrap items-center justify-between gap-3 font-mono text-[10px] tracking-[0.2em] text-ash uppercase">
             <span>
               {officialCount} OFFICIAL / {posts.length - officialCount} COMMUNITY — {posts.length} TOTAL FRAMES
             </span>
-            <span className="text-gold/80">HOVER TO INSPECT — CLICK FOR HIGH-RES VIEWER</span>
+            <span className="text-gold-dark/80">HOVER TO INSPECT — CLICK FOR HIGH-RES VIEWER</span>
           </div>
         </motion.div>
 
@@ -364,21 +364,21 @@ export const TelemetryPage: React.FC = () => {
         </div>
 
         {loading && (
-          <div className="mt-8 font-mono text-[10px] text-smoke tracking-[0.3em] uppercase text-center animate-pulse-subtle">
+          <div className="mt-8 font-mono text-[10px] text-ash tracking-[0.3em] uppercase text-center animate-pulse-subtle">
             Acquiring signal…
           </div>
         )}
 
         {/* Footer note */}
-        <div className="mt-14 border-t border-line pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <p className="font-mono text-[10px] text-smoke tracking-[0.15em] uppercase leading-relaxed max-w-lg">
+        <div className="mt-14 border-t border-line-dark pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <p className="font-mono text-[10px] text-ash tracking-[0.15em] uppercase leading-relaxed max-w-lg">
             Community frames are curated by the studio. Tag @lawrencemonroe to submit telemetry for review.
           </p>
           <a
             href="https://instagram.com/lawrencemonroe"
             target="_blank"
             rel="noreferrer"
-            className="btn-metal-ghost inline-flex items-center gap-2 font-mono text-[11px] font-bold tracking-[0.2em] uppercase px-4 py-2.5"
+            className="btn-metal-light inline-flex items-center gap-2 font-mono text-[11px] font-bold tracking-[0.2em] uppercase px-4 py-2.5"
           >
             <Instagram size={13} /> FOLLOW THE FEED
           </a>

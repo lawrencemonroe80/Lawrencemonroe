@@ -1,20 +1,17 @@
 import React, { useEffect } from 'react';
-import { LightHero } from '../components/home/LightHero';
+import { Cover } from '../components/home/Cover';
 import { CapsuleDrop } from '../components/home/CapsuleDrop';
 import { EditorialStatement } from '../components/home/EditorialStatement';
-import { NetworkLinks } from '../components/home/NetworkLinks';
+import { BackPage } from '../components/home/BackPage';
 
 /**
- * INDEX / THE ENTRANCE — v2 light editorial redux.
+ * THE ISSUE — homepage as a printed magazine.
  *
- * Four focused sections on bleached paper with subtle grain:
- *   1. THE ENTRANCE  — single mounted print + ink wordmark
- *   2. THE DROP      — capsule (live Square pricing/stock)
- *   3. THE STATEMENT — one typographic moment
- *   4. THE NETWORK   — four channel index rows + closing CTA
- *
- * The heavy motion pieces (stacking lookbook, speed-index drag gallery)
- * moved to /vault; the full catalog lives at /shop.
+ *   PAGE 01  THE COVER      masthead, cover lines, barcode
+ *   PAGE 02  THE FEATURE    one typographic moment
+ *   PAGE 04  THE DROP       capsule, live Square pricing
+ *   ...      THE BACK PAGE  closing statement + in-this-issue index
+ *   PAGE 20  COLOPHON       (footer)
  */
 export const HomePage: React.FC = () => {
   useEffect(() => {
@@ -28,10 +25,10 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="relative w-full bg-paper text-ink">
-      <LightHero />
-      <CapsuleDrop />
+      <Cover />
       <EditorialStatement />
-      <NetworkLinks />
+      <CapsuleDrop />
+      <BackPage />
     </div>
   );
 };

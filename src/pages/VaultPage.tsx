@@ -62,12 +62,12 @@ export const VaultPage: React.FC = () => {
     ) : (
       <>
         <span className="w-1.5 h-1.5 bg-smoke" />
-        <span className="text-smoke">LOCAL ARCHIVE / STUDIO OFFLINE</span>
+        <span className="text-ash">LOCAL ARCHIVE / STUDIO OFFLINE</span>
       </>
     );
 
   return (
-    <div className="min-h-screen bg-black text-bone pt-28 sm:pt-36 pb-24 selection:bg-gold selection:text-black">
+    <div className="min-h-screen bg-paper text-ink pt-28 sm:pt-36 pb-24 selection:bg-gold-dark selection:text-paper">
       <div className="absolute inset-0 bg-archival-grid opacity-25 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 md:px-12 relative z-10">
@@ -76,24 +76,24 @@ export const VaultPage: React.FC = () => {
           variants={revealUp()}
           initial="hidden"
           animate="visible"
-          className="border-b border-line pb-8 mb-10 sm:mb-14"
+          className="border-b border-line-dark pb-8 mb-10 sm:mb-14"
         >
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 bg-gold inline-block" />
-                <span className="font-mono text-xs text-gold tracking-[0.25em] uppercase font-bold">
-                  THE ARCHIVE / EDITORIAL VAULT
+                <span className="font-mono text-xs text-gold-dark tracking-[0.25em] uppercase font-bold">
+                  PAGE 10 / THE PLATES — EDITORIAL ARCHIVE
                 </span>
               </div>
-              <h1 className="text-5xl sm:text-7xl md:text-8xl uppercase text-bone">
+              <h1 className="text-5xl sm:text-7xl md:text-8xl uppercase text-ink">
                 <VelocityText>THE VAULT</VelocityText>
               </h1>
-              <p className="font-serif italic text-lg sm:text-xl text-smoke max-w-xl">
+              <p className="font-serif italic text-lg sm:text-xl text-ash max-w-xl">
                 Campaign lookbooks, process artifacts, and silver-gelatin stories.
               </p>
             </div>
-            <div className="font-mono text-[10px] tracking-[0.2em] uppercase flex items-center gap-2 border border-line bg-graphite/40 px-3 py-2 w-fit">
+            <div className="font-mono text-[10px] tracking-[0.2em] uppercase flex items-center gap-2 border border-line-dark bg-white/60 px-3 py-2 w-fit">
               {sourceChip(source)}
             </div>
           </div>
@@ -106,16 +106,16 @@ export const VaultPage: React.FC = () => {
                 onClick={() => setFilter(f)}
                 className={`px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.15em] transition-colors border flex items-center gap-1.5 ${
                   filter === f
-                    ? 'border-gold bg-gold text-black font-bold'
-                    : 'border-line bg-graphite/40 text-smoke hover:text-bone hover:border-smoke'
+                    ? 'border-ink bg-ink text-paper font-bold'
+                    : 'border-line-dark bg-white/50 text-ash hover:text-ink hover:border-ink/40'
                 }`}
               >
                 {f !== 'ALL' && CATEGORY_ICON[f as VaultCategory]}
                 {f}
               </button>
             ))}
-            <span className="ml-auto font-mono text-[10px] text-smoke tracking-[0.2em] hidden sm:inline">
-              {filtered.length} DOCUMENT{filtered.length === 1 ? '' : 'S'} ON FILE
+            <span className="ml-auto font-mono text-[10px] text-ash tracking-[0.2em] hidden sm:inline">
+              {filtered.length} PLATE{filtered.length === 1 ? '' : 'S'} ON FILE
             </span>
           </div>
         </motion.div>
@@ -125,7 +125,7 @@ export const VaultPage: React.FC = () => {
           <motion.div variants={revealUp(0.08)} initial="hidden" animate="visible">
           <TiltCard maxTilt={3} className="block mb-10 sm:mb-14">
           <motion.article
-            className="group metal-frame shadow-material grid grid-cols-1 lg:grid-cols-12 transition-colors cursor-pointer"
+            className="group bg-white/70 border border-line-dark shadow-paper hover:border-gold-dark/70 grid grid-cols-1 lg:grid-cols-12 transition-colors cursor-pointer"
             onClick={() => setOpenStory(featured)}
             data-cursor="view"
             data-cursor-label="EXPLORE"
@@ -145,26 +145,26 @@ export const VaultPage: React.FC = () => {
             </div>
             <div className="lg:col-span-5 p-7 sm:p-10 flex flex-col justify-between gap-6">
               <div className="space-y-4">
-                <div className="font-mono text-[10px] text-smoke tracking-[0.25em]">
-                  {stamp(featured.publishedAt)} — DOSSIER {featured.slug.toUpperCase()}
+                <div className="font-mono text-[10px] text-ash tracking-[0.25em]">
+                  {stamp(featured.publishedAt)} — PLATE FILE {featured.slug.toUpperCase()}
                 </div>
-                <h2 className="font-serif font-bold uppercase text-3xl sm:text-4xl text-bone leading-[0.95]">
+                <h2 className="font-serif font-bold uppercase text-3xl sm:text-4xl text-ink leading-[0.95]">
                   {featured.title}
                 </h2>
-                <p className="font-utility text-sm text-smoke leading-relaxed">{featured.summary}</p>
+                <p className="font-utility text-sm text-ash leading-relaxed">{featured.summary}</p>
               </div>
               <div className="space-y-4">
-                <div className="font-mono text-[9px] text-smoke/70 tracking-[0.15em] uppercase">
+                <div className="font-mono text-[9px] text-ash/80 tracking-[0.15em] uppercase">
                   {featured.credits.map((c) => (
                     <div key={c}>{c}</div>
                   ))}
                 </div>
-                <div className="flex items-center justify-between border-t border-line pt-4">
-                  <span className="font-mono text-[10px] text-smoke tracking-[0.2em]">
+                <div className="flex items-center justify-between border-t border-line-dark pt-4">
+                  <span className="font-mono text-[10px] text-ash tracking-[0.2em]">
                     {featured.gallery.length} PLATES
                   </span>
-                  <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold tracking-[0.2em] text-bone group-hover:text-gold transition-colors uppercase">
-                    Open Dossier <ArrowUpRight size={13} />
+                  <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold tracking-[0.2em] text-ink group-hover:text-gold-dark transition-colors uppercase">
+                    Open Plate <ArrowUpRight size={13} />
                   </span>
                 </div>
               </div>
@@ -185,7 +185,7 @@ export const VaultPage: React.FC = () => {
               onClick={() => setOpenStory(story)}
               data-cursor="view"
               data-cursor-label="EXPLORE"
-              className={`group metal-frame shadow-material cursor-pointer transition-colors flex flex-col ${
+              className={`group bg-white/70 border border-line-dark shadow-paper hover:border-gold-dark/70 cursor-pointer transition-colors flex flex-col ${
                 i % 3 === 1 ? 'md:col-span-5' : 'md:col-span-7'
               } ${i === 0 ? 'md:col-span-12' : ''}`}
             >
@@ -206,14 +206,14 @@ export const VaultPage: React.FC = () => {
               </div>
               <div className="p-5 sm:p-6 flex items-start justify-between gap-4">
                 <div className="space-y-2">
-                  <h3 className="font-serif font-bold uppercase text-xl sm:text-2xl text-bone group-hover:text-gold transition-colors leading-tight">
+                  <h3 className="font-serif font-bold uppercase text-xl sm:text-2xl text-ink group-hover:text-gold-dark transition-colors leading-tight">
                     {story.title}
                   </h3>
-                  <p className="font-utility text-xs text-smoke leading-relaxed line-clamp-2">{story.summary}</p>
+                  <p className="font-utility text-xs text-ash leading-relaxed line-clamp-2">{story.summary}</p>
                 </div>
                 <ArrowUpRight
                   size={16}
-                  className="shrink-0 text-smoke group-hover:text-gold group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all mt-1"
+                  className="shrink-0 text-ash group-hover:text-gold-dark group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all mt-1"
                 />
               </div>
             </motion.article>
@@ -221,7 +221,7 @@ export const VaultPage: React.FC = () => {
         </div>
 
         {filtered.length === 0 && !loading && (
-          <div className="border border-line bg-graphite/30 p-12 text-center font-mono text-xs text-smoke tracking-[0.2em] uppercase">
+          <div className="border border-line-dark bg-white/40 p-12 text-center font-mono text-xs text-ash tracking-[0.2em] uppercase">
             No documents on file for this category yet.
           </div>
         )}
