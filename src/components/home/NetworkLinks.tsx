@@ -89,7 +89,7 @@ export const NetworkLinks: React.FC = () => {
                 <span className="font-mono text-[10px] text-gold-dark font-bold tracking-[0.2em] shrink-0">
                   {channel.code}
                 </span>
-                <span className="font-serif font-bold uppercase text-2xl sm:text-4xl lg:text-5xl text-ink tracking-[-0.01em] group-hover:translate-x-2 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap">
+                <span className="gold-text-hover font-serif font-bold uppercase text-2xl sm:text-4xl lg:text-5xl text-ink tracking-[-0.01em] group-hover:translate-x-2 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap">
                   {channel.title}
                 </span>
               </div>
@@ -124,7 +124,7 @@ export const NetworkLinks: React.FC = () => {
             <Magnetic strength={0.2}>
               <Link
                 to="/shop"
-                className="inline-flex items-center gap-3 bg-ink hover:bg-gold text-paper hover:text-black px-10 py-4 font-mono text-xs font-bold tracking-[0.25em] uppercase transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-dark"
+                className="btn-metal-light inline-flex items-center gap-3 px-10 py-4 font-mono text-xs font-bold tracking-[0.25em] uppercase focus:outline-none"
               >
                 Shop Release 001
                 <ArrowRight size={15} />

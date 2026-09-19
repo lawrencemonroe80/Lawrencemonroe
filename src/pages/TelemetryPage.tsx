@@ -378,7 +378,7 @@ export const TelemetryPage: React.FC = () => {
             href="https://instagram.com/lawrencemonroe"
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 font-mono text-[11px] font-bold tracking-[0.2em] uppercase text-bone hover:text-gold border border-line hover:border-gold px-4 py-2.5 transition-colors"
+            className="btn-metal-ghost inline-flex items-center gap-2 font-mono text-[11px] font-bold tracking-[0.2em] uppercase px-4 py-2.5"
           >
             <Instagram size={13} /> FOLLOW THE FEED
           </a>

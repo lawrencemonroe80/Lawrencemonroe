@@ -101,7 +101,7 @@ export const CartDrawer: React.FC = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3, ease: [0.83, 0, 0.17, 1] }}
             onClick={closeCart}
-            className="fixed inset-0 bg-black/60 backdrop-blur-[20px]"
+            className="fixed inset-0 bg-black/60 backdrop-blur-[25px] saturate-150"
           />
 
           <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
@@ -111,7 +111,7 @@ export const CartDrawer: React.FC = () => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', stiffness: 210, damping: 30, mass: 0.9 }}
-              className="w-screen max-w-md bg-graphite border-l border-line shadow-2xl flex flex-col justify-between relative"
+              className="glass-panel-heavy glass-metal-top w-screen max-w-md border-l border-gold-core/30 shadow-2xl flex flex-col justify-between"
             >
               {/* Fine gold edge seam line */}
               <div className="absolute top-0 left-0 bottom-0 w-[1px] bg-gradient-to-b from-gold via-gold/40 to-transparent" />
@@ -320,7 +320,7 @@ export const CartDrawer: React.FC = () => {
                   {/* Instant pay — Square inline form inside the drawer */}
                   <button
                     onClick={() => setMode('EXPRESS')}
-                    className="w-full group relative bg-black border border-gold text-gold hover:bg-gold hover:text-black py-3.5 px-6 font-mono text-xs font-bold tracking-[0.25em] uppercase flex items-center justify-center space-x-2 transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                    className="btn-metal-gold w-full py-3.5 px-6 font-mono text-xs font-bold tracking-[0.25em] uppercase flex items-center justify-center space-x-2 focus:outline-none"
                   >
                     <Zap size={13} />
                     <span>INSTANT CHECKOUT — PAY IN BAG</span>
@@ -329,7 +329,7 @@ export const CartDrawer: React.FC = () => {
                   {/* Full checkout with shipping details */}
                   <button
                     onClick={handleCheckout}
-                    className="w-full relative group overflow-hidden bg-bone text-black py-3.5 px-6 font-mono text-xs font-bold tracking-widest uppercase flex items-center justify-center space-x-2 hover:bg-gold transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                    className="btn-metal-bone w-full py-3.5 px-6 font-mono text-xs font-bold tracking-widest uppercase flex items-center justify-center space-x-2 focus:outline-none"
                   >
                     <span>FULL SECURE CHECKOUT</span>
                     <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />

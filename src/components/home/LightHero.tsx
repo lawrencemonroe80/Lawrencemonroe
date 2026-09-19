@@ -131,7 +131,7 @@ export const LightHero: React.FC = () => {
                 <a
                   href="#capsule"
                   onClick={scrollToCapsule}
-                  className="group bg-ink hover:bg-gold text-paper hover:text-black px-7 py-3.5 font-mono text-xs font-bold tracking-[0.25em] uppercase transition-colors duration-300 flex items-center gap-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-dark"
+                  className="btn-metal-light group px-7 py-3.5 font-mono text-xs font-bold tracking-[0.25em] uppercase flex items-center gap-3 focus:outline-none"
                 >
                   ENTER THE DROP
                   <ArrowDown size={14} className="group-hover:translate-y-0.5 transition-transform" />

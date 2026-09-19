@@ -419,3 +419,177 @@ in §1 as archive reference), contact sheet, object-in-motion, archive
 teasers, and the duplicate product blocks. Nothing was deleted from the
 system — everything either relocated or was redundant with /shop,
 /vault, or /telemetry.
+
+---
+
+## §9 — HYPER-REALISTIC MATERIAL SYSTEM
+*Aged 18K gold · brushed champagne · obsidian slate · smoked glass · physical lighting.*
+*Implementation: `src/index.css` (§9 block), `tailwind.config.js`, `src/components/common/TiltCard.tsx`.*
+
+### 9.1 Tailwind / CSS Variable Configuration
+
+```css
+/* src/index.css — :root tokens */
+:root {
+  /* Aged 18K yellow gold / brushed champagne */
+  --gold-hi: #FCF6BA;      /* champagne specular highlight */
+  --gold-core: #D4AF37;    /* 18K core */
+  --gold-aged: #AA771C;    /* aged deep */
+  --gold-brush-a: #BF953F;
+  --gold-brush-b: #B38728;
+  --gold-brush-c: #FBF5B7;
+  --gold-wire-lo: #5B4812; /* muted wireframe base */
+  --silver-hi: #F4F4F0;  --silver-mid: #A6A6A2;  --silver-lo: #6E6E68;
+
+  /* Layered physical shadows — top-left 45° hard key light */
+  --shadow-ambient:   0px 20px 50px -10px rgba(0, 0, 0, 0.9);
+  --shadow-occlusion: 0px 2px 4px 0px rgba(0, 0, 0, 0.95);
+  --shadow-rim: inset 0px 1px 1px 0px rgba(255, 255, 255, 0.15),
+                inset 0px -1px 1px 0px rgba(0, 0, 0, 0.8);
+  --shadow-material: var(--shadow-ambient), var(--shadow-occlusion), var(--shadow-rim);
+}
+```
+
+```js
+// tailwind.config.js
+colors: { gold: { hi:'#FCF6BA', core:'#D4AF37', aged:'#AA771C',
+                  brushA:'#BF953F', brushB:'#B38728', brushC:'#FBF5B7', wire:'#5B4812' } },
+boxShadow: {
+  material:
+    '0px 20px 50px -10px rgba(0,0,0,0.9), 0px 2px 4px 0px rgba(0,0,0,0.95), inset 0px 1px 1px 0px rgba(255,255,255,0.15), inset 0px -1px 1px 0px rgba(0,0,0,0.8)',
+  'metal-glow': '0px 0px 12px rgba(212, 175, 55, 0.25)',
+},
+backgroundImage: {
+  'gold-hi':   'linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%)',
+  'gold-wire': 'linear-gradient(180deg, #D4AF37 0%, #5B4812 100%)',
+},
+```
+
+### 9.2 Card & Box Containers — metallic frames + rim lights + physical shadows
+
+The metallic border uses the **double-background technique** — a solid
+`padding-box` fill under a gradient `border-box` — plus a registered
+`@property` angle so the border gradient **rotates continuously on
+hover** (a moving specular reflection sweep):
+
+```css
+@property --metal-angle { syntax: '<angle>'; inherits: false; initial-value: 135deg; }
+
+.metal-frame {
+  --metal-angle: 135deg;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(#141414, #0D0D0D) padding-box,          /* obsidian slate */
+    linear-gradient(var(--metal-angle),                     /* high-gloss gold rim */
+      #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%) border-box;
+  transition: --metal-angle 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.group:hover .metal-frame { --metal-angle: 495deg; }        /* 360° sweep */
+
+/* Physical shadow architecture (apply alongside) */
+.shadow-material { box-shadow: var(--shadow-material); }     /* ambient + occlusion + rim */
+.shadow-material-deep { box-shadow: var(--shadow-material-deep); }
+
+/* Muted gold wireframe (gallery plates) */
+.metal-wire { border: 1px solid transparent;
+  border-image: linear-gradient(180deg, #D4AF37 0%, #5B4812 100%) 1; }
+
+/* Brushed-metal micro-scratches (tactile texture) */
+.fx-brushed::after { background: repeating-linear-gradient(105deg,
+  rgba(255,255,255,0.028) 0 1px, transparent 1px 3px); opacity: .55; }
+
+/* Metallic ambient glow (badges, stamps) */
+.gold-glow { filter: drop-shadow(0px 0px 12px rgba(212, 175, 55, 0.25)); }
+```
+
+**Deployed on:** `/shop` product cards (`.metal-frame .shadow-material
+.fx-brushed`), `/vault` featured + story cards, the sticky lookbook
+stack (`.shadow-material-deep`), and the speed-index gallery plates
+(`.metal-wire`). Chamfered buttons:
+
+```css
+.btn-metal {                              /* obsidian base */
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px),
+                     calc(100% - 12px) 100%, 0 100%, 0 12px);   /* chamfer */
+  background: linear-gradient(180deg, #1D1D1D, #0D0D0D);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.14),   /* bevel rim light */
+              inset 0 -1px 0 rgba(0,0,0,0.85);        /* bevel occlusion */
+}
+.btn-metal:hover {                         /* metallic gold hover fill */
+  background-image: linear-gradient(135deg, #BF953F, #FCF6BA 25%,
+                                    #B38728 50%, #FBF5B7 75%, #AA771C);
+  background-size: 220% 220%; background-position: 100% 0; color: #0D0D0D;
+}
+.btn-metal:active { transform: translateY(2px); }        /* tactile click-down */
+/* Variants: -gold (high-gloss fill) · -bone (bleached) · -light (paper pages) ·
+   -ghost (gold wireframe) */
+```
+
+### 9.3 Modal / Cart Drawer — ultra-dense glassmorphism + specular edges
+
+```css
+.glass-panel-heavy {
+  background: rgba(13, 13, 13, 0.85);                       /* smoked glass tint */
+  -webkit-backdrop-filter: blur(25px) saturate(180%);       /* heavy blur */
+  backdrop-filter: blur(25px) saturate(180%);
+  border: 1px solid rgba(244, 244, 240, 0.12);
+  position: relative;
+}
+.glass-metal-top::before {                                  /* hyper-reflective top edge */
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent 0%,
+    rgba(212,175,55,0.65) 15%, #FCF6BA 50%,                 /* champagne specular */
+    rgba(212,175,55,0.65) 85%, transparent 100%);
+}
+/* Cart drawer backdrop pairs with the panel:
+   bg-black/60 + backdrop-blur-[25px] saturate-150           */
+```
+
+**Deployed on:** the cart drawer (`glass-panel-heavy glass-metal-top`,
+gold seam `border-gold-core/30`, chamfered express/full-checkout
+buttons), the telemetry lightbox, and the vault dossier modal.
+Entrance/exit motion unchanged (§6): fluid scale-up through the glass
+with `EASE.cinematicOut`.
+
+### 9.4 Framer Motion — 3D cursor tilt + dynamic glare
+
+```tsx
+// src/components/common/TiltCard.tsx (production component)
+const px = useMotionValue(0.5), py = useMotionValue(0.5);      // pointer 0..1
+const sx = useSpring(px, { stiffness: 260, damping: 24, mass: 0.6 });  // gimbal
+const rotateY = useTransform(sx, [0, 1], [-maxTilt, maxTilt]);
+const rotateX = useTransform(sy, [0, 1], [maxTilt, -maxTilt]);
+
+// Dynamic glare — champagne specular tracking the cursor
+const glareBg = useMotionTemplate`radial-gradient(360px circle at
+  ${glareX}% ${glareY}%, rgba(252,246,186,0.14),
+  rgba(255,255,255,0.05) 32%, transparent 62%)`;
+
+<div style={{ perspective: 1100 }}>
+  <motion.div style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
+              onPointerMove={handleMove} onPointerLeave={handleLeave}>
+    {children}
+    <motion.div style={{ backgroundImage: glareBg, opacity: glareOpacity }}
+                className="absolute inset-0 z-[15] pointer-events-none" />
+  </motion.div>
+</div>
+```
+
+Applied at `maxTilt 4°` on `/shop` product media and `3°` on the vault
+featured dossier. Disabled for `prefers-reduced-motion` and touch
+pointers.
+
+### 9.5 Material rules
+1. **Gold is a material, not a color** — always a gradient (never flat
+   `#D4AF37` fills on dark surfaces); flat gold survives only for text
+   accents.
+2. **One shadow architecture** — every elevated surface uses the §9.1
+   stack; never a single `box-shadow`.
+3. **Light obeys the key** — rim highlights top edges, occlusion sits
+   bottom, glows emanate only from gold elements.
+4. **The paper homepage stays matte** — only the chamfered CTAs and
+   gold-gradient hover type carry the material system onto light
+   surfaces; obsidian/glass live on the dark inner pages.
+5. **Reduced motion freezes the sweep** — the `--metal-angle`
+   transition and texture animations are disabled under
+   `prefers-reduced-motion`.

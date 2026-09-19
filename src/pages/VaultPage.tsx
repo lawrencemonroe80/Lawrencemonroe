@@ -5,6 +5,7 @@ import { X, ArrowUpRight, Camera, Layers, Aperture } from 'lucide-react';
 import { useVaultStories, VaultSource } from '../services/sanityVault';
 import { VelocityText } from '../components/common/VelocityText';
 import { OptimizedImage } from '../components/common/OptimizedImage';
+import { TiltCard } from '../components/common/TiltCard';
 import { EASE, badgeBlurIn, revealUp } from '../motion/tokens';
 import { RELEASED_PRODUCTS } from '../data/products';
 import { SectionLookbookStack } from '../components/home/SectionLookbookStack';
@@ -121,11 +122,10 @@ export const VaultPage: React.FC = () => {
 
         {/* ---- Featured dossier ---- */}
         {featured && (
+          <motion.div variants={revealUp(0.08)} initial="hidden" animate="visible">
+          <TiltCard maxTilt={3} className="block mb-10 sm:mb-14">
           <motion.article
-            variants={revealUp(0.08)}
-            initial="hidden"
-            animate="visible"
-            className="group grid grid-cols-1 lg:grid-cols-12 border border-line bg-graphite/40 mb-10 sm:mb-14 hover:border-gold/60 transition-colors cursor-pointer"
+            className="group metal-frame shadow-material grid grid-cols-1 lg:grid-cols-12 transition-colors cursor-pointer"
             onClick={() => setOpenStory(featured)}
             data-cursor="view"
             data-cursor-label="EXPLORE"
@@ -170,6 +170,8 @@ export const VaultPage: React.FC = () => {
               </div>
             </div>
           </motion.article>
+          </TiltCard>
+          </motion.div>
         )}
 
         {/* ---- Story grid (asymmetrical) ---- */}
@@ -183,7 +185,7 @@ export const VaultPage: React.FC = () => {
               onClick={() => setOpenStory(story)}
               data-cursor="view"
               data-cursor-label="EXPLORE"
-              className={`group cursor-pointer border border-line bg-graphite/40 hover:border-gold/60 transition-colors flex flex-col ${
+              className={`group metal-frame shadow-material cursor-pointer transition-colors flex flex-col ${
                 i % 3 === 1 ? 'md:col-span-5' : 'md:col-span-7'
               } ${i === 0 ? 'md:col-span-12' : ''}`}
             >
@@ -246,7 +248,7 @@ export const VaultPage: React.FC = () => {
               animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
               exit={{ opacity: 0, scale: 0.94, y: 14, filter: 'blur(8px)' }}
               transition={{ duration: 0.5, ease: EASE.cinematicOut }}
-              className="glass-panel-heavy relative z-10 w-full max-w-5xl max-h-[90vh] overflow-y-auto no-scrollbar"
+              className="glass-panel-heavy glass-metal-top relative z-10 w-full max-w-5xl max-h-[90vh] overflow-y-auto no-scrollbar"
             >
               <button
                 onClick={() => setOpenStory(null)}

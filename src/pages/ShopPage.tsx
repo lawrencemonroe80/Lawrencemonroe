@@ -8,6 +8,7 @@ import { useCartStore } from '../store/cartStore';
 import { brandAssets } from '../data/assets';
 import { useCatalogFeed } from '../services/squareCatalog';
 import { AssetInspector } from '../components/common/AssetInspector';
+import { TiltCard } from '../components/common/TiltCard';
 import { VelocityText } from '../components/common/VelocityText';
 import { revealUp } from '../motion/tokens';
 import type { CatalogItem, Product, Size } from '../types';
@@ -120,8 +121,8 @@ const ProductCard: React.FC<{ card: ShopCard; index: number }> = ({ card: { prod
       variants={revealUp(index * 0.08)}
       initial="hidden"
       animate="visible"
-      className={`group bg-graphite/40 border transition-all duration-500 flex flex-col justify-between ${
-        soldOut ? 'border-line/50 opacity-70' : 'border-line hover:border-gold'
+      className={`group metal-frame shadow-material fx-brushed transition-all duration-500 flex flex-col justify-between ${
+        soldOut ? 'opacity-70 saturate-50' : ''
       }`}
     >
       {/* Product Header Bar */}
@@ -140,7 +141,8 @@ const ProductCard: React.FC<{ card: ShopCard; index: number }> = ({ card: { prod
         </span>
       </div>
 
-      {/* Main Media Stage — macro inspection on hover */}
+      {/* Main Media Stage — macro inspection + 3D tilt glare */}
+      <TiltCard maxTilt={4} className="block">
       <Link
         to={product.slug ? `/shop/${product.slug}` : '/shop'}
         className="block relative aspect-[4/5] bg-black overflow-hidden"
@@ -157,7 +159,7 @@ const ProductCard: React.FC<{ card: ShopCard; index: number }> = ({ card: { prod
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
           {/* Official Pill Badge Stamp */}
           <div className="absolute top-4 left-4 w-32 sm:w-36">
-            <img src={badgeSrc} alt="LawrenceMonroe" className="w-full h-auto object-contain drop-shadow-md" />
+            <img src={badgeSrc} alt="LawrenceMonroe" className="w-full h-auto object-contain gold-glow" />
           </div>
           {/* Inspect spec hint */}
           <div className="absolute bottom-4 right-4 font-mono text-[10px] text-smoke bg-black/80 border border-line px-3 py-1.5 flex items-center space-x-1 group-hover:text-gold group-hover:border-gold transition-colors">
@@ -166,6 +168,7 @@ const ProductCard: React.FC<{ card: ShopCard; index: number }> = ({ card: { prod
           </div>
         </div>
       </Link>
+      </TiltCard>
 
       {/* Footer — details, variant selection, quick add */}
       <div className="p-6 bg-black/60 border-t border-line space-y-4">
@@ -223,12 +226,12 @@ const ProductCard: React.FC<{ card: ShopCard; index: number }> = ({ card: { prod
             disabled={quickAddDisabled}
             data-cursor="view"
             data-cursor-label={quickAddDisabled ? 'SOLD OUT' : 'QUICK ADD'}
-            className={`flex-1 py-3 px-4 font-mono text-[11px] font-bold tracking-[0.2em] uppercase flex items-center justify-center gap-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
+            className={`flex-1 py-3 px-4 font-mono text-[11px] font-bold tracking-[0.2em] uppercase flex items-center justify-center gap-2 focus:outline-none ${
               quickAddDisabled
-                ? 'bg-ash text-smoke/70 cursor-not-allowed'
+                ? 'btn-metal opacity-50 cursor-not-allowed'
                 : added
-                  ? 'bg-gold-soft text-black'
-                  : 'bg-bone hover:bg-gold text-black'
+                  ? 'btn-metal-gold'
+                  : 'btn-metal-bone'
             }`}
           >
             {added ? (
@@ -243,7 +246,7 @@ const ProductCard: React.FC<{ card: ShopCard; index: number }> = ({ card: { prod
           </button>
           <Link
             to={product.slug ? `/shop/${product.slug}` : '/shop'}
-            className="flex-1 py-3 px-4 border border-line hover:border-gold text-bone hover:text-gold font-mono text-[11px] font-bold tracking-[0.2em] uppercase flex items-center justify-center gap-2 transition-colors"
+            className="btn-metal-ghost flex-1 py-3 px-4 font-mono text-[11px] font-bold tracking-[0.2em] uppercase flex items-center justify-center gap-2"
           >
             VIEW DOSSIER <ArrowUpRight size={13} />
           </Link>

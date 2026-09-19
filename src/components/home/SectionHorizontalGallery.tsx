@@ -221,7 +221,7 @@ export const SectionHorizontalGallery: React.FC = () => {
               key={plate.id}
               data-plate
               style={{ skewX }}
-              className={`group relative flex-shrink-0 w-[74vw] sm:w-[44vw] lg:w-[27vw] max-w-[420px] border border-line bg-graphite/60 flex flex-col ${
+              className={`group metal-wire relative flex-shrink-0 w-[74vw] sm:w-[44vw] lg:w-[27vw] max-w-[420px] bg-graphite/70 flex flex-col ${
                 isDragging ? 'pointer-events-none' : ''
               }`}
             >

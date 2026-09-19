@@ -64,7 +64,7 @@ export const LightboxModal: React.FC = () => {
             animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
             exit={{ opacity: 0, scale: 0.94, y: 14, filter: 'blur(8px)' }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="glass-panel-heavy relative z-10 w-full max-w-6xl max-h-[90vh] flex flex-col lg:flex-row overflow-hidden shadow-2xl"
+            className="glass-panel-heavy glass-metal-top relative z-10 w-full max-w-6xl max-h-[90vh] flex flex-col lg:flex-row overflow-hidden shadow-2xl"
           >
             {/* Top Close Button (Absolute) */}
             <button

@@ -108,7 +108,7 @@ const StackCard: React.FC<{
     <div className="sticky top-[88px] flex justify-center pb-[9vh]" style={{ transformOrigin: 'top center' }}>
       <motion.article
         style={{ scale, filter }}
-        className="group relative w-full max-w-7xl origin-top border border-line bg-graphite/95 shadow-[0_-20px_80px_rgba(0,0,0,0.8)] will-change-transform overflow-hidden"
+        className="group metal-frame shadow-material-deep relative w-full max-w-7xl origin-top will-change-transform overflow-hidden"
       >
         {/* Card head strip */}
         <div className="flex items-center justify-between px-4 sm:px-6 py-2.5 border-b border-line bg-black/70">
