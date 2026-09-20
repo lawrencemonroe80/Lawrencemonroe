@@ -1,46 +1,34 @@
 import React, { useEffect } from 'react';
-import { Section1Hero } from '../components/home/Section1Hero';
-import { Section2Manifesto } from '../components/home/Section2Manifesto';
-import { Section3ContactSheet } from '../components/home/Section3ContactSheet';
-import { Section4ReleasedPieces } from '../components/home/Section4ReleasedPieces';
-import { Section5ObjectInMotion } from '../components/home/Section5ObjectInMotion';
-import { Section6ArchiveNext } from '../components/home/Section6ArchiveNext';
-import { Section7FinalCTA } from '../components/home/Section7FinalCTA';
+import { Cover } from '../components/home/Cover';
+import { CapsuleDrop } from '../components/home/CapsuleDrop';
+import { EditorialStatement } from '../components/home/EditorialStatement';
+import { BackPage } from '../components/home/BackPage';
 
+/**
+ * THE ISSUE — homepage as a printed magazine.
+ *
+ *   PAGE 01  THE COVER      masthead, cover lines, barcode
+ *   PAGE 02  THE FEATURE    one typographic moment
+ *   PAGE 04  THE DROP       capsule, live Square pricing
+ *   ...      THE BACK PAGE  closing statement + in-this-issue index
+ *   PAGE 20  COLOPHON       (footer)
+ */
 export const HomePage: React.FC = () => {
   useEffect(() => {
-    // Check if there is an anchor in the hash
     if (window.location.hash) {
       const id = window.location.hash.replace('#', '');
       setTimeout(() => {
-        const element = document.getElementById(id);
-        element?.scrollIntoView({ behavior: 'smooth' });
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
     }
   }, []);
 
   return (
-    <div className="relative w-full bg-black text-bone overflow-hidden">
-      {/* SECTION 1: RELEASE OPENING */}
-      <Section1Hero />
-
-      {/* SECTION 2: RELEASE MANIFESTO */}
-      <Section2Manifesto />
-
-      {/* SECTION 3: MOVING CONTACT SHEET */}
-      <Section3ContactSheet />
-
-      {/* SECTION 4: THE RELEASED PIECES */}
-      <Section4ReleasedPieces />
-
-      {/* SECTION 5: OBJECT IN MOTION */}
-      <Section5ObjectInMotion />
-
-      {/* SECTION 6: ARCHIVE NEXT */}
-      <Section6ArchiveNext />
-
-      {/* SECTION 7: FINAL RELEASE CTA */}
-      <Section7FinalCTA />
+    <div className="relative w-full bg-paper text-ink">
+      <Cover />
+      <EditorialStatement />
+      <CapsuleDrop />
+      <BackPage />
     </div>
   );
 };

@@ -87,11 +87,19 @@ export const PillBadge: React.FC<PillBadgeProps> = ({
   );
 };
 
-export const MonogramMark: React.FC<{ className?: string }> = ({ className = 'w-8 h-8' }) => {
+export const MonogramMark: React.FC<{ className?: string; tone?: 'dark' | 'light' }> = ({
+  className = 'w-8 h-8',
+  tone = 'dark',
+}) => {
+  const light = tone === 'light';
   return (
-    <div className={`relative border border-line bg-graphite flex items-center justify-center p-1.5 select-none ${className}`}>
+    <div
+      className={`relative border flex items-center justify-center p-1.5 select-none ${
+        light ? 'border-line-dark bg-white/70' : 'border-line bg-graphite'
+      } ${className}`}
+    >
       <span
-        className="font-serif font-extrabold text-bone text-base tracking-widest"
+        className={`font-serif font-extrabold text-base tracking-widest ${light ? 'text-ink' : 'text-bone'}`}
         style={{ fontFamily: "'Cormorant Garamond', 'Didot', serif" }}
       >
         LM

@@ -10,14 +10,17 @@ export const AboutPage: React.FC = () => {
         <div className="border-b border-ash/20 pb-8 mb-12 sm:mb-16">
           <div className="flex items-center space-x-2 font-mono text-xs font-bold text-ash uppercase tracking-widest mb-3">
             <span className="w-2 h-2 bg-gold-dark inline-block" />
-            <span>BRAND ARCHIVE // MANIFESTO</span>
+            <span>PAGE 18 / THE MANIFESTO — STUDIO DOCTRINE</span>
           </div>
           <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black text-ink tracking-tighter uppercase leading-none">
             RELEASE AS IMAGE.
           </h1>
-          <p className="font-serif italic text-xl sm:text-2xl text-smoke mt-4">
+          <p className="pullquote pullquote-indigo mt-6">
             “The garment, the visual fragment, and the motion become one unified experience.”
           </p>
+          <div className="font-mono text-[9px] tracking-[0.25em] text-indigo uppercase mt-4">
+            FROM THE EDITOR — ISSUE 001, AUTUMN 2026
+          </div>
         </div>
 
         {/* Story Section 1: The Ethos */}
@@ -26,7 +29,7 @@ export const AboutPage: React.FC = () => {
             01 / THE CORE TENET
           </div>
           <div className="md:col-span-8 space-y-4 font-utility text-sm sm:text-base text-ink leading-relaxed">
-            <p>
+            <p className="dropcap">
               LAWRENCE MONROE was established as a private-label design studio dedicated to pure form, substantial textile density, and uncompromising silhouette.
             </p>
             <p className="text-smoke">
@@ -44,7 +47,7 @@ export const AboutPage: React.FC = () => {
               className="w-full h-full object-cover grayscale contrast-125"
             />
             <div className="absolute bottom-2 left-2 font-mono text-[9px] bg-paper text-ink px-2 py-0.5 font-bold uppercase">
-              SPEC: 480GSM DENSITY
+              PLATE A — 480GSM DENSITY
             </div>
           </div>
           <div className="aspect-[4/5] bg-ash overflow-hidden relative border border-ash/30">
@@ -54,7 +57,7 @@ export const AboutPage: React.FC = () => {
               className="w-full h-full object-cover grayscale contrast-125"
             />
             <div className="absolute bottom-2 left-2 font-mono text-[9px] bg-paper text-ink px-2 py-0.5 font-bold uppercase">
-              SPEC: ANTIQUE GOLD METALWORK
+              PLATE B — ANTIQUE GOLD METALWORK
             </div>
           </div>
         </div>

@@ -126,7 +126,7 @@ export const SquarePaymentForm: React.FC<SquarePaymentFormProps> = ({
         }
       }
 
-      // Send payment authorization to Netlify Function backend
+      // Send payment authorization to the Vercel serverless checkout
       const payload = {
         sourceId: token,
         customer: customerInfo,
@@ -142,7 +142,7 @@ export const SquarePaymentForm: React.FC<SquarePaymentFormProps> = ({
         idempotencyKey: crypto.randomUUID ? crypto.randomUUID() : `lm-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
       };
 
-      const response = await fetch('/.netlify/functions/create-payment', {
+      const response = await fetch('/api/square/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
