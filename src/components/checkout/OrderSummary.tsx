@@ -31,7 +31,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         {items.map((item) => (
           <div key={item.cartItemId} className="flex items-center gap-4 border-b border-hairline pb-4 last:border-0 last:pb-0">
             <div className="w-16 h-20 bg-ink border border-hairline overflow-hidden shrink-0 relative">
-              <img src={item.image} alt={item.name} className="w-full h-full object-cover img-bw" />
+              <img src={item.image} alt={item.name} className="w-full h-full object-cover img-mono" />
               <div className="absolute top-1 left-1 font-mono text-[8px] bg-black/85 px-1 py-0.5 text-gold tracking-wider">
                 {item.size}
               </div>

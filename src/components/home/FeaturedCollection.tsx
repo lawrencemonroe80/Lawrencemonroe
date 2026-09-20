@@ -46,7 +46,7 @@ export const FeaturedCollection: React.FC = () => {
                 <img
                   src="/images/campaign-contact-stride.jpg"
                   alt="Stride study — Pitch Black"
-                  className="w-full h-full object-cover img-bw transition-transform duration-[1400ms] group-hover:scale-105"
+                  className="w-full h-full object-cover img-mono transition-transform duration-[1400ms] group-hover:scale-105"
                 />
                 <div className="absolute inset-0 overlay-bottom opacity-60" />
                 <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between">
@@ -117,7 +117,7 @@ export const FeaturedCollection: React.FC = () => {
                 <img
                   src="/images/campaign-contact-fabric.jpg"
                   alt="480GSM weave"
-                  className="w-full h-full object-cover img-bw"
+                  className="w-full h-full object-cover img-mono"
                 />
               </div>
               <div className="col-span-5 space-y-3 pb-2">

@@ -73,7 +73,7 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({ order, onC
               <div key={item.cartItemId} className="p-4 flex items-center justify-between border-b border-hairline last:border-b-0">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-14 bg-ink border border-hairline overflow-hidden shrink-0">
-                    <img src={item.image} alt={item.name} className="w-full h-full object-cover img-bw" />
+                    <img src={item.image} alt={item.name} className="w-full h-full object-cover img-mono" />
                   </div>
                   <div>
                     <div className="font-display-mega text-base text-white">{item.name}</div>

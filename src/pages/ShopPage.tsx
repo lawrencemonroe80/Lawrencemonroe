@@ -7,6 +7,7 @@ import { formatCurrency } from '../utils/format';
 import { useCartStore } from '../store/cartStore';
 import { useCatalogFeed } from '../services/squareCatalog';
 import { TiltCard } from '../components/common/TiltCard';
+import { EditorialPlate } from '../components/common/EditorialPlate';
 import type { CatalogItem, Product, Size } from '../types';
 
 /**
@@ -135,7 +136,7 @@ const ProductCard: React.FC<{ card: ShopCard; index: number; large?: boolean }> 
               src={product.heroImage}
               alt={product.name}
               loading="lazy"
-              className="absolute inset-0 w-full h-full object-cover img-bw group-hover:scale-105 transition-transform duration-[1400ms]"
+              className="absolute inset-0 w-full h-full object-cover img-mono group-hover:scale-105 transition-transform duration-[1400ms]"
             />
             <div className="absolute inset-0 overlay-bottom opacity-60" />
             {!soldOut && (
@@ -461,11 +462,39 @@ export const ShopPage: React.FC = () => {
             </div>
 
             <div className="lg:col-span-5 grid grid-cols-2 gap-4">
-              <div className="aspect-[3/4] overflow-hidden bg-ink border border-hairline">
-                <img src="/images/archive-shirt-teaser.jpg" alt="Shirt prototype" className="w-full h-full object-cover img-bw" />
-              </div>
-              <div className="aspect-[3/4] overflow-hidden bg-ink border border-hairline mt-12">
-                <img src="/images/archive-hat-teaser.jpg" alt="Hat prototype" className="w-full h-full object-cover img-bw" />
+              <EditorialPlate
+                src="/images/archive-shirt-teaser.jpg"
+                alt="Shirt prototype — locked"
+                aspect="aspect-[3/4]"
+                eyebrow="Release 002"
+                caption="The Shirt — locked"
+                meta={['Locked', 'Lab testing']}
+                lightbox={{
+                  src: '/images/archive-shirt-teaser.jpg',
+                  alt: 'Shirt prototype',
+                  eyebrow: 'Release 002 — Locked',
+                  title: 'The Shirt.',
+                  caption: 'Currently in laboratory stress testing. Archive clients receive priority dispatch.',
+                  meta: ['Status: Locked', 'Lab: Stage 03', 'ETA: Q1 2027'],
+                }}
+              />
+              <div className="mt-12">
+                <EditorialPlate
+                  src="/images/archive-hat-teaser.jpg"
+                  alt="Hat prototype — locked"
+                  aspect="aspect-[3/4]"
+                  eyebrow="Release 003"
+                  caption="The Headwear — locked"
+                  meta={['Locked', 'Lab testing']}
+                  lightbox={{
+                    src: '/images/archive-hat-teaser.jpg',
+                    alt: 'Hat prototype',
+                    eyebrow: 'Release 003 — Locked',
+                    title: 'The Headwear.',
+                    caption: 'Structured silhouette currently in pattern revision. Allocation opening imminent.',
+                    meta: ['Status: Locked', 'Lab: Stage 02', 'ETA: Q2 2027'],
+                  }}
+                />
               </div>
             </div>
           </div>

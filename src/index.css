@@ -774,12 +774,56 @@
   transition: filter 0.7s var(--ease-cinematic), transform 1.2s var(--ease-cinematic);
 }
 
-.img-bw {
+/* DEFAULT — muted grayscale with subtle warm tint */
+.img-mono {
+  filter: grayscale(100%) contrast(1.10) brightness(0.94) sepia(8%);
+  transition: filter 1.1s var(--ease-cinematic), transform 1.4s var(--ease-cinematic);
+  transform: scale(1.001); /* avoid sub-pixel jitter on hover transition */
+  will-change: filter, transform;
+}
+
+/* HOVER — full color revealed, brighter, slight zoom */
+.group:hover .img-mono,
+.img-mono.is-revealed {
+  filter: grayscale(0%) contrast(1.04) brightness(1.02) sepia(0%);
+  transform: scale(1.06);
+}
+
+/* Backwards-compat alias used by old code */
+.img-mono {
   filter: grayscale(100%) contrast(1.10) brightness(0.97);
   transition: filter 0.7s var(--ease-cinematic);
 }
-.group:hover .img-bw {
+.group:hover .img-mono {
   filter: grayscale(60%) contrast(1.05);
+}
+
+/* Soft cinematic zoom wrapper — image scale on hover, container stays stable */
+.zoom-frame {
+  overflow: hidden;
+  position: relative;
+}
+.zoom-frame > img,
+.zoom-frame > .img-wrap {
+  transition: transform 1.6s var(--ease-cinematic), filter 1.1s var(--ease-cinematic);
+  transform-origin: center 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.zoom-frame:hover > img,
+.zoom-frame:hover > .img-wrap,
+.zoom-frame.is-revealed > img,
+.zoom-frame.is-revealed > .img-wrap {
+  transform: scale(1.07);
+}
+
+.zoom-frame.muted > img {
+  filter: grayscale(100%) contrast(1.10) brightness(0.94) sepia(8%);
+}
+.zoom-frame.muted:hover > img,
+.zoom-frame.muted.is-revealed > img {
+  filter: grayscale(0%) contrast(1.04) brightness(1.02) sepia(0%);
 }
 
 .img-mono-warm {

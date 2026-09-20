@@ -206,7 +206,7 @@ export const ProductMediaStage: React.FC<ProductMediaStageProps> = ({ productId,
               <img
                 src={vis.src}
                 alt={vis.alt}
-                className="w-full h-full object-cover img-bw"
+                className="w-full h-full object-cover img-mono"
               />
               <div className="absolute bottom-0 inset-x-0 bg-black/85 text-center font-mono text-[9px] py-1 text-bone tracking-[0.24em] uppercase border-t border-hairline">
                 {vis.label}

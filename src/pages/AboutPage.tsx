@@ -68,14 +68,14 @@ export const AboutPage: React.FC = () => {
               <img
                 src="/images/campaign-contact-fabric.jpg"
                 alt="480GSM textile density"
-                className="w-full h-full object-cover img-bw"
+                className="w-full h-full object-cover img-mono"
               />
             </figure>
             <figure className="sm:col-span-5 aspect-[5/4] sm:mt-16 overflow-hidden bg-ink border border-hairline">
               <img
                 src="/images/campaign-contact-hardware.jpg"
                 alt="Antique gold hardware"
-                className="w-full h-full object-cover img-bw"
+                className="w-full h-full object-cover img-mono"
               />
             </figure>
           </div>

@@ -40,7 +40,7 @@ const FeedTile: React.FC<{
         <OptimizedImage
           src={post.image}
           alt={post.alt}
-          className="w-full h-full object-cover img-bw group-hover:scale-[1.05] group-hover:saturate-100 transition-all duration-[1400ms]"
+          className="w-full h-full object-cover img-mono group-hover:scale-[1.05] group-hover:saturate-100 transition-all duration-[1400ms]"
           draggable={false}
         />
       </div>

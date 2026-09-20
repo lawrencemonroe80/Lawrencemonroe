@@ -178,7 +178,7 @@ export const HorizontalStories: React.FC = () => {
                   src={item.image}
                   alt={item.name}
                   loading="lazy"
-                  className="absolute inset-0 w-full h-full object-cover img-bw transition-transform duration-[1400ms] group-hover:scale-105"
+                  className="absolute inset-0 w-full h-full object-cover img-mono transition-transform duration-[1400ms] group-hover:scale-105"
                 />
                 <div className="absolute inset-0 overlay-bottom opacity-60" />
                 <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">

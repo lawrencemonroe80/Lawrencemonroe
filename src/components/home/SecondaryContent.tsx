@@ -55,7 +55,7 @@ export const SecondaryContent: React.FC = () => {
               <img
                 src="/images/archive-shirt-teaser.jpg"
                 alt="Release 002 — Boxy Shirt prototype"
-                className="w-full h-full object-cover img-bw transition-transform duration-[1400ms] group-hover:scale-105"
+                className="w-full h-full object-cover img-mono transition-transform duration-[1400ms] group-hover:scale-105"
               />
               <div className="absolute inset-0 overlay-bottom opacity-70" />
               <div className="absolute top-5 left-5 flex items-center gap-2">
@@ -96,7 +96,7 @@ export const SecondaryContent: React.FC = () => {
               <img
                 src="/images/archive-hat-teaser.jpg"
                 alt="Release 003 — Structured Headwear prototype"
-                className="w-full h-full object-cover img-bw transition-transform duration-[1400ms] group-hover:scale-105"
+                className="w-full h-full object-cover img-mono transition-transform duration-[1400ms] group-hover:scale-105"
               />
               <div className="absolute inset-0 overlay-bottom opacity-70" />
               <div className="absolute top-5 left-5 flex items-center gap-2">

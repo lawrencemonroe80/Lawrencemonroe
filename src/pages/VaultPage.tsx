@@ -131,7 +131,7 @@ export const VaultPage: React.FC = () => {
                   <OptimizedImage
                     src={featured.coverImage}
                     alt={featured.title}
-                    className="absolute inset-0 w-full h-full object-cover img-bw group-hover:scale-[1.03] transition-transform duration-[1400ms]"
+                    className="absolute inset-0 w-full h-full object-cover img-mono group-hover:scale-[1.03] transition-transform duration-[1400ms]"
                   />
                   <div className="absolute inset-0 overlay-bottom opacity-80" />
                   <div className="absolute top-5 left-5 flex items-center gap-2">
@@ -201,7 +201,7 @@ export const VaultPage: React.FC = () => {
                 <OptimizedImage
                   src={story.coverImage}
                   alt={story.title}
-                  className="absolute inset-0 w-full h-full object-cover img-bw group-hover:scale-[1.04] transition-transform duration-[1400ms]"
+                  className="absolute inset-0 w-full h-full object-cover img-mono group-hover:scale-[1.04] transition-transform duration-[1400ms]"
                 />
                 <div className="absolute inset-0 overlay-bottom opacity-80" />
                 <div className="absolute top-4 left-4 flex items-center gap-2">
@@ -278,7 +278,7 @@ export const VaultPage: React.FC = () => {
                 <OptimizedImage
                   src={openStory.coverImage}
                   alt={openStory.title}
-                  className="w-full h-full object-cover img-bw"
+                  className="w-full h-full object-cover img-mono"
                   loading="eager"
                 />
                 <div className="absolute inset-0 overlay-cinema opacity-80" />
@@ -311,7 +311,7 @@ export const VaultPage: React.FC = () => {
                         <OptimizedImage
                           src={plate.src}
                           alt={plate.label || openStory.title}
-                          className="w-full h-full object-cover img-bw group-hover/plate:scale-105 transition-transform duration-700"
+                          className="w-full h-full object-cover img-mono group-hover/plate:scale-105 transition-transform duration-700"
                         />
                       </div>
                       <figcaption className="px-2 py-1.5 font-mono text-[9px] tracking-[0.22em] text-bone/40 uppercase border-t border-hairline">

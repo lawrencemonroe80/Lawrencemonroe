@@ -209,7 +209,7 @@ export const Navigation: React.FC = () => {
                       <img
                         src="/images/campaign-contact-stride.jpg"
                         alt="Lawrence Monroe — campaign"
-                        className="w-full h-full object-cover img-bw"
+                        className="w-full h-full object-cover img-mono"
                       />
                     </div>
                     <div className="space-y-2">

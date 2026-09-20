@@ -106,7 +106,7 @@ export const ProductDetailPage: React.FC = () => {
                 <img
                   src={alternateProduct.heroImage}
                   alt={alternateProduct.name}
-                  className="w-full h-full object-cover img-bw"
+                  className="w-full h-full object-cover img-mono"
                 />
               </div>
               <div className="sm:col-span-7 p-8 lg:p-12 flex flex-col justify-center space-y-4">

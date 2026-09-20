@@ -138,7 +138,7 @@ export const Hero: React.FC = () => {
               <img
                 src="/models/LM_P01_02_BLACK_BLACK_2.jpg"
                 alt="Lawrence Monroe — Campaign cover plate"
-                className="w-full h-full object-cover img-bw"
+                className="w-full h-full object-cover img-mono"
               />
               <div className="absolute inset-0 overlay-bottom" />
               {/* Cover plate label */}

@@ -25,7 +25,7 @@ export const EditorialFeature: React.FC = () => {
               <img
                 src="/images/campaign-hero-motion.jpg"
                 alt="Lawrence Monroe — Motion campaign"
-                className="w-full h-full object-cover img-bw"
+                className="w-full h-full object-cover img-mono"
               />
               <div className="absolute inset-0 overlay-cinema opacity-80" />
               <div className="absolute bottom-6 left-6 right-6">

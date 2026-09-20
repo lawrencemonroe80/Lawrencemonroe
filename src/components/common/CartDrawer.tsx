@@ -203,7 +203,7 @@ export const CartDrawer: React.FC = () => {
                           <img
                             src={item.image}
                             alt={item.name}
-                            className="w-full h-full object-cover img-bw"
+                            className="w-full h-full object-cover img-mono"
                           />
                           <div className="absolute top-1 left-1 font-mono text-[8px] bg-black/85 px-1.5 py-0.5 text-gold tracking-wider">
                             {item.size}
