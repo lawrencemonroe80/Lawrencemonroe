@@ -8,7 +8,7 @@ import { formatCurrency } from '../utils/format';
 import type { FeedAspect, RawFeedPost } from '../types';
 
 /**
- * THE FEED — /telemetry
+ * THE FEED — /feed
  * Editorial social hub with asymmetric grid + lightbox viewer.
  */
 
@@ -235,7 +235,7 @@ const FeedLightbox: React.FC<{
   );
 };
 
-export const TelemetryPage: React.FC = () => {
+export const FeedPage: React.FC = () => {
   const { posts, source, loading } = useRawFeed();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const officialCount = posts.filter((p) => p.isOfficial).length;
@@ -259,17 +259,17 @@ export const TelemetryPage: React.FC = () => {
         >
           <div className="lg:col-span-8 space-y-6">
             <div className="flex items-center gap-4">
-              <span className="folio text-gold">Page 14 — The Feed</span>
+              <span className="folio text-gold">Page 03 — The Feed</span>
               <span className="text-bone/20">—</span>
               <span className="folio text-bone/50">Raw Posts</span>
             </div>
-            <h1 className="font-display-tight text-[15vw] sm:text-[11vw] lg:text-[9vw] leading-[0.84] tracking-[-0.005em]">
+            <h1
+              className="text-[15vw] sm:text-[11vw] lg:text-[9vw] leading-[0.84] tracking-[-0.005em]"
+              style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+            >
               The{' '}
-              <span
-                className="italic text-gold-shine"
-                style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic", fontWeight: 400 }}
-              >
-                telemetry.
+              <span className="italic text-gold-shine">
+                feed.
               </span>
             </h1>
             <p

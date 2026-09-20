@@ -23,9 +23,9 @@ export const ProductPurchasingPanel: React.FC<ProductPurchasingPanelProps> = ({ 
   const handleColorChange = (colorName: string) => {
     setSelectedColor(colorName);
     if (colorName.toLowerCase().includes('bone') && product.slug === 'lm-shorts-001') {
-      navigate('/shop/lm-shorts-002');
+      navigate('/drop/lm-shorts-002');
     } else if (colorName.toLowerCase().includes('black') && product.slug === 'lm-shorts-002') {
-      navigate('/shop/lm-shorts-001');
+      navigate('/drop/lm-shorts-001');
     }
   };
 

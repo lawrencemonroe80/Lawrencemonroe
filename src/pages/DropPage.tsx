@@ -11,7 +11,7 @@ import { EditorialPlate } from '../components/common/EditorialPlate';
 import type { CatalogItem, Product, Size } from '../types';
 
 /**
- * THE EDIT — /shop
+ * THE DROP — /drop
  * Editorial fashion catalog. Hero piece + asymmetric product grid.
  */
 
@@ -106,7 +106,7 @@ const ProductCard: React.FC<{ card: ShopCard; index: number; large?: boolean }> 
     >
       <TiltCard maxTilt={2} className="block">
         <Link
-          to={product.slug ? `/shop/${product.slug}` : '/shop'}
+          to={product.slug ? `/drop/${product.slug}` : '/drop'}
           className="block"
           data-cursor="view"
           data-cursor-label="View Piece"
@@ -237,7 +237,7 @@ const ProductCard: React.FC<{ card: ShopCard; index: number; large?: boolean }> 
             {added ? 'Added' : quickAddDisabled ? 'Closed' : `Quick Add · ${selectedSize}`}
           </button>
           <Link
-            to={product.slug ? `/shop/${product.slug}` : '/shop'}
+            to={product.slug ? `/drop/${product.slug}` : '/drop'}
             className="flex-1 py-3 font-mono text-[10px] font-medium tracking-[0.28em] uppercase border border-line-strong text-bone hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2"
           >
             View Dossier <ArrowUpRight size={11} />
@@ -248,7 +248,7 @@ const ProductCard: React.FC<{ card: ShopCard; index: number; large?: boolean }> 
   );
 };
 
-export const ShopPage: React.FC = () => {
+export const DropPage: React.FC = () => {
   const [activeCollection, setActiveCollection] = useState<'ALL' | Collection>('ALL');
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc'>('featured');
   const { openRequestAccess } = useCartStore();
@@ -326,17 +326,17 @@ export const ShopPage: React.FC = () => {
             className="lg:col-span-8 space-y-6"
           >
             <div className="flex items-center gap-4">
-              <span className="folio text-gold">Page 06 — The Edit</span>
+              <span className="folio text-gold">Page 02 — The Drop</span>
               <span className="text-bone/20">—</span>
-              <span className="folio text-bone/50">The Catalog</span>
+              <span className="folio text-bone/50">Issue 001</span>
             </div>
-            <h1 className="font-display-tight text-[15vw] sm:text-[11vw] lg:text-[9vw] leading-[0.84] tracking-[-0.005em]">
-              Active{' '}
-              <span
-                className="italic text-hollow-gold"
-                style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic", fontWeight: 400 }}
-              >
-                pieces.
+            <h1
+              className="text-[15vw] sm:text-[11vw] lg:text-[9vw] leading-[0.84] tracking-[-0.005em]"
+              style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+            >
+              The current{' '}
+              <span className="italic text-gold-shine">
+                drop.
               </span>
             </h1>
             <p

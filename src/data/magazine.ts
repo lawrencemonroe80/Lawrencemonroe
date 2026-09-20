@@ -5,8 +5,9 @@
  * with a folio number, the nav overlay is the contents spread, and the
  * cover lines on the index reference these page numbers.
  *
- * Consumed by: Navigation (contents overlay), PageTransition (page-turn
- * label), MagazineFolio (running folio), the Cover, and the colophon.
+ * Consumed by: Navigation (contents overlay), MagazineFolio (running folio).
+ *
+ * v7 — trimmed to four pages: Cover, The Drop, The Feed, Contact.
  */
 
 export interface IssueMeta {
@@ -35,64 +36,41 @@ export interface ContentsEntry {
 
 export const CONTENTS: ContentsEntry[] = [
   {
-    page: '02',
-    title: 'THE FEATURE',
-    subtitle: 'Built to hold its form',
-    route: '/#feature',
-    image: '/images/campaign-contact-fabric.jpg',
-  },
-  {
-    page: '04',
-    title: 'THE DROP',
-    subtitle: 'Capsule 001 — two pieces, one uniform',
-    route: '/#drop',
-    image: '/images/shorts-001-cutout.jpg',
-  },
-  {
-    page: '06',
-    title: 'THE EDIT',
-    subtitle: 'The full catalog, live from the studio',
-    route: '/shop',
-    image: '/models/LM_P01_02_BLACK_BLACK_2.jpg',
-  },
-  {
-    page: '10',
-    title: 'THE PLATES',
-    subtitle: 'Campaigns, gen effects, silver-gelatin stories',
-    route: '/vault',
+    page: '01',
+    title: 'THE COVER',
+    subtitle: 'Lawrence Monroe — Issue 001',
+    route: '/',
     image: '/images/campaign-hero-motion.jpg',
   },
   {
-    page: '14',
+    page: '02',
+    title: 'THE DROP',
+    subtitle: 'Two pieces, one uniform',
+    route: '/drop',
+    image: '/images/LM_P01_02_BLACK_BLACK_2.jpg',
+  },
+  {
+    page: '03',
     title: 'THE FEED',
     subtitle: 'Raw posts, tagged to the rack',
-    route: '/telemetry',
+    route: '/feed',
     image: '/images/campaign-contact-stride.jpg',
   },
   {
-    page: '18',
-    title: 'THE MANIFESTO',
-    subtitle: 'The brand document',
-    route: '/about',
-    image: '/models/LM_P01_02_GRAY_2.jpg',
-  },
-  {
-    page: '20',
-    title: 'COLOPHON',
-    subtitle: 'Masthead, credits & private dispatch',
-    route: '/#colophon',
+    page: '04',
+    title: 'CONTACT',
+    subtitle: 'Dispatch & studio inquiries',
+    route: '/contact',
     image: '/images/campaign-contact-hardware.jpg',
   },
 ];
 
 /** Route → folio, for the running page chip and the page-turn label. */
 export const routeFolio = (pathname: string): { page: string; title: string } => {
-  if (pathname === '/' || pathname === '') return { page: '01', title: 'THE COVER' };
-  if (pathname.startsWith('/shop/')) return { page: '08', title: 'THE SPECIMEN' };
-  if (pathname.startsWith('/shop')) return { page: '06', title: 'THE EDIT' };
-  if (pathname.startsWith('/vault')) return { page: '10', title: 'THE PLATES' };
-  if (pathname.startsWith('/telemetry')) return { page: '14', title: 'THE FEED' };
-  if (pathname.startsWith('/about')) return { page: '18', title: 'THE MANIFESTO' };
-  if (pathname.startsWith('/checkout')) return { page: '19', title: 'THE COUNTER' };
+  if (pathname.startsWith('/drop/')) return { page: '02', title: 'THE SPECIMEN' };
+  if (pathname.startsWith('/drop')) return { page: '02', title: 'THE DROP' };
+  if (pathname.startsWith('/feed')) return { page: '03', title: 'THE FEED' };
+  if (pathname.startsWith('/contact')) return { page: '04', title: 'CONTACT' };
+  if (pathname.startsWith('/checkout')) return { page: '02.5', title: 'THE COUNTER' };
   return { page: '01', title: 'THE COVER' };
 };

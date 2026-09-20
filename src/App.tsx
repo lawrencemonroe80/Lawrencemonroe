@@ -7,14 +7,13 @@ import { RequestAccessModal } from './components/common/RequestAccessModal';
 import { SizeGuideModal } from './components/common/SizeGuideModal';
 import { PageTransition } from './components/common/PageTransition';
 import { MagazineFolio } from './components/common/MagazineFolio';
-import { VaultPage } from './pages/VaultPage';
-import { TelemetryPage } from './pages/TelemetryPage';
 import { CustomCursor } from './components/common/CustomCursor';
 import { HomePage } from './pages/HomePage';
-import { ShopPage } from './pages/ShopPage';
+import { DropPage } from './pages/DropPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
+import { FeedPage } from './pages/FeedPage';
+import { ContactPage } from './pages/ContactPage';
 import { CheckoutPage } from './pages/CheckoutPage';
-import { AboutPage } from './pages/AboutPage';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -41,12 +40,11 @@ export const App: React.FC = () => {
           <PageTransition>
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/shop" element={<ShopPage />} />
-              <Route path="/shop/:slug" element={<ProductDetailPage />} />
-              <Route path="/vault" element={<VaultPage />} />
-              <Route path="/telemetry" element={<TelemetryPage />} />
+              <Route path="/drop" element={<DropPage />} />
+              <Route path="/drop/:slug" element={<ProductDetailPage />} />
+              <Route path="/feed" element={<FeedPage />} />
+              <Route path="/contact" element={<ContactPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
-              <Route path="/about" element={<AboutPage />} />
               <Route path="*" element={<HomePage />} />
             </Routes>
           </PageTransition>

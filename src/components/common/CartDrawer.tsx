@@ -71,7 +71,7 @@ export const CartDrawer: React.FC = () => {
 
   const handleContinueShopping = () => {
     closeCart();
-    navigate('/shop');
+    navigate('/drop');
   };
 
   return (
@@ -159,7 +159,7 @@ export const CartDrawer: React.FC = () => {
                       <button onClick={closeCart} className="btn-mono w-full justify-center">
                         Continue exploring
                       </button>
-                      <button onClick={() => navigate('/shop')} className="link-arrow w-full justify-center text-bone/40 hover:text-gold">
+                      <button onClick={() => navigate('/drop')} className="link-arrow w-full justify-center text-bone/40 hover:text-gold">
                         Return to catalog
                       </button>
                     </div>

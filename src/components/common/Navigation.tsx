@@ -103,10 +103,10 @@ export const Navigation: React.FC = () => {
           {/* RIGHT — bag */}
           <div className="flex items-center gap-3 sm:gap-5">
             <Link
-              to="/about"
+              to="/contact"
               className="hidden md:inline link-arrow text-bone/70 hover:text-gold text-[10px]"
             >
-              Manifesto
+              Contact
             </Link>
             <button
               onClick={openCart}

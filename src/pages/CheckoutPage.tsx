@@ -70,7 +70,7 @@ export const CheckoutPage: React.FC = () => {
             You must allocate at least one piece from Release 001 to proceed to checkout.
           </p>
         </div>
-        <Link to="/shop" className="btn-gold">
+        <Link to="/drop" className="btn-gold">
           Explore the pieces
         </Link>
       </div>
@@ -83,7 +83,7 @@ export const CheckoutPage: React.FC = () => {
         {/* Header */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-10 sm:pb-14 border-b border-hairline items-end">
           <div className="lg:col-span-8 flex items-center gap-6">
-            <Link to="/shop" className="link-arrow text-white/60 hover:text-gold">
+            <Link to="/drop" className="link-arrow text-white/60 hover:text-gold">
               <ArrowLeft size={14} className="rotate-180" />
               Return to shop
             </Link>

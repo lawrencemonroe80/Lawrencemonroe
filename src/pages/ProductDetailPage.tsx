@@ -30,8 +30,8 @@ export const ProductDetailPage: React.FC = () => {
         >
           The requested garment record does not exist in the archive.
         </p>
-        <button onClick={() => navigate('/shop')} className="btn-mono">
-          Return to shop
+        <button onClick={() => navigate('/drop')} className="btn-mono">
+          Return to the drop
         </button>
       </div>
     );
@@ -44,7 +44,7 @@ export const ProductDetailPage: React.FC = () => {
       <div className="max-w-[1760px] mx-auto px-5 sm:px-8 md:px-12">
         {/* Breadcrumb */}
         <div className="flex items-center justify-between border-b border-hairline pb-4 mb-8 sm:mb-12">
-          <Link to="/shop" className="link-arrow text-bone/60 hover:text-gold">
+          <Link to="/drop" className="link-arrow text-bone/60 hover:text-gold">
             <ArrowLeft size={14} />
             Return to catalog
           </Link>
@@ -96,7 +96,7 @@ export const ProductDetailPage: React.FC = () => {
                   </span>
                 </h3>
               </div>
-              <Link to={`/shop/${alternateProduct.slug}`} className="link-arrow text-bone/70 hover:text-gold">
+              <Link to={`/drop/${alternateProduct.slug}`} className="link-arrow text-bone/70 hover:text-gold">
                 View dossier <ArrowUpRight size={14} className="arrow-icon" />
               </Link>
             </div>
@@ -124,7 +124,7 @@ export const ProductDetailPage: React.FC = () => {
                   {alternateProduct.shortDescription}
                 </p>
                 <Link
-                  to={`/shop/${alternateProduct.slug}`}
+                  to={`/drop/${alternateProduct.slug}`}
                   className="btn-mono mt-2 w-fit"
                 >
                   Switch to {alternateProduct.name}
