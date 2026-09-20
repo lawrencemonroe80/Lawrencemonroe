@@ -40,8 +40,12 @@ export const PinnedHorizontalSection: React.FC<PinnedHorizontalSectionProps> = (
     mass: 0.4,
   });
 
-  // Translate from 0% to -(panelCount - 1) * 100% of track width
-  const x = useTransform(smooth, [0, 1], ['0%', `-${(panelCount - 1) * 100}%`]);
+  // Translate from 0vw to -(panelCount - 1) * 100vw.
+  // Using vw (not %) — percentage transforms on a flex container resolve
+  // against the element's own width (which is panelCount * 100vw), so a
+  // percent translate overshoots by panelCount. Use vw to translate by
+  // viewport widths instead.
+  const x = useTransform(smooth, [0, 1], ['0vw', `-${(panelCount - 1) * 100}vw`]);
 
   const vh = durationVh ?? Math.max(2.5, panelCount * 1.0);
 
