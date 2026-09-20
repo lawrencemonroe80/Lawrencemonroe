@@ -9,9 +9,7 @@ export const SizeGuideModal: React.FC = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isSizeGuideOpen) {
-        closeSizeGuide();
-      }
+      if (e.key === 'Escape' && isSizeGuideOpen) closeSizeGuide();
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -37,119 +35,106 @@ export const SizeGuideModal: React.FC = () => {
     <AnimatePresence>
       {isSizeGuideOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+          className="fixed inset-0 z-[70] flex items-center justify-center p-4 sm:p-6"
           role="dialog"
           aria-modal="true"
           aria-label="Size and Measurement Guide"
         >
-          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={closeSizeGuide}
-            className="fixed inset-0 bg-black/85 backdrop-blur-md"
+            className="fixed inset-0 bg-black/90 backdrop-blur-xl"
           />
 
-          {/* Modal Container: Styled in Bone/Paper Paper Archival aesthetic */}
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.96 }}
-            transition={{ duration: 0.3 }}
-            className="relative z-10 w-full max-w-2xl bg-paper text-ink border border-ash/40 p-6 sm:p-8 shadow-2xl overflow-hidden"
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="relative z-10 w-full max-w-2xl bg-black border border-line-strong overflow-hidden"
           >
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-ash/20 pb-4 mb-6">
-              <div className="flex items-center space-x-2">
-                <Ruler size={16} className="text-gold-dark" />
-                <span className="font-mono text-xs font-bold text-ash tracking-widest uppercase">
-                  SIZE MATRIX / RELEASE 001 SHORTS
+            <div className="flex items-center justify-between px-6 sm:px-10 py-5 border-b border-hairline">
+              <div className="flex items-center gap-2">
+                <Ruler size={14} className="text-gold" strokeWidth={1.5} />
+                <span className="font-mono text-[10px] tracking-[0.32em] uppercase text-gold">
+                  Size Matrix — Release 001 Shorts
                 </span>
               </div>
-              <button
-                onClick={closeSizeGuide}
-                className="text-ash hover:text-black p-1 transition-colors focus:outline-none"
-                aria-label="Close size guide"
-              >
-                <X size={18} />
+              <button onClick={closeSizeGuide} className="text-bone/60 hover:text-gold transition-colors" aria-label="Close">
+                <X size={18} strokeWidth={1.2} />
               </button>
             </div>
 
-            {/* Title & Unit Switcher */}
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
-              <div>
-                <h3 className="font-display text-2xl font-bold tracking-tight text-ink uppercase">
-                  ARCHITECTURAL FIT SPECIFICATION
-                </h3>
-                <p className="font-utility text-xs text-smoke mt-1">
-                  Engineered with an elastic waistband and extended drawstrings for variable waist fit.
+            <div className="px-6 sm:px-10 py-8 space-y-8">
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div className="space-y-2">
+                  <h3
+                    className="text-4xl sm:text-5xl text-bone leading-[0.95]"
+                    style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+                  >
+                    Architectural fit spec.
+                  </h3>
+                  <p className="font-editorial text-lg text-bone/60 max-w-md">
+                    Engineered with an elastic waistband and extended drawstrings for variable waist fit.
+                  </p>
+                </div>
+
+                <div className="flex border border-hairline">
+                  {(['in', 'cm'] as const).map((u) => (
+                    <button
+                      key={u}
+                      onClick={() => setUnit(u)}
+                      className={`px-3 py-1.5 font-mono text-[10px] tracking-[0.22em] uppercase transition-colors ${
+                        unit === u ? 'bg-bone text-black' : 'text-bone/50 hover:text-bone'
+                      }`}
+                    >
+                      {u === 'in' ? 'Inches' : 'Centimeters'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="overflow-x-auto border border-hairline">
+                <table className="w-full text-left font-mono text-xs">
+                  <thead>
+                    <tr className="border-b border-hairline text-bone/40 bg-white/[0.02]">
+                      <th className="py-3 px-4 font-medium uppercase tracking-[0.22em] text-[10px]">Size</th>
+                      <th className="py-3 px-4 font-medium uppercase tracking-[0.22em] text-[10px]">Waist</th>
+                      <th className="py-3 px-4 font-medium uppercase tracking-[0.22em] text-[10px]">Outseam</th>
+                      <th className="py-3 px-4 font-medium uppercase tracking-[0.22em] text-[10px]">Inseam</th>
+                      <th className="py-3 px-4 font-medium uppercase tracking-[0.22em] text-[10px]">Leg Open.</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-hairline">
+                    {data.map((row) => (
+                      <tr key={row.size} className="hover:bg-white/[0.02] transition-colors">
+                        <td
+                          className="py-3 px-4 text-gold text-2xl"
+                          style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic", letterSpacing: "0.02em" }}
+                        >
+                          {row.size}
+                        </td>
+                        <td className="py-3 px-4 text-bone/80">{row.waist}</td>
+                        <td className="py-3 px-4 text-bone/60">{row.outseam}</td>
+                        <td className="py-3 px-4 text-bone/60">{row.inseam}</td>
+                        <td className="py-3 px-4 text-bone/60">{row.legOpening}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="border-l-2 border-gold pl-5 py-2 space-y-2">
+                <div className="folio text-gold">Silhouette note</div>
+                <p className="font-editorial text-base sm:text-lg text-bone/70 leading-snug">
+                  LM Shorts feature a dropped crotch and relaxed boxy thigh cut. If you prefer a traditional streetwear drape, choose your standard true waist size. For a more tailored silhouette, size down one step.
                 </p>
               </div>
 
-              {/* Toggle in / cm */}
-              <div className="flex border border-ash/30 bg-bone/60 p-0.5 self-start sm:self-auto">
-                <button
-                  onClick={() => setUnit('in')}
-                  className={`px-3 py-1 font-mono text-xs font-bold uppercase transition-colors ${
-                    unit === 'in' ? 'bg-ink text-paper' : 'text-ash hover:text-ink'
-                  }`}
-                >
-                  INCHES
-                </button>
-                <button
-                  onClick={() => setUnit('cm')}
-                  className={`px-3 py-1 font-mono text-xs font-bold uppercase transition-colors ${
-                    unit === 'cm' ? 'bg-ink text-paper' : 'text-ash hover:text-ink'
-                  }`}
-                >
-                  CENTIMETERS
-                </button>
-              </div>
-            </div>
-
-            {/* Measurement Table */}
-            <div className="overflow-x-auto border border-ash/20 bg-bone/40 mb-6">
-              <table className="w-full text-left font-mono text-xs">
-                <thead>
-                  <tr className="border-b border-ash/20 bg-ash/5 text-ash">
-                    <th className="py-2.5 px-4 font-bold">SIZE</th>
-                    <th className="py-2.5 px-4 font-bold">WAIST (RELAXED–STRETCHED)</th>
-                    <th className="py-2.5 px-4 font-bold">OUTSEAM</th>
-                    <th className="py-2.5 px-4 font-bold">INSEAM</th>
-                    <th className="py-2.5 px-4 font-bold">LEG OPENING</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-ash/15">
-                  {data.map((row) => (
-                    <tr key={row.size} className="hover:bg-ash/5 transition-colors">
-                      <td className="py-3 px-4 font-bold text-ink bg-ash/10">{row.size}</td>
-                      <td className="py-3 px-4 text-ink">{row.waist}</td>
-                      <td className="py-3 px-4 text-ink">{row.outseam}</td>
-                      <td className="py-3 px-4 text-ink">{row.inseam}</td>
-                      <td className="py-3 px-4 text-ink">{row.legOpening}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Curatorial Fit Recommendation */}
-            <div className="bg-bone/80 border border-ash/20 p-4 space-y-2 text-xs text-ash">
-              <div className="font-mono text-[10px] font-bold text-gold-dark uppercase tracking-wider">
-                SILHOUETTE NOTE
-              </div>
-              <p className="font-utility leading-relaxed">
-                LM Shorts feature a dropped crotch and relaxed boxy thigh cut. If you prefer a traditional streetwear drape that hovers right above the knee, choose your standard true waist size. If you desire a more tailored or higher-thigh silhouette, size down one step.
-              </p>
-            </div>
-
-            <div className="mt-6 text-center">
-              <button
-                onClick={closeSizeGuide}
-                className="w-full py-3 bg-ink text-paper hover:bg-gold-dark hover:text-white font-mono text-xs font-bold tracking-widest uppercase transition-colors"
-              >
-                RETURN TO GARMENT
+              <button onClick={closeSizeGuide} className="btn-mono w-full justify-center">
+                Return to garment
               </button>
             </div>
           </motion.div>

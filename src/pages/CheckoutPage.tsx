@@ -31,7 +31,7 @@ export const CheckoutPage: React.FC = () => {
 
   const subtotal = getSubtotal();
   const shippingCost = customerInfo.shippingOption === 'express' ? 25.00 : 0.00;
-  const estimatedTax = subtotal * 0.0825; // standard rate
+  const estimatedTax = subtotal * 0.0825;
   const total = subtotal + shippingCost + estimatedTax;
 
   const handleFieldChange = (field: keyof OrderCustomerInfo, value: any) => {
@@ -52,80 +52,78 @@ export const CheckoutPage: React.FC = () => {
 
   if (items.length === 0 && !completedOrder) {
     return (
-      <div className="min-h-screen bg-black text-bone pt-36 pb-24 flex flex-col items-center justify-center p-6 text-center space-y-6">
-        <div className="w-16 h-16 border border-line bg-graphite flex items-center justify-center text-smoke">
-          <ShoppingBag size={28} />
+      <div className="min-h-screen bg-black text-white pt-32 pb-24 flex flex-col items-center justify-center p-6 text-center space-y-8">
+        <div className="w-20 h-20 border border-hairline flex items-center justify-center">
+          <ShoppingBag size={28} strokeWidth={1.2} />
         </div>
-        <div className="space-y-2">
-          <h1 className="font-display text-3xl font-bold uppercase">BAG IS CURRENTLY EMPTY</h1>
-          <p className="font-mono text-xs text-smoke max-w-sm mx-auto">
+        <div className="space-y-3">
+          <h1 className="font-display-mega text-5xl sm:text-7xl text-white uppercase leading-[0.92]">
+            Bag is{' '}
+            <span
+              className="italic text-gold-shine"
+              style={{ fontFamily: "'PP Editorial New', serif" }}
+            >
+              empty.
+            </span>
+          </h1>
+          <p className="text-sm text-white/50 max-w-sm mx-auto">
             You must allocate at least one piece from Release 001 to proceed to checkout.
           </p>
         </div>
-        <Link
-          to="/shop"
-          className="border border-gold bg-black px-8 py-3.5 font-mono text-xs font-bold text-bone hover:bg-gold hover:text-black uppercase tracking-widest transition-colors"
-        >
-          EXPLORE THE PIECES
+        <Link to="/shop" className="btn-gold">
+          Explore the pieces
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black text-bone pt-28 sm:pt-36 pb-24">
-      {/* Background Archival Grid */}
-      <div className="absolute inset-0 bg-archival-grid opacity-20 pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 md:px-12 relative z-10">
-        {/* Top Minimal Checkout Header */}
-        <div className="flex items-center justify-between border-b border-line pb-6 mb-12">
-          <Link
-            to="/shop"
-            className="flex items-center space-x-2 font-mono text-xs text-smoke hover:text-gold transition-colors uppercase tracking-wider"
-          >
-            <ArrowLeft size={14} />
-            <span>RETURN TO SHOP</span>
-          </Link>
-
-          <div className="text-center">
-            <h1 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-bone uppercase">
-              CHECKOUT TELEMETRY
-            </h1>
+    <div className="min-h-screen bg-black text-white pt-24 sm:pt-32 pb-24">
+      <div className="max-w-[1760px] mx-auto px-5 sm:px-8 md:px-12">
+        {/* Header */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-10 sm:pb-14 border-b border-hairline items-end">
+          <div className="lg:col-span-8 flex items-center gap-6">
+            <Link to="/shop" className="link-arrow text-white/60 hover:text-gold">
+              <ArrowLeft size={14} className="rotate-180" />
+              Return to shop
+            </Link>
           </div>
-
-          <div className="font-mono text-[10px] text-smoke hidden sm:inline-block">
-            SQUARE ENCRYPTION PROTOCOL
+          <div className="lg:col-span-4 text-right">
+            <div className="folio text-white/40">Page 19 — The Counter</div>
           </div>
         </div>
 
-        {/* Error Alert if any */}
-        {errorMessage && (
-          <div className="mb-8 p-4 bg-archive-red/20 border border-archive-red text-bone font-mono text-xs flex items-center space-x-3">
-            <AlertCircle size={16} className="text-archive-red flex-shrink-0" />
-            <span>{errorMessage}</span>
-          </div>
-        )}
-
-        {/* 2-Column Checkout Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
-          {/* Left Column: Customer & Shipping & Square Form (7 cols) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 mt-12 sm:mt-16">
           <div className="lg:col-span-7 space-y-8">
-            <div className="bg-graphite/40 border border-line p-6 sm:p-8 space-y-8">
+            <div className="space-y-3">
+              <div className="folio text-gold">Allocation</div>
+              <h1 className="font-display-mega text-5xl sm:text-7xl lg:text-8xl text-white uppercase leading-[0.9] tracking-[-0.02em]">
+                Secure the{' '}
+                <span
+                  className="italic text-hollow-gold"
+                  style={{ fontFamily: "'PP Editorial New', serif" }}
+                >
+                  allocation.
+                </span>
+              </h1>
+            </div>
+
+            <div className="border border-hairline p-6 sm:p-10 space-y-8 bg-black">
               <ShippingForm info={customerInfo} onChange={handleFieldChange} />
-              
-              <SquarePaymentForm
-                items={items}
-                customerInfo={customerInfo}
-                isProcessing={isProcessing}
-                onPaymentSuccess={handlePaymentSuccess}
-                onPaymentError={handlePaymentError}
-              />
+
+              <div className="border-t border-hairline pt-8">
+                <SquarePaymentForm
+                  items={items}
+                  customerInfo={customerInfo}
+                  isProcessing={isProcessing}
+                  onPaymentSuccess={handlePaymentSuccess}
+                  onPaymentError={handlePaymentError}
+                />
+              </div>
             </div>
           </div>
 
-          {/* Right Column: Sticky Order Summary (5 cols) */}
-          <div className="lg:col-span-5 sticky top-28">
+          <div className="lg:col-span-5 lg:sticky lg:top-32">
             <OrderSummary
               items={items}
               subtotal={subtotal}
@@ -137,7 +135,6 @@ export const CheckoutPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Completed Order Confirmation Modal */}
       {completedOrder && (
         <OrderSuccessModal
           order={completedOrder}

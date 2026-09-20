@@ -9,18 +9,6 @@ declare global {
   }
 }
 
-/**
- * INLINE SQUARE EXPRESS CHECKOUT (cart drawer)
- * --------------------------------------------
- * Instant-pay lane embedded in the cart overlay: the Square Web Payments
- * SDK card fields mount directly in the drawer, tokenize client-side
- * (PCI SAQ-A — raw card data never touches our code), and the token is
- * charged server-side via POST /api/square/checkout.
- *
- * - Real SDK mode when window.Square + app credentials are available.
- * - Simulated token mode otherwise (sandbox/dev) so the full flow stays
- *   demonstrable; the server still validates and creates the order.
- */
 export const InlineSquareCheckout: React.FC<{
   items: CartItem[];
   subtotal: number;
@@ -52,18 +40,18 @@ export const InlineSquareCheckout: React.FC<{
         const card = await payments.card({
           style: {
             '.input-container': {
-              borderColor: 'rgba(231, 225, 215, 0.17)',
+              borderColor: 'rgba(255, 255, 255, 0.20)',
               borderRadius: '0px',
             },
-            '.input-container.is-focus': { borderColor: '#AD8A48' },
-            '.input-container.is-error': { borderColor: '#743530' },
+            '.input-container.is-focus': { borderColor: '#C79F3D' },
+            '.input-container.is-error': { borderColor: '#683B16' },
             input: {
-              backgroundColor: '#050505',
-              color: '#E7E1D7',
-              fontFamily: 'JetBrains Mono, monospace',
+              backgroundColor: '#000000',
+              color: '#FFFFFF',
+              fontFamily: 'Inter Tight, sans-serif',
               fontSize: '12px',
             },
-            'input::placeholder': { color: '#9A958D' },
+            'input::placeholder': { color: '#999999' },
           },
         });
         if (cardContainerRef.current && mounted) {
@@ -84,9 +72,7 @@ export const InlineSquareCheckout: React.FC<{
       if (cardInstanceRef.current) {
         try {
           cardInstanceRef.current.destroy();
-        } catch {
-          /* noop */
-        }
+        } catch {}
         cardInstanceRef.current = null;
       }
     };
@@ -103,7 +89,7 @@ export const InlineSquareCheckout: React.FC<{
     setError(null);
 
     try {
-      let token = 'cnon:card-nonce-ok'; // simulated sandbox token
+      let token = 'cnon:card-nonce-ok';
 
       if (sdkReady && cardInstanceRef.current) {
         const result = await cardInstanceRef.current.tokenize();
@@ -149,93 +135,82 @@ export const InlineSquareCheckout: React.FC<{
 
   return (
     <div className="space-y-5">
-      {/* Header */}
-      <div className="flex items-center justify-between border-b border-line pb-3">
+      <div className="flex items-center justify-between border-b border-hairline pb-3">
         <div className="flex items-center gap-2">
           <Zap size={12} className="text-gold" />
-          <span className="font-mono text-[10px] text-gold tracking-[0.25em] uppercase font-bold">
-            Express Lane / Instant Pay
+          <span className="font-mono text-[10px] text-gold tracking-[0.25em] uppercase">
+            Express Lane — Instant Pay
           </span>
         </div>
-        <div className="flex items-center gap-1.5 font-mono text-[9px] text-smoke uppercase">
+        <div className="flex items-center gap-1.5 font-mono text-[9px] text-white/40 uppercase tracking-[0.2em]">
           <Lock size={10} className="text-gold" />
-          Square Secured
+          Square secured
         </div>
       </div>
 
-      {/* Email */}
-      <label className="block space-y-1.5">
-        <span className="font-mono text-[9px] text-smoke tracking-[0.2em] uppercase">
-          Order Email (required)
-        </span>
+      <label className="block space-y-2">
+        <span className="folio">Email</span>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="CLIENT@DOMAIN.COM"
+          placeholder="Enter your email"
           autoComplete="email"
-          className="w-full bg-black border border-line focus:border-gold outline-none px-3 py-2.5 font-mono text-xs text-bone placeholder:text-smoke/50 uppercase tracking-wider transition-colors"
+          className="w-full bg-transparent border-b border-hairline focus:border-gold outline-none py-2 font-body text-base text-white placeholder:text-white/30 transition-colors"
         />
       </label>
 
-      {/* Square card mount (or simulated notice) */}
-      <div className="space-y-1.5">
-        <div className="flex items-center justify-between font-mono text-[9px] text-smoke tracking-[0.2em] uppercase">
-          <span>Card — Tokenized by Square</span>
-          <span className="text-gold/80">{simulated ? 'SANDBOX SIMULATION' : 'HOSTED FIELDS'}</span>
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="folio">Card</span>
+          <span className="font-mono text-[9px] tracking-[0.2em] uppercase text-white/40">
+            {simulated ? 'Sandbox simulation' : 'Hosted fields'}
+          </span>
         </div>
-        <div
-          ref={cardContainerRef}
-          className={`min-h-[76px] border border-line bg-black p-2.5 ${simulated ? 'hidden' : 'block'}`}
-        />
+        <div ref={cardContainerRef} className={`min-h-[76px] border border-hairline bg-black p-3 ${simulated ? 'hidden' : 'block'}`} />
         {simulated && (
-          <div className="border border-line bg-black p-3.5 font-mono text-[10px] text-smoke leading-relaxed">
-            SQUARE SDK UNAVAILABLE IN THIS ENVIRONMENT — EXPRESS PAY WILL SUBMIT A SIMULATED
-            SANDBOX TOKEN. THE SERVER STILL VALIDATES STOCK, PRICING, AND CREATES THE ORDER
-            RECORD END-TO-END.
+          <div className="border border-hairline p-3.5 font-mono text-[10px] text-white/50 leading-relaxed">
+            Square SDK unavailable in this environment — express pay will submit a simulated sandbox token. The server still validates stock, pricing, and creates the order record end-to-end.
           </div>
         )}
       </div>
 
-      {/* Error line */}
       {status === 'error' && error && (
-        <div className="flex items-start gap-2 border border-archive-red/50 bg-archive-red/10 p-3 font-mono text-[10px] text-bone leading-relaxed">
-          <AlertCircle size={12} className="text-archive-red shrink-0 mt-0.5" />
+        <div className="flex items-start gap-2 border border-gold/40 bg-gold/5 p-3 font-mono text-[10px] text-white leading-relaxed">
+          <AlertCircle size={12} className="text-gold shrink-0 mt-0.5" />
           <span>{error}</span>
         </div>
       )}
 
-      {/* Total + Pay */}
-      <div className="space-y-3 border-t border-line pt-4">
-        <div className="flex items-center justify-between font-mono text-xs">
-          <span className="text-smoke tracking-wider">TOTAL (SHIPPING COMPLIMENTARY)</span>
-          <span className="text-gold font-bold text-base">{formatCurrency(subtotal)}</span>
+      <div className="space-y-3 border-t border-hairline pt-4">
+        <div className="flex items-center justify-between">
+          <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/50">Total</span>
+          <span className="font-display text-2xl text-white">{formatCurrency(subtotal)}</span>
         </div>
 
         <button
           onClick={handlePay}
           disabled={status === 'processing' || items.length === 0}
-          className="w-full bg-gold hover:bg-gold-soft disabled:opacity-60 text-black py-3.5 px-6 font-mono text-xs font-bold tracking-[0.25em] uppercase flex items-center justify-center gap-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-bone"
+          className="btn-gold w-full justify-center disabled:opacity-50"
         >
           {status === 'processing' ? (
             <>
-              <Loader2 size={13} className="animate-spin" /> Processing…
+              <Loader2 size={13} className="animate-spin" />
+              Processing
             </>
           ) : (
             <>
-              <Zap size={13} /> Pay {formatCurrency(subtotal)}
+              <Zap size={13} />
+              Pay {formatCurrency(subtotal)}
             </>
           )}
         </button>
 
         <div className="flex items-center justify-between">
-          <button
-            onClick={onCancel}
-            className="font-mono text-[10px] text-smoke hover:text-bone tracking-[0.2em] uppercase transition-colors"
-          >
-            ← Back to bag
+          <button onClick={onCancel} className="link-arrow text-white/40 hover:text-white text-[10px]">
+            <ArrowLeftIcon /> Back to bag
           </button>
-          <span className="font-mono text-[9px] text-smoke/60 tracking-[0.15em] uppercase">
+          <span className="font-mono text-[9px] text-white/40 tracking-[0.2em] uppercase">
             Shipping confirmed by email
           </span>
         </div>
@@ -243,3 +218,9 @@ export const InlineSquareCheckout: React.FC<{
     </div>
   );
 };
+
+const ArrowLeftIcon = () => (
+  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M19 12H5M12 19l-7-7 7-7" />
+  </svg>
+);

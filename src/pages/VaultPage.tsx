@@ -3,29 +3,20 @@ import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X, ArrowUpRight, Camera, Layers, Aperture } from 'lucide-react';
 import { useVaultStories, VaultSource } from '../services/sanityVault';
-import { VelocityText } from '../components/common/VelocityText';
 import { OptimizedImage } from '../components/common/OptimizedImage';
 import { TiltCard } from '../components/common/TiltCard';
-import { EASE, badgeBlurIn, revealUp } from '../motion/tokens';
 import { RELEASED_PRODUCTS } from '../data/products';
-import { SectionLookbookStack } from '../components/home/SectionLookbookStack';
-import { SectionHorizontalGallery } from '../components/home/SectionHorizontalGallery';
 import type { VaultCategory, VaultStory } from '../types';
 
 /**
- * THE ARCHIVE — /vault
- * --------------------
- * Editorial vault: campaign lookbooks, "Gen Effects" process assets and
- * silver-gelatin photographic stories. Content is published in Sanity
- * Studio by the site owner (see sanity/schemas.ts); this page renders
- * the live Content Lake when configured and the bundled archive
- * otherwise — identical shape, zero downtime.
+ * THE PLATES — /vault
+ * Editorial archive: featured dossier + asymmetric grid + glass modal.
  */
 
 const CATEGORY_ICON: Record<VaultCategory, React.ReactNode> = {
-  CAMPAIGN: <Aperture size={12} />,
-  'GEN EFFECTS': <Layers size={12} />,
-  'SILVER-GELATIN': <Camera size={12} />,
+  CAMPAIGN: <Aperture size={11} strokeWidth={1.5} />,
+  'GEN EFFECTS': <Layers size={11} strokeWidth={1.5} />,
+  'SILVER-GELATIN': <Camera size={11} strokeWidth={1.5} />,
 };
 
 const FILTERS: ('ALL' | VaultCategory)[] = ['ALL', 'CAMPAIGN', 'GEN EFFECTS', 'SILVER-GELATIN'];
@@ -34,7 +25,7 @@ const stamp = (iso: string) =>
   new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).toUpperCase();
 
 export const VaultPage: React.FC = () => {
-  const { stories, source, loading } = useVaultStories();
+  const { stories, source } = useVaultStories();
   const [filter, setFilter] = useState<'ALL' | VaultCategory>('ALL');
   const [openStory, setOpenStory] = useState<VaultStory | null>(null);
 
@@ -42,286 +33,312 @@ export const VaultPage: React.FC = () => {
   const featured = filtered.find((s) => s.featured) ?? filtered[0];
   const rest = filtered.filter((s) => s.id !== featured?.id);
 
-  // Lock scroll while the dossier modal is open
   useEffect(() => {
-    document.body.style.overflow = openStory ? 'hidden' : 'unset';
+    document.body.style.overflow = openStory ? 'hidden' : '';
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = '';
     };
   }, [openStory]);
 
   const linkedProducts = (story: VaultStory) =>
     RELEASED_PRODUCTS.filter((p) => story.linkedSquareItemIds.includes(p.id));
 
-  const sourceChip = (s: VaultSource) =>
-    s === 'SANITY' ? (
-      <>
-        <span className="w-1.5 h-1.5 bg-gold animate-pulse-subtle" />
-        <span className="text-gold font-bold">SANITY STUDIO / LIVE</span>
-      </>
-    ) : (
-      <>
-        <span className="w-1.5 h-1.5 bg-smoke" />
-        <span className="text-ash">LOCAL ARCHIVE / STUDIO OFFLINE</span>
-      </>
-    );
-
   return (
-    <div className="min-h-screen bg-paper text-ink pt-28 sm:pt-36 pb-24 selection:bg-gold-dark selection:text-paper">
-      <div className="absolute inset-0 bg-archival-grid opacity-25 pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 md:px-12 relative z-10">
-        {/* ---- Page header ---- */}
+    <div className="relative bg-black text-bone pt-24 sm:pt-32 pb-24 min-h-screen">
+      <div className="max-w-[1760px] mx-auto px-5 sm:px-8 md:px-12">
+        {/* ─── HEADER ─── */}
         <motion.div
-          variants={revealUp()}
-          initial="hidden"
-          animate="visible"
-          className="border-b border-line-dark pb-8 mb-10 sm:mb-14"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 pb-10 sm:pb-14 border-b border-hairline"
         >
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-gold inline-block" />
-                <span className="font-mono text-xs text-gold-dark tracking-[0.25em] uppercase font-bold">
-                  PAGE 10 / THE PLATES — EDITORIAL ARCHIVE
-                </span>
-              </div>
-              <h1 className="text-5xl sm:text-7xl md:text-8xl uppercase text-ink">
-                <VelocityText>THE VAULT</VelocityText>
-              </h1>
-              <p className="font-serif italic text-lg sm:text-xl text-ash max-w-xl">
-                Campaign lookbooks, process artifacts, and silver-gelatin stories.
-              </p>
+          <div className="lg:col-span-8 space-y-6">
+            <div className="flex items-center gap-4">
+              <span className="folio text-gold">Page 10 — The Plates</span>
+              <span className="text-bone/20">—</span>
+              <span className="folio text-bone/50">Editorial Archive</span>
             </div>
-            <div className="font-mono text-[10px] tracking-[0.2em] uppercase flex items-center gap-2 border border-line-dark bg-white/60 px-3 py-2 w-fit">
-              {sourceChip(source)}
-            </div>
+            <h1 className="font-display-tight text-[15vw] sm:text-[11vw] lg:text-[9vw] leading-[0.84] tracking-[-0.005em]">
+              The{' '}
+              <span
+                className="italic text-gold-shine"
+                style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic", fontWeight: 400 }}
+              >
+                plates.
+              </span>
+            </h1>
+            <p
+              className="text-xl sm:text-2xl text-bone/70 max-w-xl leading-snug"
+              style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+            >
+              Campaign lookbooks, process artifacts, and silver-gelatin photographic stories from the studio.
+            </p>
           </div>
 
-          {/* Category filters */}
-          <div className="mt-8 pt-6 border-t border-line/50 flex flex-wrap items-center gap-2">
-            {FILTERS.map((f) => (
-              <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className={`px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.15em] transition-colors border flex items-center gap-1.5 ${
-                  filter === f
-                    ? 'border-ink bg-ink text-paper font-bold'
-                    : 'border-line-dark bg-white/50 text-ash hover:text-ink hover:border-ink/40'
-                }`}
-              >
-                {f !== 'ALL' && CATEGORY_ICON[f as VaultCategory]}
-                {f}
-              </button>
-            ))}
-            <span className="ml-auto font-mono text-[10px] text-ash tracking-[0.2em] hidden sm:inline">
-              {filtered.length} PLATE{filtered.length === 1 ? '' : 'S'} ON FILE
-            </span>
+          <div className="lg:col-span-4 space-y-6 lg:pt-6">
+            <div className="border border-hairline px-4 py-3 flex items-center gap-2 w-fit">
+              <span className={`w-1.5 h-1.5 ${source === 'SANITY' ? 'bg-gold animate-pulse-subtle' : 'bg-bone/40'}`} />
+              <span className="folio">{source === 'SANITY' ? 'Sanity Studio — Live' : 'Local Archive — Studio Offline'}</span>
+            </div>
+            <div className="space-y-2 text-sm text-bone/50 leading-relaxed">
+              <p>
+                Each plate is a published entry — campaign photography, generative process studies, or 35mm silver-gelatin originals.
+              </p>
+            </div>
           </div>
         </motion.div>
 
-        {/* ---- Featured dossier ---- */}
+        {/* Filters */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.1 }}
+          className="mt-8 sm:mt-10 flex flex-wrap items-center gap-3"
+        >
+          {FILTERS.map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`chip ${filter === f ? 'is-active' : ''}`}
+            >
+              {f !== 'ALL' && CATEGORY_ICON[f as VaultCategory]}
+              <span>{f === 'ALL' ? 'All Plates' : f.charAt(0) + f.slice(1).toLowerCase().replace('-', ' ')}</span>
+            </button>
+          ))}
+          <span className="ml-auto folio text-bone/40">
+            {filtered.length} plate{filtered.length === 1 ? '' : 's'} on file
+          </span>
+        </motion.div>
+
+        {/* ─── FEATURED DOSSIER ─── */}
         {featured && (
-          <motion.div variants={revealUp(0.08)} initial="hidden" animate="visible">
-          <TiltCard maxTilt={3} className="block mb-10 sm:mb-14">
-          <motion.article
-            className="group bg-white/70 border border-line-dark shadow-paper hover:border-gold-dark/70 grid grid-cols-1 lg:grid-cols-12 transition-colors cursor-pointer"
-            onClick={() => setOpenStory(featured)}
-            data-cursor="view"
-            data-cursor-label="EXPLORE"
+          <motion.div
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-12 sm:mt-20"
           >
-            <div className="lg:col-span-7 relative aspect-[16/10] lg:aspect-auto lg:min-h-[440px] overflow-hidden">
-              <OptimizedImage
-                src={featured.coverImage}
-                alt={featured.title}
-                className="absolute inset-0 w-full h-full object-cover grayscale contrast-125 brightness-90 group-hover:brightness-100 transition-[filter] duration-700"
-                loading="eager"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
-              <div className="absolute top-4 left-4 flex items-center gap-1.5 bg-black/80 border border-gold/50 px-2.5 py-1 font-mono text-[9px] tracking-[0.2em] text-gold font-bold uppercase">
-                {CATEGORY_ICON[featured.category]}
-                FEATURED / {featured.category}
-              </div>
-            </div>
-            <div className="lg:col-span-5 p-7 sm:p-10 flex flex-col justify-between gap-6">
-              <div className="space-y-4">
-                <div className="font-mono text-[10px] text-ash tracking-[0.25em]">
-                  {stamp(featured.publishedAt)} — PLATE FILE {featured.slug.toUpperCase()}
+            <TiltCard maxTilt={2} className="block">
+              <article
+                className="group grid grid-cols-1 lg:grid-cols-12 gap-0 border border-hairline hover:border-gold transition-colors cursor-pointer"
+                onClick={() => setOpenStory(featured)}
+                data-cursor="view"
+                data-cursor-label="Explore"
+              >
+                <div className="lg:col-span-8 relative aspect-[4/3] lg:aspect-auto lg:min-h-[560px] overflow-hidden bg-ink">
+                  <OptimizedImage
+                    src={featured.coverImage}
+                    alt={featured.title}
+                    className="absolute inset-0 w-full h-full object-cover img-bw group-hover:scale-[1.03] transition-transform duration-[1400ms]"
+                  />
+                  <div className="absolute inset-0 overlay-bottom opacity-80" />
+                  <div className="absolute top-5 left-5 flex items-center gap-2">
+                    <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-gold border border-gold/60 px-2.5 py-1 bg-black/70">
+                      Featured
+                    </span>
+                    <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-bone/70 px-2.5 py-1 border border-bone/30 bg-black/70">
+                      {featured.category}
+                    </span>
+                  </div>
+                  <div className="absolute bottom-6 left-6 right-6">
+                    <div className="folio text-bone/50 mb-2">Cover plate</div>
+                    <h2
+                      className="text-4xl sm:text-6xl lg:text-7xl text-bone leading-[0.92] tracking-[-0.005em] uppercase"
+                      style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+                    >
+                      {featured.title}
+                    </h2>
+                  </div>
                 </div>
-                <h2 className="font-serif font-bold uppercase text-3xl sm:text-4xl text-ink leading-[0.95]">
-                  {featured.title}
-                </h2>
-                <p className="font-utility text-sm text-ash leading-relaxed">{featured.summary}</p>
-              </div>
-              <div className="space-y-4">
-                <div className="font-mono text-[9px] text-ash/80 tracking-[0.15em] uppercase">
-                  {featured.credits.map((c) => (
-                    <div key={c}>{c}</div>
-                  ))}
+                <div className="lg:col-span-4 p-8 lg:p-12 flex flex-col justify-between gap-8 bg-black">
+                  <div className="space-y-6">
+                    <div className="folio text-gold">{stamp(featured.publishedAt)}</div>
+                    <p
+                      className="text-xl sm:text-2xl text-bone/85 leading-snug"
+                      style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+                    >
+                      {featured.summary}
+                    </p>
+                  </div>
+                  <div className="space-y-4 pt-6 border-t border-hairline">
+                    <div className="font-mono text-[10px] tracking-[0.22em] uppercase text-bone/40 space-y-1">
+                      {featured.credits.map((c) => (
+                        <div key={c}>{c}</div>
+                      ))}
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="folio text-bone/50">{featured.gallery.length} plates</span>
+                      <span className="link-arrow text-bone group-hover:text-gold">
+                        Open Plate <ArrowUpRight size={14} className="arrow-icon" />
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between border-t border-line-dark pt-4">
-                  <span className="font-mono text-[10px] text-ash tracking-[0.2em]">
-                    {featured.gallery.length} PLATES
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold tracking-[0.2em] text-ink group-hover:text-gold-dark transition-colors uppercase">
-                    Open Plate <ArrowUpRight size={13} />
-                  </span>
-                </div>
-              </div>
-            </div>
-          </motion.article>
-          </TiltCard>
+              </article>
+            </TiltCard>
           </motion.div>
         )}
 
-        {/* ---- Story grid (asymmetrical) ---- */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8">
+        {/* ─── ASYMMETRIC GRID ─── */}
+        <div className="mt-16 sm:mt-24 grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8">
           {rest.map((story, i) => (
             <motion.article
               key={story.id}
-              variants={revealUp(0.1 + i * 0.05)}
-              initial="hidden"
-              animate="visible"
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.9, delay: (i % 4) * 0.05 }}
               onClick={() => setOpenStory(story)}
               data-cursor="view"
-              data-cursor-label="EXPLORE"
-              className={`group bg-white/70 border border-line-dark shadow-paper hover:border-gold-dark/70 cursor-pointer transition-colors flex flex-col ${
-                i % 3 === 1 ? 'md:col-span-5' : 'md:col-span-7'
-              } ${i === 0 ? 'md:col-span-12' : ''}`}
+              data-cursor-label="Explore"
+              className={`group cursor-pointer border border-hairline hover:border-gold transition-colors flex flex-col bg-black ${
+                i % 5 === 0 ? 'md:col-span-7' : i % 5 === 1 ? 'md:col-span-5' : i % 5 === 2 ? 'md:col-span-5' : i % 5 === 3 ? 'md:col-span-7' : 'md:col-span-12'
+              }`}
             >
-              <div className={`relative overflow-hidden ${i === 0 ? 'aspect-[21/9]' : 'aspect-[4/3]'}`}>
+              <div className={`relative overflow-hidden bg-ink ${i % 5 === 4 ? 'aspect-[21/9]' : 'aspect-[4/3]'}`}>
                 <OptimizedImage
                   src={story.coverImage}
                   alt={story.title}
-                  className="absolute inset-0 w-full h-full object-cover grayscale contrast-125 brightness-90 group-hover:scale-[1.03] group-hover:brightness-100 transition-all duration-700"
+                  className="absolute inset-0 w-full h-full object-cover img-bw group-hover:scale-[1.04] transition-transform duration-[1400ms]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
-                <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-black/80 border border-line px-2 py-0.5 font-mono text-[8px] tracking-[0.2em] text-smoke uppercase">
-                  {CATEGORY_ICON[story.category]}
-                  {story.category}
+                <div className="absolute inset-0 overlay-bottom opacity-80" />
+                <div className="absolute top-4 left-4 flex items-center gap-2">
+                  <span className="font-mono text-[9px] tracking-[0.28em] uppercase text-bone border border-bone/30 bg-black/70 px-2 py-1 flex items-center gap-1.5">
+                    {CATEGORY_ICON[story.category]}
+                    {story.category}
+                  </span>
                 </div>
-                <div className="absolute bottom-3 right-3 font-mono text-[9px] text-smoke bg-black/70 px-2 py-0.5 border border-line/50">
+                <div className="absolute bottom-4 right-4 font-mono text-[9px] tracking-[0.24em] text-bone/60 bg-black/70 px-2 py-1 border border-hairline">
                   {stamp(story.publishedAt)}
                 </div>
               </div>
-              <div className="p-5 sm:p-6 flex items-start justify-between gap-4">
-                <div className="space-y-2">
-                  <h3 className="font-serif font-bold uppercase text-xl sm:text-2xl text-ink group-hover:text-gold-dark transition-colors leading-tight">
+              <div className="p-6 lg:p-8 flex items-start justify-between gap-4 flex-1">
+                <div className="space-y-2 flex-1">
+                  <h3
+                    className="text-2xl sm:text-3xl text-bone group-hover:text-gold transition-colors leading-[0.92] uppercase"
+                    style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+                  >
                     {story.title}
                   </h3>
-                  <p className="font-utility text-xs text-ash leading-relaxed line-clamp-2">{story.summary}</p>
+                  <p
+                    className="text-sm text-bone/55 leading-relaxed line-clamp-2"
+                    style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+                  >
+                    {story.summary}
+                  </p>
                 </div>
                 <ArrowUpRight
-                  size={16}
-                  className="shrink-0 text-ash group-hover:text-gold-dark group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all mt-1"
+                  size={18}
+                  strokeWidth={1.2}
+                  className="shrink-0 text-bone/40 group-hover:text-gold group-hover:translate-x-1 group-hover:-translate-y-1 transition-all mt-1"
                 />
               </div>
             </motion.article>
           ))}
         </div>
 
-        {filtered.length === 0 && !loading && (
-          <div className="border border-line-dark bg-white/40 p-12 text-center font-mono text-xs text-ash tracking-[0.2em] uppercase">
-            No documents on file for this category yet.
+        {filtered.length === 0 && (
+          <div className="mt-12 border border-hairline bg-black p-16 text-center">
+            <div className="folio text-bone/40 mb-3">No documents</div>
+            <p className="text-bone/50">No plates on file for this category yet.</p>
           </div>
         )}
       </div>
 
-      {/* ---- Motion archive (relocated from the homepage v2 restructure) ---- */}
-      <SectionLookbookStack />
-      <SectionHorizontalGallery />
-
-      {/* ---- Dossier modal (glass) ---- */}
+      {/* ─── DOSSIER MODAL ─── */}
       <AnimatePresence>
         {openStory && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8" role="dialog" aria-modal="true">
+          <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 md:p-8" role="dialog" aria-modal="true">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.32, ease: EASE.aperture }}
+              transition={{ duration: 0.4 }}
               onClick={() => setOpenStory(null)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-[20px]"
+              className="fixed inset-0 bg-black/90 backdrop-blur-xl"
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.92, y: 26, filter: 'blur(10px)' }}
-              animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, scale: 0.94, y: 14, filter: 'blur(8px)' }}
-              transition={{ duration: 0.5, ease: EASE.cinematicOut }}
-              className="glass-panel-heavy glass-metal-top relative z-10 w-full max-w-5xl max-h-[90vh] overflow-y-auto no-scrollbar"
+              initial={{ opacity: 0, scale: 0.96, y: 24 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98, y: 12 }}
+              transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+              className="glass-heavy relative z-10 w-full max-w-5xl max-h-[90vh] overflow-y-auto no-scrollbar"
             >
               <button
                 onClick={() => setOpenStory(null)}
-                className="absolute top-4 right-4 z-20 bg-black/80 border border-line p-2 text-bone hover:text-gold hover:border-gold transition-colors"
-                aria-label="Close dossier"
+                className="absolute top-5 right-5 z-20 p-2 text-bone/60 hover:text-gold transition-colors"
+                aria-label="Close"
               >
-                <X size={18} />
+                <X size={20} strokeWidth={1.2} />
               </button>
 
-              {/* Cover plate */}
-              <div className="relative aspect-[21/9] overflow-hidden">
+              <div className="relative aspect-[21/9] overflow-hidden bg-ink">
                 <OptimizedImage
                   src={openStory.coverImage}
                   alt={openStory.title}
-                  className="w-full h-full object-cover grayscale contrast-125 brightness-90"
+                  className="w-full h-full object-cover img-bw"
                   loading="eager"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-                <div className="absolute bottom-5 left-6 sm:left-10 right-6">
-                  <div className="flex items-center gap-2 font-mono text-[10px] text-gold tracking-[0.25em] uppercase font-bold mb-2">
+                <div className="absolute inset-0 overlay-cinema opacity-80" />
+                <div className="absolute bottom-6 left-6 sm:left-10 right-16">
+                  <div className="flex items-center gap-2 mb-3 font-mono text-[10px] text-gold tracking-[0.28em] uppercase">
                     {CATEGORY_ICON[openStory.category]}
                     {openStory.category} — {stamp(openStory.publishedAt)}
                   </div>
-                  <h2 className="font-serif font-bold uppercase text-3xl sm:text-5xl text-bone leading-[0.95]">
+                  <h2
+                    className="text-4xl sm:text-6xl text-bone leading-[0.92] tracking-[-0.005em] uppercase"
+                    style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+                  >
                     {openStory.title}
                   </h2>
                 </div>
               </div>
 
-              <div className="p-6 sm:p-10 space-y-8">
-                <p className="font-serif italic text-lg sm:text-xl text-bone/90 leading-relaxed max-w-3xl">
+              <div className="p-6 sm:p-12 space-y-10">
+                <p
+                  className="text-2xl sm:text-3xl text-bone/85 leading-snug max-w-3xl"
+                  style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+                >
                   {openStory.summary}
                 </p>
 
-                {/* Gallery strip */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {openStory.gallery.map((plate) => (
-                    <figure key={plate.src} className="border border-line bg-black/60 overflow-hidden group/plate">
+                    <figure key={plate.src} className="border border-hairline bg-ink overflow-hidden group/plate">
                       <div className="aspect-[4/5] overflow-hidden">
                         <OptimizedImage
                           src={plate.src}
                           alt={plate.label || openStory.title}
-                          className="w-full h-full object-cover grayscale contrast-125 brightness-90 group-hover/plate:brightness-100 transition-[filter] duration-500"
+                          className="w-full h-full object-cover img-bw group-hover/plate:scale-105 transition-transform duration-700"
                         />
                       </div>
-                      <figcaption className="px-2 py-1.5 font-mono text-[8px] tracking-[0.18em] text-smoke uppercase border-t border-line">
+                      <figcaption className="px-2 py-1.5 font-mono text-[9px] tracking-[0.22em] text-bone/40 uppercase border-t border-hairline">
                         {plate.label}
                       </figcaption>
                     </figure>
                   ))}
                 </div>
 
-                {/* Credits + linked items */}
-                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-t border-line pt-6">
-                  <div className="font-mono text-[9px] text-smoke/70 tracking-[0.15em] uppercase space-y-1">
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-t border-hairline pt-8">
+                  <div className="font-mono text-[10px] text-bone/40 tracking-[0.22em] uppercase space-y-1">
                     {openStory.credits.map((c) => (
                       <div key={c}>{c}</div>
                     ))}
                   </div>
                   {linkedProducts(openStory).length > 0 && (
-                    <div className="space-y-2">
-                      <div className="font-mono text-[9px] text-gold tracking-[0.25em] uppercase font-bold">
-                        Shop the story
-                      </div>
+                    <div className="space-y-3">
+                      <div className="folio text-gold">Shop the story</div>
                       <div className="flex flex-wrap gap-2">
                         {linkedProducts(openStory).map((p) => (
                           <Link
                             key={p.id}
                             to={`/shop/${p.slug}`}
                             onClick={() => setOpenStory(null)}
-                            className="font-mono text-[10px] tracking-[0.15em] uppercase border border-gold/60 text-bone hover:bg-gold hover:text-black px-3 py-1.5 transition-colors"
+                            className="link-arrow text-bone hover:text-gold"
                           >
-                            {p.name} — ${p.price}
+                            {p.name} <ArrowUpRight size={12} className="arrow-icon" />
                           </Link>
                         ))}
                       </div>

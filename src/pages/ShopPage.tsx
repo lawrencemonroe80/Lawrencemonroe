@@ -1,47 +1,31 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowUpRight, Lock, Plus, Check } from 'lucide-react';
+import { ArrowUpRight, Lock } from 'lucide-react';
 import { RELEASED_PRODUCTS } from '../data/products';
 import { formatCurrency } from '../utils/format';
 import { useCartStore } from '../store/cartStore';
-import { brandAssets } from '../data/assets';
 import { useCatalogFeed } from '../services/squareCatalog';
-import { AssetInspector } from '../components/common/AssetInspector';
 import { TiltCard } from '../components/common/TiltCard';
-import { VelocityText } from '../components/common/VelocityText';
-import { revealUp } from '../motion/tokens';
 import type { CatalogItem, Product, Size } from '../types';
 
 /**
- * SHOP / COLLECTION CATALOG — /shop
- * ---------------------------------
- * Grid-based luxury catalog powered by the Square Catalog API via
- * `/api/square/catalog` (live pricing, size variations S–XXL, inventory)
- * with the bundled Release 001 dossier as fallback.
- *
- * Card mechanics:
- *   - Live variant selection: size chips reflect Square variation stock;
- *     unavailable sizes are struck and disabled.
- *   - Quick-add: adds the selected variation straight to the cart
- *     drawer (which carries the inline Square express checkout).
- *   - Hover: macro-zoom inspection lens on the media plate.
+ * THE EDIT — /shop
+ * Editorial fashion catalog. Hero piece + asymmetric product grid.
  */
 
 type Collection = 'new' | 'essentials' | 'lookbook';
 
-/** Curated collection membership for the bundled catalog; live Square
- *  items default to NEW ARRIVALS. */
 const COLLECTIONS: Record<string, Collection[]> = {
   'lm-shorts-001': ['new', 'essentials'],
   'lm-shorts-002': ['essentials', 'lookbook'],
 };
 
 const COLLECTION_TABS: { id: 'ALL' | Collection; label: string }[] = [
-  { id: 'ALL', label: 'ALL SPECIMENS' },
-  { id: 'new', label: 'NEW ARRIVALS' },
-  { id: 'essentials', label: 'ESSENTIALS' },
-  { id: 'lookbook', label: 'LOOKBOOK EXCLUSIVES' },
+  { id: 'ALL', label: 'All Pieces' },
+  { id: 'new', label: 'New Arrivals' },
+  { id: 'essentials', label: 'Essentials' },
+  { id: 'lookbook', label: 'Lookbook Exclusives' },
 ];
 
 interface ShopCard {
@@ -49,7 +33,6 @@ interface ShopCard {
   live?: CatalogItem;
 }
 
-/** Normalize a size label ("Small"/"S"/"XXL") to the storefront Size union. */
 const normalizeSize = (name: string): Size => {
   const s = name.trim().toUpperCase();
   if (s.startsWith('XXL')) return 'XXL';
@@ -60,11 +43,10 @@ const normalizeSize = (name: string): Size => {
   return 'M';
 };
 
-const ProductCard: React.FC<{ card: ShopCard; index: number }> = ({ card: { product, live }, index }) => {
+const ProductCard: React.FC<{ card: ShopCard; index: number; large?: boolean }> = ({ card: { product, live }, index, large = false }) => {
   const { addItem, openCart } = useCartStore();
   const [added, setAdded] = useState(false);
 
-  // Variant list — live Square variations or bundled sizes
   const variants = useMemo(() => {
     if (live?.variations.length) {
       return live.variations.map((v) => ({
@@ -86,9 +68,6 @@ const ProductCard: React.FC<{ card: ShopCard; index: number }> = ({ card: { prod
     () => variants.find((v) => v.available)?.size ?? variants[0]?.size ?? 'M'
   );
 
-  const isHeather = product.id === 'lm-shorts-002';
-  const badgeSrc = isHeather ? brandAssets.blueBadge : brandAssets.whiteBadge;
-  const macroImage = product.images.find((i) => i.type === 'macro')?.url ?? product.images[3]?.url;
   const livePrice = live ? live.minPriceCents / 100 : product.price;
   const liveStock = live ? live.maxStock : product.stockCount;
   const soldOut = live ? !live.available : product.status === 'SOLD OUT';
@@ -118,137 +97,149 @@ const ProductCard: React.FC<{ card: ShopCard; index: number }> = ({ card: { prod
 
   return (
     <motion.div
-      variants={revealUp(index * 0.08)}
-      initial="hidden"
-      animate="visible"
-      className={`group bg-white/70 border border-line-dark shadow-paper hover:border-gold-dark/70 transition-all duration-500 flex flex-col justify-between ${
-        soldOut ? 'opacity-70 saturate-50' : ''
-      }`}
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.9, delay: index * 0.05 }}
+      className={`group ${soldOut ? 'opacity-70 saturate-50' : ''}`}
     >
-      {/* Product Header Bar */}
-      <div className="p-4 border-b border-line-dark flex items-center justify-between font-mono text-[10px]">
-        <span className="text-gold-dark tracking-widest font-bold">PLATE {product.code}</span>
-        <span
-          className={`px-2 py-0.5 border ${
-            soldOut
-              ? 'text-archive-red border-archive-red/40 bg-archive-red/10'
-              : lowStock
-                ? 'text-gold-dark border-gold-dark/40 bg-gold-dark/10 font-bold'
-                : 'text-ash bg-white/70 border-line-dark'
-          }`}
+      <TiltCard maxTilt={2} className="block">
+        <Link
+          to={product.slug ? `/shop/${product.slug}` : '/shop'}
+          className="block"
+          data-cursor="view"
+          data-cursor-label="View Piece"
         >
-          {soldOut ? 'SOLD OUT' : lowStock ? `LOW STOCK — ${liveStock} LEFT` : product.release}
-        </span>
-      </div>
-
-      {/* Main Media Stage — macro inspection + 3D tilt glare */}
-      <TiltCard maxTilt={4} className="block">
-      <Link
-        to={product.slug ? `/shop/${product.slug}` : '/shop'}
-        className="block relative aspect-[4/5] bg-black overflow-hidden"
-      >
-        <AssetInspector
-          image={product.heroImage}
-          macroImage={macroImage}
-          zoom={2.4}
-          alt={product.name}
-          className="absolute inset-0"
-          imgClassName="object-cover brightness-95 contrast-105"
-        />
-        <div className="absolute inset-0 pointer-events-none z-[8]">
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
-          {/* Official Pill Badge Stamp */}
-          <div className="absolute top-4 left-4 w-32 sm:w-36">
-            <img src={badgeSrc} alt="LawrenceMonroe" className="w-full h-auto object-contain gold-glow" />
-          </div>
-          {/* Inspect spec hint */}
-          <div className="absolute bottom-4 right-4 font-mono text-[10px] text-smoke bg-black/80 border border-line px-3 py-1.5 flex items-center space-x-1 group-hover:text-gold group-hover:border-gold transition-colors">
-            <span>INSPECT SPEC</span>
-            <ArrowUpRight size={13} />
-          </div>
-        </div>
-      </Link>
-      </TiltCard>
-
-      {/* Footer — details, variant selection, quick add */}
-      <div className="p-6 bg-white/40 border-t border-line-dark space-y-4">
-        <div className="flex items-baseline justify-between">
-          <Link to={product.slug ? `/shop/${product.slug}` : '/shop'}>
-            <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-ink group-hover:text-gold-dark transition-colors uppercase tracking-tight">
-              {product.name}
-            </h2>
-          </Link>
-          <span className="font-mono text-lg sm:text-xl font-bold text-ink">
-            {formatCurrency(livePrice)}
-          </span>
-        </div>
-
-        <p className="font-utility text-xs text-ash leading-relaxed line-clamp-2">
-          {product.shortDescription}
-        </p>
-
-        {/* Live variant selection — S through XXL */}
-        <div className="space-y-2 pt-1">
-          <div className="flex items-center justify-between font-mono text-[9px] text-ash tracking-[0.18em] uppercase">
-            <span>Select size — live stock</span>
-            <span className="text-gold-dark/90">
-              {selectedVariant?.available ? `${selectedVariant.stock} AVAILABLE` : 'UNAVAILABLE'}
+          {/* Numbered plate tag */}
+          <div className="flex items-baseline justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <span
+                className="text-2xl text-gold leading-none"
+                style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic", letterSpacing: "0.02em" }}
+              >
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-bone/40">
+                / Plate {product.code.slice(-3)}
+              </span>
+            </div>
+            <span className={`font-mono text-[10px] tracking-[0.24em] uppercase ${
+              soldOut ? 'text-bone/40' : lowStock ? 'text-gold' : 'text-bone/50'
+            }`}>
+              {soldOut ? 'Closed' : lowStock ? `Low — ${liveStock}` : product.release}
             </span>
           </div>
-          <div className="flex flex-wrap gap-1.5">
-            {variants.slice(0, 6).map((v) => {
-              const isSelected = v.size === selectedSize;
-              return (
-                <button
-                  key={v.size}
-                  onClick={() => setSelectedSize(v.size)}
-                  disabled={!v.available}
-                  aria-pressed={isSelected}
-                  className={`font-mono text-[11px] font-bold px-2.5 py-1.5 border transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-gold ${
-                    isSelected
-                      ? 'border-ink bg-ink text-paper'
-                      : v.available
-                        ? 'border-line-dark text-ink/80 bg-white/50 hover:border-ink/40'
-                        : 'border-line-dark/60 text-smoke/50 line-through bg-white/30 cursor-not-allowed'
-                  }`}
+
+          <div className="relative overflow-hidden bg-ink aspect-[4/5]">
+            <img
+              src={product.heroImage}
+              alt={product.name}
+              loading="lazy"
+              className="absolute inset-0 w-full h-full object-cover img-bw group-hover:scale-105 transition-transform duration-[1400ms]"
+            />
+            <div className="absolute inset-0 overlay-bottom opacity-60" />
+            {!soldOut && (
+              <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
+                <div className="space-y-1">
+                  <div className="folio text-gold">
+                    {product.colors[0]?.name.split('/')[0]?.trim()}
+                  </div>
+                  <div
+                    className="text-lg sm:text-xl text-bone leading-none"
+                    style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic", letterSpacing: "0.02em" }}
+                  >
+                    {variants.length > 1 ? `${variants[0].label} — ${variants[variants.length - 1].label}` : variants[0]?.label}
+                  </div>
+                </div>
+              </div>
+            )}
+            {soldOut && (
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                <span
+                  className="text-2xl text-bone uppercase"
+                  style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
                 >
-                  {v.label}
-                </button>
-              );
-            })}
+                  Allocation closed
+                </span>
+              </div>
+            )}
           </div>
+
+          {/* Below image */}
+          <div className="pt-5 space-y-3">
+            <div className="flex items-baseline justify-between gap-4">
+              <h2
+                className="text-3xl sm:text-4xl text-bone group-hover:text-gold transition-colors duration-500 leading-none uppercase"
+                style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic", letterSpacing: "0.01em" }}
+              >
+                {product.name}
+              </h2>
+              <span
+                className="text-2xl text-bone shrink-0 leading-none"
+                style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+              >
+                {formatCurrency(livePrice)}
+              </span>
+            </div>
+            <p className={`text-sm text-bone/55 leading-relaxed ${large ? 'max-w-md' : 'line-clamp-2'}`}>
+              {product.shortDescription}
+            </p>
+          </div>
+        </Link>
+      </TiltCard>
+
+      {/* Sizes + quick add */}
+      <div className="pt-5 space-y-3 border-t border-hairline mt-4">
+        <div className="flex items-center justify-between">
+          <span className="folio">Select size</span>
+          <span className="font-mono text-[10px] text-bone/40 tracking-[0.18em] uppercase">
+            {selectedVariant?.available ? `${selectedVariant.stock} available` : 'Unavailable'}
+          </span>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {variants.slice(0, 6).map((v) => {
+            const isSelected = v.size === selectedSize;
+            return (
+              <button
+                key={v.size}
+                onClick={() => setSelectedSize(v.size)}
+                disabled={!v.available}
+                aria-pressed={isSelected}
+                className={`font-mono text-sm px-3 py-1.5 border transition-colors ${
+                  isSelected
+                    ? 'border-bone bg-bone text-black'
+                    : v.available
+                      ? 'border-hairline text-bone hover:border-bone/50'
+                      : 'border-hairline/50 text-bone/30 line-through cursor-not-allowed'
+                }`}
+              >
+                {v.label}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Quick add + dossier */}
-        <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div className="flex flex-col sm:flex-row gap-2 pt-2">
           <button
             onClick={handleQuickAdd}
             disabled={quickAddDisabled}
-            data-cursor="view"
-            data-cursor-label={quickAddDisabled ? 'SOLD OUT' : 'QUICK ADD'}
-            className={`flex-1 py-3 px-4 font-mono text-[11px] font-bold tracking-[0.2em] uppercase flex items-center justify-center gap-2 focus:outline-none ${
+            className={`flex-1 py-3 font-mono text-[10px] font-medium tracking-[0.28em] uppercase transition-colors border ${
               quickAddDisabled
-                ? 'btn-metal opacity-50 cursor-not-allowed'
+                ? 'border-hairline text-bone/30 cursor-not-allowed'
                 : added
-                  ? 'btn-metal-gold'
-                  : 'btn-metal-bone'
+                  ? 'border-gold bg-gold text-black'
+                  : 'border-bone text-bone hover:bg-bone hover:text-black'
             }`}
+            data-cursor="view"
+            data-cursor-label={quickAddDisabled ? 'Sold Out' : 'Quick Add'}
           >
-            {added ? (
-              <>
-                <Check size={13} /> ADDED
-              </>
-            ) : (
-              <>
-                <Plus size={13} /> QUICK ADD {selectedSize}
-              </>
-            )}
+            {added ? 'Added' : quickAddDisabled ? 'Closed' : `Quick Add · ${selectedSize}`}
           </button>
           <Link
             to={product.slug ? `/shop/${product.slug}` : '/shop'}
-            className="btn-metal-light flex-1 py-3 px-4 font-mono text-[11px] font-bold tracking-[0.2em] uppercase flex items-center justify-center gap-2"
+            className="flex-1 py-3 font-mono text-[10px] font-medium tracking-[0.28em] uppercase border border-line-strong text-bone hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2"
           >
-            VIEW DOSSIER <ArrowUpRight size={13} />
+            View Dossier <ArrowUpRight size={11} />
           </Link>
         </div>
       </div>
@@ -260,9 +251,8 @@ export const ShopPage: React.FC = () => {
   const [activeCollection, setActiveCollection] = useState<'ALL' | Collection>('ALL');
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc'>('featured');
   const { openRequestAccess } = useCartStore();
-  const { feed, loading: feedLoading } = useCatalogFeed();
+  const { feed, loading } = useCatalogFeed();
 
-  /** Merge the bundled product dossiers with the live Square catalog. */
   const cards: ShopCard[] = useMemo(() => {
     const merged: ShopCard[] = RELEASED_PRODUCTS.map((product) => {
       const live = feed.items.find(
@@ -273,8 +263,6 @@ export const ShopPage: React.FC = () => {
       return { product, live };
     });
 
-    // Square items with no bundled dossier (owner added a new product in
-    // the Square Dashboard) → synthesized cards
     for (const item of feed.items) {
       const known = merged.some(
         (c) =>
@@ -284,13 +272,13 @@ export const ShopPage: React.FC = () => {
       if (!known) {
         merged.push({
           product: {
-            ...RELEASED_PRODUCTS[0], // structural template
+            ...RELEASED_PRODUCTS[0],
             id: item.squareItemId,
-            slug: '', // routes to catalog index until a dossier page exists
+            slug: '',
             code: item.squareItemId.toUpperCase().slice(-8),
             name: item.name,
             price: item.minPriceCents / 100,
-            release: 'SQUARE LIVE',
+            release: 'Square Live',
             status: item.available ? 'ACTIVE' : 'SOLD OUT',
             stockCount: item.maxStock,
             heroImage: item.imageUrl ?? RELEASED_PRODUCTS[0].heroImage,
@@ -323,119 +311,161 @@ export const ShopPage: React.FC = () => {
     return list;
   }, [cards, activeCollection, sortBy]);
 
-  const liveSyncLabel = feed.source === 'square' ? 'SQUARE / LIVE SYNC' : feedLoading ? 'SYNCING…' : 'LOCAL ARCHIVE';
+  const liveSyncLabel = feed.source === 'square' ? 'Square Live Sync' : loading ? 'Syncing' : 'Local Archive';
 
   return (
-    <div className="min-h-screen bg-paper text-ink pt-28 sm:pt-36 pb-24 selection:bg-gold-dark selection:text-paper">
-      {/* Background Archival Grid */}
-      <div className="absolute inset-0 bg-archival-grid opacity-25 pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 md:px-12 relative z-10">
-        {/* Page Header */}
-        <div className="border-b border-line-dark pb-8 mb-12 sm:mb-16">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="space-y-3">
-              <div className="flex items-center space-x-2">
-                <span className="w-2 h-2 bg-gold inline-block" />
-                <span className="font-mono text-xs text-gold-dark tracking-widest uppercase font-bold">
-                  PAGE 06 / THE EDIT — THE CATALOG
-                </span>
-              </div>
-              <h1 className="text-5xl sm:text-7xl md:text-8xl uppercase text-ink leading-[0.92]">
-                <VelocityText>ACTIVE PIECES</VelocityText>
-              </h1>
-              <p className="font-utility text-xs sm:text-sm text-ash max-w-lg">
-                Exclusive limited allocation. All shorts constructed from 480GSM cotton with official insignia badges and raw hemline.
-              </p>
+    <div className="relative bg-black text-bone pt-24 sm:pt-32 pb-24 min-h-screen">
+      <div className="max-w-[1760px] mx-auto px-5 sm:px-8 md:px-12">
+        {/* ─── HEADER ─── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 pb-10 sm:pb-14 border-b border-hairline">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="lg:col-span-8 space-y-6"
+          >
+            <div className="flex items-center gap-4">
+              <span className="folio text-gold">Page 06 — The Edit</span>
+              <span className="text-bone/20">—</span>
+              <span className="folio text-bone/50">The Catalog</span>
             </div>
+            <h1 className="font-display-tight text-[15vw] sm:text-[11vw] lg:text-[9vw] leading-[0.84] tracking-[-0.005em]">
+              Active{' '}
+              <span
+                className="italic text-hollow-gold"
+                style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic", fontWeight: 400 }}
+              >
+                pieces.
+              </span>
+            </h1>
+            <p
+              className="text-xl sm:text-2xl text-bone/70 max-w-xl leading-snug"
+              style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+            >
+              Limited allocation. Heavyweight cotton with official insignia and raw hemline. The catalog, live from the studio.
+            </p>
+          </motion.div>
 
-            {/* Live sync + release metadata */}
-            <div className="flex items-center space-x-4 font-mono text-xs text-ash">
-              <div className="border border-line-dark bg-white/60 px-3 py-2 flex items-center gap-2">
-                <span
-                  className={`w-1.5 h-1.5 ${feed.source === 'square' ? 'bg-gold animate-pulse-subtle' : 'bg-smoke'}`}
-                />
-                <span className={feed.source === 'square' ? 'text-gold-dark font-bold' : ''}>{liveSyncLabel}</span>
-              </div>
-              <div className="border border-line-dark bg-white/60 px-3 py-2 hidden sm:block">
-                <span className="text-ash/70">ON THE RACK: </span>
-                <span className="text-gold-dark font-bold">{filteredCards.length} EDITIONS</span>
-              </div>
+          <div className="lg:col-span-4 space-y-6 lg:pt-6">
+            <div className="border border-hairline px-4 py-3 flex items-center gap-2 w-fit">
+              <span className={`w-1.5 h-1.5 ${feed.source === 'square' ? 'bg-gold animate-pulse-subtle' : 'bg-bone/40'}`} />
+              <span className="folio">{liveSyncLabel}</span>
+            </div>
+            <div className="border border-hairline px-4 py-3 flex items-center gap-2 w-fit">
+              <span className="folio text-bone/50">On the rack</span>
+              <span
+                className="text-xl text-gold ml-2 leading-none"
+                style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+              >
+                {filteredCards.length.toString().padStart(2, '0')}
+              </span>
             </div>
           </div>
+        </div>
 
-          {/* Collection + Sort Toolbar */}
-          <div className="mt-10 pt-6 border-t border-line/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-2">
-              {COLLECTION_TABS.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveCollection(tab.id)}
-                  className={`px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.15em] transition-colors border ${
-                    activeCollection === tab.id
-                      ? 'border-ink bg-ink text-paper font-bold'
-                      : 'border-line-dark bg-white/50 text-ash hover:text-ink hover:border-ink/40'
-                  }`}
+        {/* Filter + sort toolbar */}
+        <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-2">
+            {COLLECTION_TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveCollection(tab.id)}
+                className={`chip ${activeCollection === tab.id ? 'is-active' : ''}`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-[10px] tracking-[0.24em] uppercase text-bone/40">Sort</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+              className="bg-transparent border border-hairline text-bone px-3 py-2 font-mono text-[10px] uppercase tracking-[0.24em] focus:border-gold focus:outline-none"
+            >
+              <option value="featured">Featured</option>
+              <option value="price-asc">Price · Low to High</option>
+              <option value="price-desc">Price · High to Low</option>
+            </select>
+          </div>
+        </div>
+
+        {/* ─── EDITORIAL PRODUCT GRID ─── */}
+        {filteredCards.length > 0 && (
+          <>
+            {/* Hero piece */}
+            <div className="mt-12 sm:mt-16">
+              <ProductCard card={filteredCards[0]} index={0} large />
+            </div>
+
+            {/* Asymmetric grid */}
+            <div className="mt-16 sm:mt-24 grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12">
+              {filteredCards.slice(1).map((card, i) => (
+                <div
+                  key={card.product.id}
+                  className={
+                    i % 3 === 0
+                      ? 'md:col-span-7'
+                      : i % 3 === 1
+                        ? 'md:col-span-5'
+                        : 'md:col-span-12'
+                  }
                 >
-                  {tab.label}
-                </button>
+                  <ProductCard card={card} index={i + 1} />
+                </div>
               ))}
             </div>
+          </>
+        )}
 
-            <div className="flex items-center space-x-2 font-mono text-xs">
-              <span className="text-ash">SORT:</span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-                className="bg-white border border-line-dark text-ink px-3 py-1.5 font-mono text-xs focus:border-gold-dark focus:outline-none uppercase"
-              >
-                <option value="featured">FEATURED CURATION</option>
-                <option value="price-asc">PRICE: LOW TO HIGH</option>
-                <option value="price-desc">PRICE: HIGH TO LOW</option>
-              </select>
-            </div>
+        {filteredCards.length === 0 && (
+          <div className="mt-16 border border-hairline p-16 text-center">
+            <div className="folio text-bone/40 mb-3">No pieces</div>
+            <p className="text-bone/50">No specimens match this filter yet.</p>
           </div>
-        </div>
+        )}
 
-        {/* Product Grid: Editorial Asymmetry */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-24">
-          {filteredCards.map((card, idx) => (
-            <ProductCard key={card.product.id} card={card} index={idx} />
-          ))}
-        </div>
-
-        {/* Unreleased Concept Archive Teaser Section */}
-        <div className="border-t border-line pt-16 mt-16">
-          <div className="bg-graphite border border-line p-8 sm:p-12 relative overflow-hidden">
-            <div className="absolute -right-12 -bottom-12 pointer-events-none opacity-5 font-display text-9xl font-black text-smoke">
-              NEXT
-            </div>
-
-            <div className="max-w-2xl space-y-6 relative z-10">
-              <div className="flex items-center space-x-2">
-                <Lock size={14} className="text-archive-red" />
-                <span className="font-mono text-xs text-archive-red tracking-widest uppercase font-bold">
-                  ARCHIVE NEXT / UNRELEASED RESEARCH
-                </span>
+        {/* Unreleased teaser */}
+        <div className="mt-24 sm:mt-32 pt-16 border-t border-hairline">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div className="lg:col-span-7 space-y-6">
+              <div className="flex items-center gap-3">
+                <Lock size={14} className="text-gold" strokeWidth={1.5} />
+                <span className="folio text-gold">Archive Next — Unreleased Research</span>
               </div>
-
-              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-bone uppercase tracking-tight">
-                RELEASE 002 (SHIRT) & 003 (HEADWEAR).
+              <h2
+                className="text-5xl sm:text-7xl lg:text-8xl text-bone leading-[0.92] tracking-[-0.005em] uppercase"
+                style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic", letterSpacing: "0.005em" }}
+              >
+                Release 002 <span
+                  className="italic text-gold-shine"
+                  style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic", fontWeight: 400, fontSize: "0.65em" }}
+                >(Shirt)</span>
+                <br />
+                & Release 003 <span
+                  className="italic text-gold-shine"
+                  style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic", fontWeight: 400, fontSize: "0.65em" }}
+                >(Headwear)</span>.
               </h2>
-
-              <p className="font-utility text-xs sm:text-sm text-smoke leading-relaxed">
+              <p
+                className="text-xl text-bone/60 max-w-2xl leading-snug"
+                style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+              >
                 Future release garments remain locked in laboratory testing. Enrolled clients receive priority dispatch access prior to public allocation.
               </p>
+              <button onClick={() => openRequestAccess()} className="btn-mono mt-2">
+                <Lock size={12} strokeWidth={1.5} />
+                Request access
+              </button>
+            </div>
 
-              <div className="pt-2">
-                <button
-                  onClick={() => openRequestAccess()}
-                  className="bg-black border border-gold hover:bg-gold hover:text-black text-gold py-3.5 px-8 font-mono text-xs font-bold tracking-widest uppercase transition-all duration-300 flex items-center space-x-2"
-                >
-                  <Lock size={13} />
-                  <span>REQUEST RELEASE ACCESS</span>
-                  <ArrowUpRight size={14} />
-                </button>
+            <div className="lg:col-span-5 grid grid-cols-2 gap-4">
+              <div className="aspect-[3/4] overflow-hidden bg-ink border border-hairline">
+                <img src="/images/archive-shirt-teaser.jpg" alt="Shirt prototype" className="w-full h-full object-cover img-bw" />
+              </div>
+              <div className="aspect-[3/4] overflow-hidden bg-ink border border-hairline mt-12">
+                <img src="/images/archive-hat-teaser.jpg" alt="Hat prototype" className="w-full h-full object-cover img-bw" />
               </div>
             </div>
           </div>
