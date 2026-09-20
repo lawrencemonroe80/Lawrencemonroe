@@ -4,35 +4,42 @@ interface WordmarkProps {
   className?: string;
   outline?: boolean;
   color?: string;
+  tracking?: string;
+  italic?: boolean;
 }
 
+/**
+ * PP EDITORIAL NEW WORDMARK — v5
+ * Editorial serif wordmark, italic by default.
+ */
 export const Wordmark: React.FC<WordmarkProps> = ({
-  className = 'h-6 sm:h-8 w-auto',
+  className = '',
   outline = false,
   color = '#FFFFFF',
+  tracking = '0.18em',
+  italic = true,
 }) => {
   return (
-    <div className={`inline-flex items-center justify-center select-none ${className}`}>
-      <span
-        style={{
-          fontFamily: "'Cormorant Garamond', 'Didot', 'Bodoni MT', 'Times New Roman', serif",
-          fontWeight: 700,
-          letterSpacing: '0.14em',
-          color: outline ? 'transparent' : color,
-          WebkitTextStroke: outline ? '1px #FFFFFF' : 'unset',
-          textTransform: 'uppercase',
-          lineHeight: 1,
-        }}
-        className="text-xl sm:text-2xl md:text-3xl font-bold tracking-[0.14em] text-center"
-      >
-        LAWRENCE MONROE
-      </span>
-    </div>
+    <span
+      className={`inline-block select-none whitespace-nowrap ${className}`}
+      style={{
+        fontFamily: "'PP Editorial New', 'Playfair Display', serif",
+        fontWeight: 400,
+        letterSpacing: tracking,
+        color: outline ? 'transparent' : color,
+        WebkitTextStroke: outline ? `1px ${color}` : 'unset',
+        fontStyle: italic ? 'italic' : 'normal',
+        lineHeight: 0.9,
+        textTransform: 'uppercase',
+      }}
+    >
+      Lawrence Monroe
+    </span>
   );
 };
 
 interface PillBadgeProps {
-  variant?: 'white' | 'blue';
+  variant?: 'white' | 'blue' | 'gold';
   className?: string;
   size?: 'sm' | 'md' | 'lg';
 }
@@ -42,69 +49,62 @@ export const PillBadge: React.FC<PillBadgeProps> = ({
   className = '',
   size = 'md',
 }) => {
-  const isBlue = variant === 'blue';
-  const bgColor = isBlue ? 'bg-[#00A3FF]' : 'bg-white';
-  const textColor = 'text-black';
-  const borderColor = isBlue ? 'border-[#00A3FF]' : 'border-white';
+  const styles =
+    variant === 'blue'
+      ? { bg: 'bg-[#3D5089]', text: 'text-bone' }
+      : variant === 'gold'
+        ? { bg: 'bg-gold', text: 'text-black' }
+        : { bg: 'bg-white', text: 'text-black' };
 
   const sizeClasses = {
-    sm: 'px-3 py-0.5 text-xs border-[2px]',
-    md: 'px-5 py-1.5 text-sm sm:text-base border-[3px]',
-    lg: 'px-7 py-2 text-lg sm:text-xl border-[4px]',
+    sm: 'px-3 py-0.5 text-[10px]',
+    md: 'px-4 py-1 text-xs sm:text-sm',
+    lg: 'px-5 py-1.5 text-base sm:text-lg',
   };
 
   return (
-    <div className={`inline-flex items-center space-x-1 select-none ${className}`}>
-      {/* Outer Pill Container */}
+    <div className={`inline-flex items-center gap-1 select-none ${className}`}>
       <div
-        className={`rounded-full border-black shadow-lg ${bgColor} ${sizeClasses[size]} relative overflow-hidden flex items-center justify-center`}
-        style={{
-          boxShadow: '0 0 0 2px black, 0 4px 12px rgba(0,0,0,0.8)',
-        }}
+        className={`rounded-full ${styles.bg} ${sizeClasses[size]} relative flex items-center justify-center`}
+        style={{ boxShadow: '0 0 0 1px black' }}
       >
-        {/* Inner Border Ring */}
-        <div className="absolute inset-[3px] rounded-full border border-black pointer-events-none" />
-        
-        {/* "LawrenceMonroe" Typography */}
         <span
-          className={`font-serif font-extrabold ${textColor} tracking-tight z-10 px-2 py-0.5`}
+          className={`${styles.text}`}
           style={{
-            fontFamily: "'Cormorant Garamond', 'Didot', 'Times New Roman', serif",
-            letterSpacing: '-0.02em',
+            fontFamily: "'PP Editorial New', serif",
+            fontStyle: 'italic',
+            letterSpacing: '0.05em',
+            fontWeight: 400,
           }}
         >
-          LawrenceMonroe
+          Lawrence Monroe
         </span>
       </div>
-
-      {/* Registered Trademark (R) */}
-      <span
-        className={`font-mono text-[9px] font-bold ${isBlue ? 'text-[#00A3FF]' : 'text-white'} border border-current rounded-full w-3.5 h-3.5 flex items-center justify-center`}
-      >
-        R
-      </span>
     </div>
   );
 };
 
-export const MonogramMark: React.FC<{ className?: string; tone?: 'dark' | 'light' }> = ({
-  className = 'w-8 h-8',
-  tone = 'dark',
-}) => {
-  const light = tone === 'light';
+export const MonogramMark: React.FC<{
+  className?: string;
+  tone?: 'dark' | 'light';
+  gold?: boolean;
+}> = ({ className = 'w-9 h-9', tone = 'light', gold = false }) => {
+  const baseColor = gold ? '#C79F3D' : tone === 'light' ? '#FFFFFF' : '#0A0A0A';
   return (
-    <div
-      className={`relative border flex items-center justify-center p-1.5 select-none ${
-        light ? 'border-line-dark bg-white/70' : 'border-line bg-graphite'
-      } ${className}`}
-    >
+    <div className={`relative inline-flex items-center justify-center select-none ${className}`}>
       <span
-        className={`font-serif font-extrabold text-base tracking-widest ${light ? 'text-ink' : 'text-bone'}`}
-        style={{ fontFamily: "'Cormorant Garamond', 'Didot', serif" }}
+        style={{
+          fontFamily: "'PP Editorial New', serif",
+          fontStyle: 'italic',
+          fontWeight: 400,
+          color: baseColor,
+          letterSpacing: '0.02em',
+          fontSize: '1.1em',
+          lineHeight: 1,
+        }}
       >
         LM
       </span>
-      <div className="absolute bottom-1 left-2 right-2 h-[1px] bg-gold" />
     </div>
   );
 };

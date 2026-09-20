@@ -15,19 +15,6 @@ import { useCartStore } from '../../store/cartStore';
 import { formatCurrency } from '../../utils/format';
 import { InlineSquareCheckout } from '../checkout/InlineSquareCheckout';
 
-/**
- * CART DRAWER — slide-over bag + INSTANT SQUARE CHECKOUT
- * ------------------------------------------------------
- * Modes:
- *   BAG     — line items, quantity steppers, subtotal → full /checkout
- *   EXPRESS — inline Square Web Payments SDK card form; tokenize + charge
- *             through /api/square/checkout without leaving the overlay
- *   SUCCESS — order confirmation receipt (order id, continue links)
- *
- * Motion: spring slide (210/30/0.9) + spec-exact blur(20px) backdrop,
- * gold seam on the leading edge.
- */
-
 type DrawerMode = 'BAG' | 'EXPRESS' | 'SUCCESS';
 
 export const CartDrawer: React.FC = () => {
@@ -49,7 +36,6 @@ export const CartDrawer: React.FC = () => {
   const subtotal = getSubtotal();
   const itemCount = getItemCount();
 
-  // Escape key listener
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isCartOpen) closeCart();
@@ -58,15 +44,13 @@ export const CartDrawer: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isCartOpen, closeCart]);
 
-  // Lock body scroll when cart is open
   useEffect(() => {
-    document.body.style.overflow = isCartOpen ? 'hidden' : 'unset';
+    document.body.style.overflow = isCartOpen ? 'hidden' : '';
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = '';
     };
   }, [isCartOpen]);
 
-  // Reset to BAG whenever the drawer closes
   useEffect(() => {
     if (!isCartOpen) {
       const t = setTimeout(() => setMode('BAG'), 400);
@@ -87,136 +71,121 @@ export const CartDrawer: React.FC = () => {
 
   const handleContinueShopping = () => {
     closeCart();
-    navigate('/shop');
+    navigate('/drop');
   };
 
   return (
     <AnimatePresence>
       {isCartOpen && (
-        <div className="fixed inset-0 z-50 overflow-hidden" role="dialog" aria-modal="true" aria-label="Shopping Cart">
-          {/* Backdrop — spec-exact glass blur */}
+        <div className="fixed inset-0 z-[70] overflow-hidden" role="dialog" aria-modal="true" aria-label="Shopping Cart">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.83, 0, 0.17, 1] }}
+            transition={{ duration: 0.35, ease: [0.83, 0, 0.17, 1] }}
             onClick={closeCart}
-            className="fixed inset-0 bg-black/60 backdrop-blur-[25px] saturate-150"
+            className="fixed inset-0 bg-black/75 backdrop-blur-xl"
           />
 
-          <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-            {/* Slide-over panel with fine gold seam line */}
+          <div className="fixed inset-y-0 right-0 max-w-full flex">
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ type: 'spring', stiffness: 210, damping: 30, mass: 0.9 }}
-              className="glass-panel-heavy glass-metal-top w-screen max-w-md border-l border-gold-core/30 shadow-2xl flex flex-col justify-between"
+              transition={{ type: 'spring', stiffness: 280, damping: 32, mass: 0.8 }}
+              className="glass-heavy w-screen max-w-md flex flex-col"
             >
-              {/* Fine gold edge seam line */}
-              <div className="absolute top-0 left-0 bottom-0 w-[1px] bg-gradient-to-b from-gold via-gold/40 to-transparent" />
-
               {/* Drawer Header */}
-              <div className="p-6 border-b border-line flex items-center justify-between bg-black/40">
-                <div className="flex items-center space-x-3">
+              <div className="px-6 py-5 border-b border-hairline flex items-center justify-between">
+                <div className="flex items-center gap-3">
                   {mode === 'EXPRESS' ? (
                     <>
                       <Zap size={13} className="text-gold" />
-                      <span className="font-mono text-xs text-gold tracking-widest uppercase font-bold">
-                        EXPRESS CHECKOUT
+                      <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-gold font-medium">
+                        Express Checkout
                       </span>
                     </>
                   ) : mode === 'SUCCESS' ? (
                     <>
                       <CheckCircle2 size={13} className="text-gold" />
-                      <span className="font-mono text-xs text-gold tracking-widest uppercase font-bold">
-                        ALLOCATION CONFIRMED
+                      <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-gold font-medium">
+                        Allocation Confirmed
                       </span>
                     </>
                   ) : (
                     <>
-                      <span className="font-mono text-xs text-gold tracking-widest uppercase">
-                        BAG ALLOCATION
+                      <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-bone">
+                        Bag
                       </span>
-                      <span className="font-mono text-[10px] text-smoke">
-                        [{itemCount} {itemCount === 1 ? 'PIECE' : 'PIECES'}]
+                      <span className="font-mono text-[10px] text-bone/40">
+                        {itemCount.toString().padStart(2, '0')} {itemCount === 1 ? 'piece' : 'pieces'}
                       </span>
                     </>
                   )}
                 </div>
-
                 <button
                   onClick={closeCart}
-                  className="p-1.5 border border-line text-bone hover:text-gold hover:border-gold transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-gold"
+                  className="p-1.5 text-bone/60 hover:text-gold transition-colors"
                   aria-label="Close cart"
                 >
-                  <X size={16} />
+                  <X size={18} strokeWidth={1.2} />
                 </button>
               </div>
 
               {/* Drawer Body */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar">
+              <div className="flex-1 overflow-y-auto px-6 py-6 no-scrollbar">
                 {mode === 'SUCCESS' ? (
-                  /* ---- SUCCESS RECEIPT ---- */
                   <div className="h-full flex flex-col items-center justify-center text-center py-12 space-y-5">
-                    <div className="w-16 h-16 border border-gold/60 bg-black/60 flex items-center justify-center">
-                      <CheckCircle2 size={26} className="text-gold" />
+                    <div className="w-16 h-16 border border-gold/60 flex items-center justify-center">
+                      <CheckCircle2 size={26} className="text-gold" strokeWidth={1.2} />
                     </div>
                     <div className="space-y-2">
-                      <h3 className="font-display text-xl font-bold text-bone uppercase tracking-wide">
-                        ORDER SECURED.
+                      <h3
+                        className="text-3xl text-bone uppercase leading-[0.9]"
+                        style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+                      >
+                        Order secured.
                       </h3>
-                      <p className="font-mono text-[11px] text-smoke leading-relaxed max-w-xs">
-                        A CONFIRMATION RECORD HAS BEEN DISPATCHED TO YOUR EMAIL. FULFILLMENT
-                        TELEMETRY FOLLOWS VIA THE SQUARE ORDER DESK.
+                      <p className="font-body text-sm text-bone/60 leading-relaxed max-w-xs">
+                        A confirmation record has been dispatched to your email.
                       </p>
                       {lastOrderId && (
-                        <div className="inline-block font-mono text-[10px] text-gold border border-gold/50 bg-black/60 px-3 py-1.5 mt-2 tracking-[0.2em]">
-                          REF: {lastOrderId}
+                        <div className="inline-block font-mono text-[10px] text-gold border border-gold/50 px-3 py-1.5 mt-3 tracking-[0.24em]">
+                          REF — {lastOrderId}
                         </div>
                       )}
                     </div>
-                    <div className="space-y-2 pt-2">
-                      <button
-                        onClick={closeCart}
-                        className="border border-gold bg-black px-6 py-3 font-mono text-xs font-bold text-gold hover:bg-gold hover:text-black transition-colors uppercase tracking-widest"
-                      >
-                        CONTINUE EXPLORING
+                    <div className="space-y-3 pt-4 w-full">
+                      <button onClick={closeCart} className="btn-mono w-full justify-center">
+                        Continue exploring
                       </button>
-                      <div>
-                        <button
-                          onClick={() => navigate('/shop')}
-                          className="font-mono text-[10px] text-smoke hover:text-bone tracking-widest uppercase transition-colors"
-                        >
-                          RETURN TO CATALOG →
-                        </button>
-                      </div>
+                      <button onClick={() => navigate('/drop')} className="link-arrow w-full justify-center text-bone/40 hover:text-gold">
+                        Return to catalog
+                      </button>
                     </div>
                   </div>
                 ) : items.length === 0 ? (
-                  /* ---- EMPTY STATE ---- */
                   <div className="h-full flex flex-col items-center justify-center text-center py-12 space-y-4">
-                    <div className="w-16 h-16 border border-line flex items-center justify-center text-smoke/50 bg-black/40">
-                      <ShoppingBag size={24} />
+                    <div className="w-16 h-16 border border-hairline flex items-center justify-center text-bone/40">
+                      <ShoppingBag size={24} strokeWidth={1.2} />
                     </div>
-                    <div className="space-y-1">
-                      <h3 className="font-display text-lg font-bold text-bone uppercase tracking-wide">
-                        YOUR CART IS EMPTY.
+                    <div className="space-y-2">
+                      <h3
+                        className="text-2xl text-bone uppercase leading-[0.95]"
+                        style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+                      >
+                        Your bag is empty.
                       </h3>
-                      <p className="font-mono text-xs text-smoke max-w-xs">
-                        RETURN TO RELEASE 001 TO ALLOCATE LIMITED SPECIMENS.
+                      <p className="font-body text-sm text-bone/50 max-w-xs">
+                        Return to Release 001 to allocate limited specimens.
                       </p>
                     </div>
-                    <button
-                      onClick={handleContinueShopping}
-                      className="mt-4 inline-flex items-center space-x-2 border border-gold bg-black px-6 py-3 font-mono text-xs font-bold text-bone hover:bg-gold hover:text-black transition-colors uppercase tracking-widest"
-                    >
-                      <span>VIEW THE PIECES</span>
+                    <button onClick={handleContinueShopping} className="btn-mono mt-4">
+                      View the pieces
                       <ArrowRight size={14} />
                     </button>
                   </div>
                 ) : mode === 'EXPRESS' ? (
-                  /* ---- INLINE SQUARE EXPRESS CHECKOUT ---- */
                   <InlineSquareCheckout
                     items={items}
                     subtotal={subtotal}
@@ -224,75 +193,74 @@ export const CartDrawer: React.FC = () => {
                     onCancel={() => setMode('BAG')}
                   />
                 ) : (
-                  /* ---- BAG LINE ITEMS ---- */
                   <div className="space-y-4">
                     {items.map((item) => (
                       <div
                         key={item.cartItemId}
-                        className="border border-line bg-black/50 p-3.5 flex space-x-4 relative group hover:border-line/80 transition-colors"
+                        className="border border-hairline p-4 flex gap-4 group hover:border-bone/30 transition-colors"
                       >
-                        {/* Thumbnail */}
-                        <div className="w-20 h-24 bg-graphite border border-line/60 overflow-hidden flex-shrink-0 relative">
+                        <div className="w-20 h-24 bg-ink overflow-hidden shrink-0 relative">
                           <img
                             src={item.image}
                             alt={item.name}
-                            className="w-full h-full object-cover grayscale brightness-95 contrast-105"
+                            className="w-full h-full object-cover img-mono"
                           />
-                          <div className="absolute top-1 left-1 font-mono text-[8px] bg-black/80 px-1 text-gold">
+                          <div className="absolute top-1 left-1 font-mono text-[8px] bg-black/85 px-1.5 py-0.5 text-gold tracking-wider">
                             {item.size}
                           </div>
                         </div>
 
-                        {/* Details */}
-                        <div className="flex-1 flex flex-col justify-between">
+                        <div className="flex-1 flex flex-col justify-between min-w-0">
                           <div className="space-y-1">
-                            <div className="flex items-start justify-between">
-                              <span className="font-mono text-[9px] text-smoke tracking-wider">
+                            <div className="flex items-start justify-between gap-2">
+                              <span className="font-mono text-[9px] text-bone/40 tracking-wider">
                                 {item.code}
                               </span>
                               <button
                                 onClick={() => removeItem(item.cartItemId)}
-                                className="text-smoke hover:text-archive-red transition-colors p-0.5"
+                                className="text-bone/40 hover:text-gold transition-colors p-0.5"
                                 aria-label={`Remove ${item.name}`}
                               >
                                 <Trash2 size={13} />
                               </button>
                             </div>
 
-                            <h4 className="font-display text-sm font-bold text-bone leading-tight">
+                            <h4
+                              className="text-base text-bone leading-[0.95] uppercase"
+                              style={{ fontFamily: "'PP Editorial New', serif", letterSpacing: "0.02em" }}
+                            >
                               {item.name}
                             </h4>
-                            <div className="font-mono text-[10px] text-smoke flex items-center space-x-2">
-                              <span>COLOR: {item.color}</span>
-                              <span className="text-gold">•</span>
-                              <span>SIZE: {item.size}</span>
+                            <div className="font-mono text-[10px] text-bone/40 flex items-center gap-2">
+                              <span>{item.color}</span>
+                              <span className="text-gold">·</span>
+                              <span>Size {item.size}</span>
                             </div>
                           </div>
 
-                          {/* Price and Quantity Stepper */}
-                          <div className="flex items-center justify-between pt-2 border-t border-line/40">
-                            <div className="flex items-center border border-line bg-black">
+                          <div className="flex items-center justify-between pt-2 border-t border-hairline">
+                            <div className="flex items-center border border-hairline">
                               <button
                                 onClick={() => updateQuantity(item.cartItemId, item.quantity - 1)}
-                                className="px-2 py-1 text-smoke hover:text-bone transition-colors"
+                                className="w-7 h-7 flex items-center justify-center text-bone/60 hover:text-bone"
                                 aria-label="Decrease quantity"
                               >
                                 <Minus size={11} />
                               </button>
-                              <span className="font-mono text-xs px-2 text-bone font-medium min-w-[20px] text-center">
-                                {item.quantity}
+                              <span className="font-mono text-xs px-2 text-bone min-w-[26px] text-center">
+                                {item.quantity.toString().padStart(2, '0')}
                               </span>
                               <button
                                 onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}
                                 disabled={item.quantity >= item.maxStock}
-                                className="px-2 py-1 text-smoke hover:text-bone transition-colors disabled:opacity-30"
+                                className="w-7 h-7 flex items-center justify-center text-bone/60 hover:text-bone disabled:opacity-30"
                                 aria-label="Increase quantity"
                               >
                                 <Plus size={11} />
                               </button>
                             </div>
 
-                            <div className="font-mono text-xs font-bold text-bone">
+                            <div className="font-mono text-xs font-medium text-gold">
                               {formatCurrency(item.price * item.quantity)}
                             </div>
                           </div>
@@ -303,43 +271,48 @@ export const CartDrawer: React.FC = () => {
                 )}
               </div>
 
-              {/* Drawer Footer with Subtotal & Checkout — BAG mode only */}
+              {/* Drawer Footer */}
               {items.length > 0 && mode === 'BAG' && (
-                <div className="p-6 border-t border-line bg-black/60 space-y-4">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between font-mono text-xs text-smoke">
-                      <span>SHIPPING</span>
-                      <span className="text-gold">COMPLIMENTARY</span>
+                <div className="px-6 py-6 border-t border-hairline space-y-4">
+                  <div className="space-y-2 pb-3">
+                    <div className="flex items-center justify-between font-mono text-[10px] tracking-[0.2em] uppercase text-bone/50">
+                      <span>Shipping</span>
+                      <span className="text-gold">Complimentary</span>
                     </div>
-                    <div className="flex items-center justify-between font-mono text-sm text-bone pt-1 border-t border-line/40">
-                      <span className="font-bold tracking-wider">SUBTOTAL</span>
-                      <span className="font-bold text-gold text-base">{formatCurrency(subtotal)}</span>
+                    <div className="flex items-baseline justify-between pt-3 border-t border-hairline">
+                      <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-bone/70">
+                        Subtotal
+                      </span>
+                      <span
+                        className="text-3xl text-bone leading-none"
+                        style={{ fontFamily: "'PP Editorial New', serif", letterSpacing: "0.02em" }}
+                      >
+                        {formatCurrency(subtotal)}
+                      </span>
                     </div>
                   </div>
 
-                  {/* Instant pay — Square inline form inside the drawer */}
                   <button
                     onClick={() => setMode('EXPRESS')}
-                    className="btn-metal-gold w-full py-3.5 px-6 font-mono text-xs font-bold tracking-[0.25em] uppercase flex items-center justify-center space-x-2 focus:outline-none"
+                    className="btn-gold w-full justify-center"
                   >
                     <Zap size={13} />
-                    <span>INSTANT CHECKOUT — PAY IN BAG</span>
+                    Instant Checkout
                   </button>
 
-                  {/* Full checkout with shipping details */}
                   <button
                     onClick={handleCheckout}
-                    className="btn-metal-bone w-full py-3.5 px-6 font-mono text-xs font-bold tracking-widest uppercase flex items-center justify-center space-x-2 focus:outline-none"
+                    className="btn-mono w-full justify-center"
                   >
-                    <span>FULL SECURE CHECKOUT</span>
-                    <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    Full secure checkout
+                    <ArrowRight size={14} />
                   </button>
 
                   <button
                     onClick={closeCart}
-                    className="w-full text-center font-mono text-[10px] text-smoke hover:text-bone tracking-widest uppercase transition-colors"
+                    className="w-full text-center font-mono text-[10px] text-bone/40 hover:text-bone tracking-[0.24em] uppercase transition-colors py-2"
                   >
-                    CONTINUE EXPLORING RELEASE 001
+                    Continue exploring
                   </button>
                 </div>
               )}

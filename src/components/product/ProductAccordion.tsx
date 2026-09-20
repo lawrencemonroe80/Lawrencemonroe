@@ -20,25 +20,25 @@ export const ProductAccordion: React.FC<ProductAccordionProps> = ({ items }) => 
   };
 
   return (
-    <div className="border-t border-line divide-y divide-line/60">
+    <div className="border-t border-hairline">
       {items.map((item) => {
         const isOpen = openId === item.id;
         return (
-          <div key={item.id} className="py-3">
+          <div key={item.id} className="border-b border-hairline">
             <button
               onClick={() => toggle(item.id)}
-              className="w-full flex items-center justify-between text-left group focus:outline-none focus-visible:ring-1 focus-visible:ring-gold py-1"
+              className="w-full flex items-center justify-between text-left py-4 group"
               aria-expanded={isOpen}
             >
-              <span className="font-mono text-xs font-bold uppercase tracking-widest text-bone group-hover:text-gold transition-colors">
+              <span className="folio text-bone group-hover:text-gold transition-colors">
                 {item.title}
               </span>
               <motion.div
                 animate={{ rotate: isOpen ? 180 : 0 }}
-                transition={{ duration: 0.2 }}
-                className="text-smoke group-hover:text-gold transition-colors"
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="text-bone/50 group-hover:text-gold transition-colors"
               >
-                <ChevronDown size={14} />
+                <ChevronDown size={16} strokeWidth={1.2} />
               </motion.div>
             </button>
 
@@ -48,21 +48,31 @@ export const ProductAccordion: React.FC<ProductAccordionProps> = ({ items }) => 
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                   className="overflow-hidden"
                 >
-                  <div className="pt-3 pb-2 text-xs text-smoke space-y-2 font-utility">
+                  <div className="pb-5 text-sm text-bone/65 space-y-2 leading-relaxed">
                     {Array.isArray(item.content) ? (
-                      <ul className="space-y-1.5 list-none">
+                      <ul className="space-y-2">
                         {item.content.map((line, idx) => (
-                          <li key={idx} className="flex items-start space-x-2">
-                            <span className="text-gold font-mono text-[10px] mt-0.5">•</span>
-                            <span className="text-bone/80 leading-relaxed">{line}</span>
+                          <li key={idx} className="flex items-start gap-3">
+                            <span className="text-gold mt-2 w-2 h-px bg-gold shrink-0" />
+                            <span
+                              className="text-bone/75"
+                              style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+                            >
+                              {line}
+                            </span>
                           </li>
                         ))}
                       </ul>
                     ) : (
-                      <p className="leading-relaxed text-bone/80">{item.content}</p>
+                      <p
+                        className="text-bone/80"
+                        style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+                      >
+                        {item.content}
+                      </p>
                     )}
                   </div>
                 </motion.div>

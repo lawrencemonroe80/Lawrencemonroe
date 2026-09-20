@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, ArrowLeft } from 'lucide-react';
 import { getProductBySlug, RELEASED_PRODUCTS } from '../data/products';
 import { ProductMediaStage } from '../components/product/ProductMediaStage';
 import { ProductPurchasingPanel } from '../components/product/ProductPurchasingPanel';
@@ -17,14 +17,21 @@ export const ProductDetailPage: React.FC = () => {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-black text-bone flex flex-col items-center justify-center p-6 space-y-4">
-        <h1 className="font-display text-3xl font-bold uppercase">SPECIMEN NOT FOUND</h1>
-        <p className="font-mono text-xs text-smoke">The requested garment record does not exist in Release 001.</p>
-        <button
-          onClick={() => navigate('/shop')}
-          className="border border-gold bg-black px-6 py-3 font-mono text-xs text-gold uppercase"
+      <div className="min-h-screen bg-black text-bone flex flex-col items-center justify-center p-6 space-y-6">
+        <h1
+          className="text-5xl sm:text-7xl text-bone uppercase leading-[0.95]"
+          style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
         >
-          RETURN TO SHOP
+          Specimen not found
+        </h1>
+        <p
+          className="text-lg text-bone/50 max-w-sm text-center"
+          style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+        >
+          The requested garment record does not exist in the archive.
+        </p>
+        <button onClick={() => navigate('/drop')} className="btn-mono">
+          Return to the drop
         </button>
       </div>
     );
@@ -33,89 +40,94 @@ export const ProductDetailPage: React.FC = () => {
   const alternateProduct = RELEASED_PRODUCTS.find((p) => p.id !== product.id);
 
   return (
-    <div className="min-h-screen bg-black text-bone pt-28 sm:pt-36 pb-24">
-      {/* Background Archival Grid */}
-      <div className="absolute inset-0 bg-archival-grid opacity-25 pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 md:px-12 relative z-10">
-        {/* Navigation Breadcrumb */}
-        <div className="flex items-center justify-between border-b border-line pb-4 mb-8 sm:mb-12 font-mono text-xs text-smoke">
-          <Link
-            to="/shop"
-            className="flex items-center space-x-2 text-smoke hover:text-gold transition-colors uppercase tracking-wider"
-          >
+    <div className="min-h-screen bg-black text-bone pt-24 sm:pt-32 pb-24">
+      <div className="max-w-[1760px] mx-auto px-5 sm:px-8 md:px-12">
+        {/* Breadcrumb */}
+        <div className="flex items-center justify-between border-b border-hairline pb-4 mb-8 sm:mb-12">
+          <Link to="/drop" className="link-arrow text-bone/60 hover:text-gold">
             <ArrowLeft size={14} />
-            <span>RETURN TO CATALOG</span>
+            Return to catalog
           </Link>
-
-          <div className="flex items-center space-x-3">
-            <span>RELEASE 001</span>
-            <span className="text-gold">•</span>
-            <span className="text-bone font-bold">{product.code}</span>
+          <div className="flex items-center gap-3 font-mono text-[10px] tracking-[0.28em] uppercase">
+            <span className="text-bone/40">Release 001</span>
+            <span className="text-gold">·</span>
+            <span className="text-bone">{product.code}</span>
           </div>
         </div>
 
-        {/* Main Product Layout: Media Stage (Left) & Purchasing Panel (Right) */}
+        {/* Main layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
-          {/* Left Column: Media Stage with dynamic Shorts Focus and Annotations (7 cols) */}
           <div className="lg:col-span-7 space-y-8">
             <ProductMediaStage productId={product.id} productName={product.name} />
 
-            {/* Curatorial Garment Note below stage */}
-            <div className="border border-line bg-graphite/30 p-6 space-y-2">
-              <div className="font-mono text-[10px] text-gold tracking-widest uppercase font-bold">
-                ARCHIVAL SPECIFICATION NOTE
-              </div>
-              <p className="font-serif italic text-base sm:text-lg text-smoke leading-relaxed">
+            {/* Archival spec note */}
+            <div className="border-l-2 border-gold pl-6 py-2 space-y-2 max-w-2xl">
+              <div className="folio text-gold">Archival specification note</div>
+              <p
+                className="text-xl sm:text-2xl text-bone/85 leading-snug"
+                style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+              >
                 “Engineered to maintain strict structural lines regardless of physical cadence. The heavy 480GSM weight creates a distinct drape that resists fabric breakdown over time.”
               </p>
             </div>
           </div>
 
-          {/* Right Column: Purchasing Panel (5 cols) */}
           <div className="lg:col-span-5">
             <ProductPurchasingPanel product={product} />
           </div>
         </div>
 
-        {/* Alternate Colorway Recommendation / Dossier Link */}
+        {/* Complementary piece */}
         {alternateProduct && (
-          <div className="mt-24 pt-16 border-t border-line">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-              <div className="space-y-1">
-                <div className="font-mono text-xs text-gold uppercase tracking-widest">
-                  COMPLEMENTARY SPECIMEN
-                </div>
-                <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-bone uppercase">
-                  EXPLORE {alternateProduct.name}
+          <div className="mt-24 sm:mt-32 pt-16 border-t border-hairline">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+              <div className="space-y-2">
+                <div className="folio text-gold">Complementary specimen</div>
+                <h3
+                  className="text-4xl sm:text-6xl text-bone uppercase leading-[0.92] tracking-[-0.005em]"
+                  style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic", letterSpacing: "0.005em" }}
+                >
+                  Explore{' '}
+                  <span
+                    className="italic text-hollow-gold"
+                    style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic", fontWeight: 400 }}
+                  >
+                    {alternateProduct.name}
+                  </span>
                 </h3>
               </div>
-              <Link
-                to={`/shop/${alternateProduct.slug}`}
-                className="font-mono text-xs text-smoke hover:text-gold flex items-center space-x-1 uppercase"
-              >
-                <span>VIEW DOSSIER</span>
-                <ArrowUpRight size={14} />
+              <Link to={`/drop/${alternateProduct.slug}`} className="link-arrow text-bone/70 hover:text-gold">
+                View dossier <ArrowUpRight size={14} className="arrow-icon" />
               </Link>
             </div>
 
-            <div className="bg-graphite/40 border border-line p-6 grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
-              <div className="sm:col-span-4 aspect-[4/3] bg-black border border-line overflow-hidden">
+            <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 sm:gap-8 items-stretch border border-hairline hover:border-gold transition-colors">
+              <div className="sm:col-span-5 aspect-[4/3] overflow-hidden bg-ink">
                 <img
                   src={alternateProduct.heroImage}
                   alt={alternateProduct.name}
-                  className="w-full h-full object-cover grayscale contrast-115 hover:scale-105 transition-transform"
+                  className="w-full h-full object-cover img-mono"
                 />
               </div>
-              <div className="sm:col-span-8 space-y-3">
-                <div className="font-mono text-xs text-gold">{alternateProduct.code}</div>
-                <h4 className="font-display text-xl font-bold text-bone">{alternateProduct.name}</h4>
-                <p className="font-utility text-xs text-smoke leading-relaxed">{alternateProduct.shortDescription}</p>
-                <Link
-                  to={`/shop/${alternateProduct.slug}`}
-                  className="inline-block bg-bone hover:bg-gold text-black py-2.5 px-5 font-mono text-xs font-bold tracking-widest uppercase transition-colors"
+              <div className="sm:col-span-7 p-8 lg:p-12 flex flex-col justify-center space-y-4">
+                <div className="folio text-gold">{alternateProduct.code}</div>
+                <h4
+                  className="text-4xl sm:text-5xl text-bone leading-none uppercase"
+                  style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
                 >
-                  SWITCH TO {alternateProduct.name}
+                  {alternateProduct.name}
+                </h4>
+                <p
+                  className="text-base text-bone/60 leading-relaxed max-w-md"
+                  style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+                >
+                  {alternateProduct.shortDescription}
+                </p>
+                <Link
+                  to={`/drop/${alternateProduct.slug}`}
+                  className="btn-mono mt-2 w-fit"
+                >
+                  Switch to {alternateProduct.name}
                 </Link>
               </div>
             </div>

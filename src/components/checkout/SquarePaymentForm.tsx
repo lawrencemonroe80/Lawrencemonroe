@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Lock, CreditCard, AlertCircle, ShieldCheck } from 'lucide-react';
+import { Lock, AlertCircle, ShieldCheck, Loader2 } from 'lucide-react';
 import { CartItem, OrderCustomerInfo } from '../../types';
 
-// Declare Square global
 declare global {
   interface Window {
     Square?: any;
@@ -32,7 +31,6 @@ export const SquarePaymentForm: React.FC<SquarePaymentFormProps> = ({
   const cardContainerRef = useRef<HTMLDivElement>(null);
   const cardInstanceRef = useRef<any>(null);
 
-  // Square credentials from environment (or standard test configuration)
   const appId = import.meta.env.VITE_SQUARE_APP_ID || 'sandbox-sq0idb-mock-app-id';
   const locationId = import.meta.env.VITE_SQUARE_LOCATION_ID || 'mock-location-id';
 
@@ -41,7 +39,6 @@ export const SquarePaymentForm: React.FC<SquarePaymentFormProps> = ({
 
     const initializeSquare = async () => {
       if (!window.Square) {
-        // If Square CDN script isn't loaded or network blocked, fall back to high-fidelity secure form
         setUseTestFallback(true);
         return;
       }
@@ -51,24 +48,18 @@ export const SquarePaymentForm: React.FC<SquarePaymentFormProps> = ({
         const card = await payments.card({
           style: {
             '.input-container': {
-              borderColor: 'rgba(231, 225, 215, 0.17)',
+              borderColor: 'rgba(255, 255, 255, 0.20)',
               borderRadius: '0px',
             },
-            '.input-container.is-focus': {
-              borderColor: '#AD8A48',
+            '.input-container.is-focus': { borderColor: '#C79F3D' },
+            '.input-container.is-error': { borderColor: '#683B16' },
+            input: {
+              backgroundColor: '#000000',
+              color: '#FFFFFF',
+              fontFamily: 'Inter Tight, sans-serif',
+              fontSize: '12px',
             },
-            '.input-container.is-error': {
-              borderColor: '#743530',
-            },
-            'input': {
-              backgroundColor: '#050505',
-              color: '#E7E1D7',
-              fontFamily: 'Space Grotesk, sans-serif',
-              fontSize: '13px',
-            },
-            'input::placeholder': {
-              color: '#9A958D',
-            },
+            'input::placeholder': { color: '#999999' },
           },
         });
 
@@ -78,11 +69,8 @@ export const SquarePaymentForm: React.FC<SquarePaymentFormProps> = ({
           cardInstanceRef.current = card;
           setSquareLoaded(true);
         }
-      } catch (err) {
-        console.warn('Square Web Payments SDK initialization notice (running test card mode):', err);
-        if (isMounted) {
-          setUseTestFallback(true);
-        }
+      } catch {
+        if (isMounted) setUseTestFallback(true);
       }
     };
 
@@ -94,9 +82,7 @@ export const SquarePaymentForm: React.FC<SquarePaymentFormProps> = ({
       if (cardInstanceRef.current) {
         try {
           cardInstanceRef.current.destroy();
-        } catch (e) {
-          // ignore
-        }
+        } catch {}
       }
     };
   }, [appId, locationId]);
@@ -126,7 +112,6 @@ export const SquarePaymentForm: React.FC<SquarePaymentFormProps> = ({
         }
       }
 
-      // Send payment authorization to the Vercel serverless checkout
       const payload = {
         sourceId: token,
         customer: customerInfo,
@@ -152,7 +137,6 @@ export const SquarePaymentForm: React.FC<SquarePaymentFormProps> = ({
         const data = await response.json();
         onPaymentSuccess(data);
       } else {
-        // High fidelity fallback order generation for dev/sandbox demo
         const fallbackOrderResult = {
           orderId: `LM-2026-${Math.floor(100000 + Math.random() * 900000)}`,
           paymentId: `sq_pay_${Math.random().toString(36).substring(2, 12)}`,
@@ -171,106 +155,99 @@ export const SquarePaymentForm: React.FC<SquarePaymentFormProps> = ({
   };
 
   return (
-    <div className="space-y-6 pt-4">
-      <div className="flex items-center justify-between border-b border-line pb-2">
-        <div className="flex items-center space-x-2">
+    <div className="space-y-6">
+      <div className="flex items-center justify-between border-b border-hairline pb-3">
+        <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 bg-gold" />
-          <span className="font-mono text-xs text-gold uppercase tracking-widest font-bold">
-            4. PAYMENT ENCRYPTION (SQUARE SDK)
-          </span>
+          <span className="folio text-gold">Payment — Square SDK</span>
         </div>
-        <div className="flex items-center space-x-1.5 font-mono text-[10px] text-smoke">
-          <Lock size={11} className="text-gold" />
-          <span>256-BIT TLS</span>
+        <div className="flex items-center gap-1.5 font-mono text-[10px] text-white/40 tracking-[0.2em] uppercase">
+          <Lock size={10} className="text-gold" />
+          256-bit TLS
         </div>
       </div>
 
       <form onSubmit={handleSubmitPayment} className="space-y-6">
-        {/* Square Card Container or High-Fidelity UI */}
         <div className="space-y-3">
-          <div className="flex items-center justify-between font-mono text-[11px] text-smoke">
-            <span>CARD DATA TOKENIZATION</span>
-            <span className="text-gold">SQUARE HOSTED FIELDS</span>
+          <div className="flex items-center justify-between">
+            <span className="folio">Card data tokenization</span>
+            <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/40">
+              Square hosted fields
+            </span>
           </div>
 
-          {/* Square container element where SDK attaches */}
           <div
             id="card-container"
             ref={cardContainerRef}
-            className={`min-h-[90px] border border-line bg-black p-3 transition-colors ${
+            className={`min-h-[90px] border border-hairline bg-black p-3 transition-colors ${
               useTestFallback ? 'hidden' : 'block'
             }`}
           />
 
-          {/* High-Fidelity Test Mode / Fallback UI */}
           {useTestFallback && (
-            <div className="space-y-3 border border-line bg-black p-4">
-              <div className="flex items-center justify-between border-b border-line/40 pb-2">
-                <span className="font-mono text-[10px] text-gold uppercase">
-                  CARD NUMBER & SECURITY
+            <div className="space-y-3 border border-hairline bg-black p-4">
+              <div className="flex items-center justify-between border-b border-hairline pb-2">
+                <span className="font-mono text-[10px] text-gold tracking-[0.2em] uppercase">
+                  Card number & security
                 </span>
-                <span className="font-mono text-[9px] text-smoke bg-graphite px-2 py-0.5 border border-line/40">
-                  TEST / SANDBOX ACTIVE
+                <span className="font-mono text-[9px] text-white/40 tracking-[0.2em] uppercase border border-hairline px-2 py-0.5">
+                  Test / sandbox active
                 </span>
               </div>
 
-              <div>
-                <input
-                  type="text"
-                  value={testCardNumber}
-                  onChange={(e) => setTestCardNumber(e.target.value)}
-                  placeholder="4242 •••• •••• 4242"
-                  className="w-full bg-graphite border border-line px-3 py-2.5 font-mono text-xs text-bone focus:border-gold focus:outline-none"
-                />
-              </div>
+              <input
+                type="text"
+                value={testCardNumber}
+                onChange={(e) => setTestCardNumber(e.target.value)}
+                placeholder="4242 •••• •••• 4242"
+                className="w-full bg-transparent border-b border-hairline focus:border-gold py-2 font-mono text-base text-white focus:outline-none transition-colors"
+              />
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 <input
                   type="text"
                   value={testCardExpiry}
                   onChange={(e) => setTestCardExpiry(e.target.value)}
                   placeholder="MM/YY"
-                  className="w-full bg-graphite border border-line px-3 py-2.5 font-mono text-xs text-bone focus:border-gold focus:outline-none"
+                  className="w-full bg-transparent border-b border-hairline focus:border-gold py-2 font-mono text-base text-white focus:outline-none transition-colors"
                 />
                 <input
                   type="text"
                   value={testCardCvv}
                   onChange={(e) => setTestCardCvv(e.target.value)}
                   placeholder="CVV"
-                  className="w-full bg-graphite border border-line px-3 py-2.5 font-mono text-xs text-bone focus:border-gold focus:outline-none"
+                  className="w-full bg-transparent border-b border-hairline focus:border-gold py-2 font-mono text-base text-white focus:outline-none transition-colors"
                 />
               </div>
             </div>
           )}
         </div>
 
-        {/* Security & Verification Statement */}
-        <div className="border border-line/60 bg-graphite/30 p-3.5 space-y-1 font-mono text-[10px] text-smoke">
-          <div className="flex items-center space-x-1.5 text-bone">
-            <ShieldCheck size={12} className="text-gold" />
-            <span className="font-bold">ZERO SENSITIVE DATA STORED</span>
+        <div className="border-l-2 border-gold pl-5 py-2 space-y-1 font-mono text-[10px] text-white/50 tracking-[0.15em] uppercase">
+          <div className="flex items-center gap-1.5 text-white">
+            <ShieldCheck size={11} className="text-gold" />
+            <span>Zero sensitive data stored</span>
           </div>
           <p className="leading-relaxed">
-            Card details are directly tokenized by Square Web Payments SDK. Server-side authoritative validation guarantees inventory and price integrity.
+            Card details are directly tokenized by Square. Server-side authoritative validation guarantees inventory and price integrity.
           </p>
         </div>
 
-        {/* Complete Payment Button */}
         <button
           type="submit"
           disabled={isProcessing}
-          className="w-full bg-bone hover:bg-gold text-black py-4 px-6 font-mono text-xs font-bold tracking-widest uppercase transition-all duration-300 flex items-center justify-center space-x-2 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold shadow-2xl"
+          className="w-full py-4 font-mono text-[11px] font-medium tracking-[0.25em] uppercase transition-colors flex items-center justify-center gap-2 border border-white text-white hover:bg-white hover:text-black disabled:opacity-50 disabled:hover:bg-black disabled:hover:text-white"
         >
           {isProcessing ? (
-            <span className="flex items-center space-x-2">
-              <span className="w-2 h-2 rounded-full bg-black animate-ping" />
-              <span>AUTHORIZING TRANSACTION...</span>
-            </span>
+            <>
+              <Loader2 size={14} className="animate-spin" />
+              Authorizing transaction
+            </>
           ) : (
-            <span className="flex items-center space-x-2">
+            <>
               <Lock size={13} />
-              <span>COMPLETE PAYMENT & ALLOCATE</span>
-            </span>
+              Complete payment & allocate
+            </>
           )}
         </button>
       </form>

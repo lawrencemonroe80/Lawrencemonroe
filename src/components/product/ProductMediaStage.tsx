@@ -11,111 +11,84 @@ interface ProductMediaStageProps {
 
 export const ProductMediaStage: React.FC<ProductMediaStageProps> = ({ productId, productName }) => {
   const visuals: ProductVisual[] = productId === 'lm-shorts-002' ? SHORTS_002_VISUALS : SHORTS_001_VISUALS;
-  const isHeather = productId === 'lm-shorts-002';
-  
+
   const [activeVisualIndex, setActiveVisualIndex] = useState(0);
   const [focusMode, setFocusMode] = useState<'full' | 'shorts'>('full');
   const [showAnnotations, setShowAnnotations] = useState(false);
   const [activeAnnotationId, setActiveAnnotationId] = useState<number | null>(null);
   const [faceBlurActive, setFaceBlurActive] = useState(true);
-  const [blurStyle, setBlurStyle] = useState<'vintage-bar' | 'vintage-stamp' | 'grain-halftone'>('vintage-bar');
-  
-  // Mouse position for subtle 2px-4px micro-shift
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const activeVisual = visuals[activeVisualIndex] || visuals[0];
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 6; // max 3px shift
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 6;
     const y = ((e.clientY - rect.top) / rect.height - 0.5) * 6;
     setMousePos({ x, y });
   };
 
   return (
     <div className="space-y-4">
-      {/* Top Inspection & Focus Controls Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border border-line bg-black/80 p-2.5 font-mono text-xs">
-        {/* Full Look vs Shorts Focus Mode Toggle */}
-        <div className="flex items-center space-x-1 border border-line/60 bg-graphite p-0.5">
+      {/* Toolbar */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border border-hairline p-2.5 font-mono text-xs">
+        <div className="flex items-center gap-1 border border-hairline">
           <button
             onClick={() => setFocusMode('full')}
-            className={`px-3 py-1.5 uppercase font-bold text-[11px] transition-colors ${
-              focusMode === 'full'
-                ? 'bg-black text-gold border border-gold/60 shadow-sm'
-                : 'text-smoke hover:text-bone'
+            className={`px-3 py-1.5 uppercase font-medium text-[10px] tracking-[0.24em] transition-colors ${
+              focusMode === 'full' ? 'bg-bone text-black' : 'text-bone/50 hover:text-bone'
             }`}
           >
-            FULL LOOK
+            Full Look
           </button>
           <button
             onClick={() => setFocusMode('shorts')}
-            className={`px-3 py-1.5 uppercase font-bold text-[11px] transition-colors flex items-center space-x-1.5 ${
-              focusMode === 'shorts'
-                ? 'bg-black text-gold border border-gold/60 shadow-sm'
-                : 'text-smoke hover:text-bone'
+            className={`px-3 py-1.5 uppercase font-medium text-[10px] tracking-[0.24em] transition-colors flex items-center gap-1.5 ${
+              focusMode === 'shorts' ? 'bg-bone text-black' : 'text-bone/50 hover:text-bone'
             }`}
           >
-            <ZoomIn size={12} />
-            <span>SHORTS FOCUS</span>
+            <ZoomIn size={11} />
+            Shorts Focus
           </button>
         </div>
 
-        {/* Action Controls: Vintage Face Blur & Inspection Annotations */}
-        <div className="flex items-center space-x-2">
-          {/* Vintage Face Blur Control */}
+        <div className="flex items-center gap-2">
           {focusMode === 'full' && (
             <button
-              onClick={() => {
-                if (!faceBlurActive) {
-                  setFaceBlurActive(true);
-                } else {
-                  if (blurStyle === 'vintage-bar') setBlurStyle('vintage-stamp');
-                  else if (blurStyle === 'vintage-stamp') setBlurStyle('grain-halftone');
-                  else {
-                    setBlurStyle('vintage-bar');
-                    setFaceBlurActive(false);
-                  }
-                }
-              }}
-              className={`px-2.5 py-1.5 uppercase font-mono text-[10px] tracking-wider transition-colors border flex items-center space-x-1.5 ${
+              onClick={() => setFaceBlurActive(!faceBlurActive)}
+              className={`px-2.5 py-1.5 uppercase font-mono text-[10px] tracking-[0.24em] transition-colors border flex items-center gap-1.5 ${
                 faceBlurActive
-                  ? 'border-gold bg-gold/10 text-gold font-bold'
-                  : 'border-line text-smoke hover:text-bone'
+                  ? 'border-gold bg-gold/10 text-gold font-medium'
+                  : 'border-hairline text-bone/50 hover:text-bone hover:border-bone/40'
               }`}
-              title="Toggle vintage editorial face obscurity"
             >
-              <UserX size={12} />
-              <span>
-                {faceBlurActive ? `FACE: ${blurStyle === 'vintage-bar' ? 'VINTAGE BAR' : blurStyle === 'vintage-stamp' ? 'LOGO STAMP' : 'GRAIN BLUR'}` : 'FACE: CLEAR'}
-              </span>
+              <UserX size={11} strokeWidth={1.5} />
+              <span>Face: {faceBlurActive ? 'Obscured' : 'Clear'}</span>
             </button>
           )}
 
-          {/* Inspection Annotations Toggle */}
           {activeVisual.annotations && activeVisual.annotations.length > 0 && (
             <button
               onClick={() => setShowAnnotations(!showAnnotations)}
-              className={`px-3 py-1.5 uppercase font-mono text-[11px] tracking-wider transition-colors border flex items-center space-x-1.5 ${
+              className={`px-3 py-1.5 uppercase font-mono text-[10px] tracking-[0.24em] transition-colors border flex items-center gap-1.5 ${
                 showAnnotations
-                  ? 'border-gold bg-gold/10 text-gold font-bold'
-                  : 'border-line text-smoke hover:text-bone hover:border-smoke'
+                  ? 'border-gold bg-gold/10 text-gold font-medium'
+                  : 'border-hairline text-bone/50 hover:text-bone hover:border-bone/40'
               }`}
             >
-              <Eye size={13} />
-              <span>{showAnnotations ? 'HIDE MARKS' : 'INSPECTION MARKS'}</span>
+              <Eye size={11} strokeWidth={1.5} />
+              <span>{showAnnotations ? 'Hide Marks' : 'Inspection Marks'}</span>
             </button>
           )}
         </div>
       </div>
 
-      {/* Main Interactive Stage with Print-Frame Border */}
+      {/* Main stage */}
       <div
         onMouseMove={handleMouseMove}
         onMouseLeave={() => setMousePos({ x: 0, y: 0 })}
-        className="relative aspect-[4/5] bg-graphite/40 border border-line overflow-hidden group contact-frame-border"
+        className="relative aspect-[4/5] bg-ink border border-hairline overflow-hidden group"
       >
-        {/* Active Image with dynamic smooth zoom/crop animation */}
         <div className="w-full h-full relative overflow-hidden flex items-center justify-center">
           <motion.img
             key={activeVisual.id}
@@ -130,26 +103,22 @@ export const ProductMediaStage: React.FC<ProductMediaStageProps> = ({ productId,
             style={{
               transformOrigin: focusMode === 'shorts' ? activeVisual.crop.desktop.objectPosition : '50% 50%',
             }}
-            className="w-full h-full object-cover filter contrast-105 brightness-95 select-none"
+            className="w-full h-full object-cover img-editorial select-none"
           />
 
-          {/* Vintage Editorial Face Obscurity Overlay (Active in Full Look Mode) */}
           {faceBlurActive && focusMode === 'full' && (
             <EditorialFaceBlur
-              variant={blurStyle}
               top={activeVisual.id.includes('seated') ? '12%' : '8%'}
               left="50%"
-              width={activeVisual.id.includes('seated') ? '104px' : '96px'}
-              height="34px"
-              label="LAWRENCE MONROE"
-              badgeType={isHeather ? 'blue' : 'white'}
+              width={activeVisual.id.includes('seated') ? '120px' : '108px'}
+              height="32px"
+              label="Lawrence Monroe"
             />
           )}
 
-          {/* Vignette Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20 pointer-events-none" />
+          <div className="absolute inset-0 overlay-cinema opacity-70 pointer-events-none" />
 
-          {/* Interactive Annotation Markers (Shown when toggle is ON) */}
+          {/* Annotations */}
           <AnimatePresence>
             {showAnnotations && activeVisual.annotations && (
               <>
@@ -163,28 +132,30 @@ export const ProductMediaStage: React.FC<ProductMediaStageProps> = ({ productId,
                     >
                       <button
                         onClick={() => setActiveAnnotationId(isActive ? null : marker.id)}
-                        className={`group flex items-center justify-center w-6 h-6 border font-mono text-[10px] font-bold transition-transform ${
+                        className={`group flex items-center justify-center w-7 h-7 border font-mono text-[10px] transition-transform ${
                           isActive
-                            ? 'bg-gold text-black border-gold scale-125 ring-2 ring-gold/50'
-                            : 'bg-black/90 text-gold border-gold/80 hover:scale-110 hover:bg-gold hover:text-black'
+                            ? 'bg-gold text-black border-gold scale-110'
+                            : 'bg-black/90 text-gold border-gold/80 hover:bg-gold hover:text-black'
                         }`}
                         aria-label={`Annotation marker ${marker.id}`}
                       >
                         0{marker.id}
                       </button>
 
-                      {/* Tooltip on Active Marker */}
                       {isActive && (
                         <motion.div
                           initial={{ opacity: 0, y: 6, scale: 0.95 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: 6, scale: 0.95 }}
-                          className="absolute bottom-8 left-1/2 -translate-x-1/2 w-48 bg-black/95 border border-gold p-2.5 shadow-2xl text-left pointer-events-none"
+                          className="absolute bottom-9 left-1/2 -translate-x-1/2 w-52 bg-black border border-gold p-3 text-left pointer-events-none z-40"
                         >
-                          <div className="font-mono text-[10px] text-gold font-bold uppercase border-b border-line/40 pb-1 mb-1">
+                          <div className="font-mono text-[10px] text-gold font-medium uppercase border-b border-hairline pb-1.5 mb-1.5 tracking-[0.24em]">
                             {marker.label}
                           </div>
-                          <p className="font-utility text-[11px] text-bone/90 leading-tight">
+                          <p
+                            className="text-[11px] text-bone/80 leading-snug"
+                            style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+                          >
                             {marker.description}
                           </p>
                         </motion.div>
@@ -197,25 +168,24 @@ export const ProductMediaStage: React.FC<ProductMediaStageProps> = ({ productId,
           </AnimatePresence>
         </div>
 
-        {/* Top-Left Stage Badge */}
-        <div className="absolute top-4 left-4 z-20 flex items-center space-x-2">
-          <div className="font-mono text-[9px] bg-black/80 border border-gold/60 text-gold px-2.5 py-1 tracking-widest uppercase backdrop-blur-sm">
-            {focusMode === 'shorts' ? 'MODE: SHORTS FOCUS' : 'MODE: FULL CAMPAIGN LOOK'} [{activeVisualIndex + 1}/{visuals.length}]
+        {/* Stage labels */}
+        <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
+          <div className="font-mono text-[9px] bg-black/85 border border-gold/60 text-gold px-2.5 py-1 tracking-[0.24em] uppercase">
+            {focusMode === 'shorts' ? 'Shorts Focus' : 'Full Look'} · {activeVisualIndex + 1}/{visuals.length}
           </div>
         </div>
 
-        {/* Telemetry Bottom Bar inside stage */}
-        <div className="absolute bottom-3 left-4 right-4 z-20 flex items-center justify-between font-mono text-[9px] text-smoke pointer-events-none">
-          <span className="bg-black/60 px-2 py-0.5 border border-line/40">
-            SPECIMEN: {activeVisual.label}
+        <div className="absolute bottom-3 left-4 right-4 z-20 flex items-center justify-between font-mono text-[9px] text-bone/40 pointer-events-none">
+          <span className="bg-black/60 px-2 py-0.5 border border-hairline">
+            {activeVisual.label}
           </span>
-          <span className="text-gold uppercase tracking-wider">
-            REAL ARCHIVE ASSET
+          <span className="text-gold uppercase tracking-[0.24em]">
+            Real Archive Asset
           </span>
         </div>
       </div>
 
-      {/* Truthful Real Visuals Selector Rail */}
+      {/* Thumbnail rail */}
       <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
         {visuals.map((vis, idx) => {
           const isActive = idx === activeVisualIndex;
@@ -226,19 +196,19 @@ export const ProductMediaStage: React.FC<ProductMediaStageProps> = ({ productId,
                 setActiveVisualIndex(idx);
                 setActiveAnnotationId(null);
               }}
-              className={`relative aspect-[4/3] border bg-graphite overflow-hidden transition-all duration-300 group focus:outline-none ${
+              className={`relative aspect-[4/3] border bg-ink overflow-hidden transition-all duration-300 group focus:outline-none ${
                 isActive
-                  ? 'border-gold ring-1 ring-gold ring-offset-1 ring-offset-black'
-                  : 'border-line hover:border-smoke/60 opacity-60 hover:opacity-100'
+                  ? 'border-gold'
+                  : 'border-hairline hover:border-bone/40 opacity-60 hover:opacity-100'
               }`}
               aria-label={`Select ${vis.label}`}
             >
               <img
                 src={vis.src}
                 alt={vis.alt}
-                className="w-full h-full object-cover grayscale contrast-115"
+                className="w-full h-full object-cover img-mono"
               />
-              <div className="absolute bottom-0 inset-x-0 bg-black/90 text-center font-mono text-[9px] py-1 text-bone font-bold tracking-wider uppercase border-t border-line/40">
+              <div className="absolute bottom-0 inset-x-0 bg-black/85 text-center font-mono text-[9px] py-1 text-bone tracking-[0.24em] uppercase border-t border-hairline">
                 {vis.label}
               </div>
             </button>

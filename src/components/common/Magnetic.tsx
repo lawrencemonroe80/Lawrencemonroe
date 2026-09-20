@@ -1,49 +1,44 @@
-import React, { useRef } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
-import { SPRING } from '../../motion/tokens';
+import React, { useRef, useState, useEffect } from 'react';
 
-/**
- * <Magnetic> — gravitational pull wrapper.
- * Children are dragged toward the pointer while it hovers within the
- * element's bounds, then spring back to origin on exit.
- *
- * @param strength 0–1 translation multiplier (default 0.28)
- */
 export const Magnetic: React.FC<{
-  children: React.ReactNode;
+  children: React.ReactElement;
   strength?: number;
   className?: string;
-}> = ({ children, strength = 0.28, className }) => {
+}> = ({ children, strength = 0.3, className = '' }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
 
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const springX = useSpring(x, SPRING.magnetic);
-  const springY = useSpring(y, SPRING.magnetic);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = ref.current?.getBoundingClientRect();
-    if (!rect) return;
-    const relX = e.clientX - (rect.left + rect.width / 2);
-    const relY = e.clientY - (rect.top + rect.height / 2);
-    x.set(relX * strength);
-    y.set(relY * strength);
-  };
+    const handleMove = (e: MouseEvent) => {
+      const rect = el.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      setOffset({ x: x * strength, y: y * strength });
+    };
+    const handleLeave = () => setOffset({ x: 0, y: 0 });
 
-  const reset = () => {
-    x.set(0);
-    y.set(0);
-  };
+    el.addEventListener('mousemove', handleMove);
+    el.addEventListener('mouseleave', handleLeave);
+    return () => {
+      el.removeEventListener('mousemove', handleMove);
+      el.removeEventListener('mouseleave', handleLeave);
+    };
+  }, [strength]);
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={reset}
-      style={{ x: springX, y: springY }}
-      className={className ?? 'inline-block'}
+      className={className}
+      style={{
+        display: 'inline-block',
+        transform: `translate(${offset.x}px, ${offset.y}px)`,
+        transition: 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)',
+      }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 };

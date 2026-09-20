@@ -22,11 +22,10 @@ export const ProductPurchasingPanel: React.FC<ProductPurchasingPanelProps> = ({ 
 
   const handleColorChange = (colorName: string) => {
     setSelectedColor(colorName);
-    // If the color matches the alternate product, we can seamlessly navigate to its page
     if (colorName.toLowerCase().includes('bone') && product.slug === 'lm-shorts-001') {
-      navigate('/shop/lm-shorts-002');
+      navigate('/drop/lm-shorts-002');
     } else if (colorName.toLowerCase().includes('black') && product.slug === 'lm-shorts-002') {
-      navigate('/shop/lm-shorts-001');
+      navigate('/drop/lm-shorts-001');
     }
   };
 
@@ -58,97 +57,85 @@ export const ProductPurchasingPanel: React.FC<ProductPurchasingPanelProps> = ({ 
     setTimeout(() => {
       setIsAdded(false);
       openCart();
-    }, 450);
+    }, 500);
   };
 
   const accordionItems = [
-    {
-      id: 'story',
-      title: '1. STORY & DESIGN CONCEPT',
-      content: product.story,
-    },
-    {
-      id: 'fit',
-      title: '2. SILHOUETTE & FIT SPEC',
-      content: product.fit,
-    },
-    {
-      id: 'construction',
-      title: '3. CRAFT & CONSTRUCTION',
-      content: product.construction,
-    },
-    {
-      id: 'fabric',
-      title: '4. 480GSM TEXTILE & CARE',
-      content: product.fabricAndCare,
-    },
-    {
-      id: 'shipping',
-      title: '5. SHIPPING & RETURNS',
-      content: product.shippingAndReturns,
-    },
+    { id: 'story', title: 'Story & Design Concept', content: product.story },
+    { id: 'fit', title: 'Silhouette & Fit Spec', content: product.fit },
+    { id: 'construction', title: 'Craft & Construction', content: product.construction },
+    { id: 'fabric', title: '480GSM Textile & Care', content: product.fabricAndCare },
+    { id: 'shipping', title: 'Shipping & Returns', content: product.shippingAndReturns },
   ];
 
   return (
-    <div className="space-y-8 bg-graphite/40 border border-line p-6 sm:p-8 lg:p-10 sticky top-28">
-      {/* 1. Release Label & Code Header */}
-      <div className="space-y-1 border-b border-line pb-4">
-        <div className="flex items-center justify-between font-mono text-xs">
-          <div className="flex items-center space-x-2">
+    <div className="space-y-8 bg-black border border-hairline p-6 sm:p-8 lg:p-10 sticky top-32">
+      {/* Header */}
+      <div className="space-y-3 border-b border-hairline pb-5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 bg-gold" />
-            <span className="text-gold uppercase tracking-widest font-bold">
-              {product.release}
-            </span>
+            <span className="folio text-gold">{product.release}</span>
           </div>
-          <span className="text-smoke">SPEC: {product.code}</span>
+          <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-bone/40">
+            {product.code}
+          </span>
         </div>
 
-        {/* 3. Product Name */}
-        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-bone tracking-tight uppercase pt-2">
+        <h1
+          className="text-6xl sm:text-7xl lg:text-8xl text-bone uppercase leading-[0.9] tracking-[-0.005em]"
+          style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic", letterSpacing: "0.005em" }}
+        >
           {product.name}
         </h1>
 
-        {/* 4. Price */}
-        <div className="font-mono text-2xl sm:text-3xl font-bold text-bone pt-1">
+        <div
+          className="text-3xl text-bone pt-2 leading-none"
+          style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+        >
           {formatCurrency(product.price)}
         </div>
       </div>
 
-      {/* 5. Short Description */}
-      <p className="font-utility text-xs sm:text-sm text-smoke leading-relaxed">
+      <p
+        className="text-base text-bone/60 leading-relaxed"
+        style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic" }}
+      >
         {product.shortDescription}
       </p>
 
-      {/* 6. Color Selector */}
+      {/* Color selector */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between font-mono text-xs">
-          <span className="text-smoke uppercase tracking-wider">COLORWAY:</span>
-          <span className="text-bone font-bold uppercase">{selectedColor}</span>
+        <div className="flex items-center justify-between">
+          <span className="folio">Colorway</span>
+          <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-bone/70">
+            {selectedColor}
+          </span>
         </div>
 
-        <div className="flex space-x-3">
+        <div className="flex flex-wrap gap-2">
           {product.colors.map((color) => {
             const isSelected = selectedColor === color.name;
             return (
               <button
                 key={color.name}
                 onClick={() => handleColorChange(color.name)}
-                className={`group flex items-center space-x-2.5 px-3 py-2 border transition-all duration-200 ${
+                className={`flex items-center gap-2.5 px-3 py-2 border transition-colors ${
                   isSelected
-                    ? 'border-gold bg-black text-bone ring-1 ring-gold'
-                    : 'border-line bg-graphite text-smoke hover:border-smoke'
+                    ? 'border-gold bg-gold/5 text-bone'
+                    : 'border-hairline text-bone/60 hover:border-bone/50 hover:text-bone'
                 }`}
                 aria-label={`Select color ${color.name}`}
               >
                 <span
-                  className="w-4 h-4 rounded-none border"
+                  className="w-4 h-4 border"
                   style={{
                     backgroundColor: color.hex,
-                    borderColor: color.borderHex || '#303030',
+                    borderColor: color.borderHex || '#333',
                   }}
                 />
-                <span className="font-mono text-xs uppercase font-medium">
-                  {color.name}
+                <span className="font-mono text-[10px] tracking-[0.18em] uppercase">
+                  {color.code}
                 </span>
               </button>
             );
@@ -156,20 +143,20 @@ export const ProductPurchasingPanel: React.FC<ProductPurchasingPanelProps> = ({ 
         </div>
       </div>
 
-      {/* 7. Size Selector */}
+      {/* Size selector */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between font-mono text-xs">
-          <span className="text-smoke uppercase tracking-wider">SELECT SIZE:</span>
+        <div className="flex items-center justify-between">
+          <span className="folio">Select size</span>
           <button
             onClick={openSizeGuide}
-            className="text-gold hover:text-bone flex items-center space-x-1 font-mono text-xs transition-colors"
+            className="link-arrow text-bone/60 hover:text-gold text-[10px]"
           >
-            <Ruler size={13} />
-            <span className="underline decoration-gold underline-offset-4">SIZE GUIDE</span>
+            <Ruler size={11} strokeWidth={1.5} />
+            Size guide
           </button>
         </div>
 
-        <div className="grid grid-cols-4 gap-2.5">
+        <div className="grid grid-cols-4 gap-2">
           {product.sizes.map((sizeObj) => {
             const isSelected = selectedSize === sizeObj.size;
             return (
@@ -177,16 +164,21 @@ export const ProductPurchasingPanel: React.FC<ProductPurchasingPanelProps> = ({ 
                 key={sizeObj.size}
                 disabled={!sizeObj.available}
                 onClick={() => handleSizeSelect(sizeObj.size)}
-                className={`py-3.5 border font-mono text-xs font-bold transition-all duration-200 relative ${
+                className={`py-3.5 border transition-colors relative ${
                   isSelected
-                    ? 'border-gold bg-black text-gold ring-1 ring-gold'
+                    ? 'border-bone bg-bone text-black'
                     : sizeObj.available
-                    ? 'border-line bg-graphite/80 text-bone hover:border-gold hover:text-gold'
-                    : 'border-line/30 bg-black/40 text-smoke/30 cursor-not-allowed line-through'
+                      ? 'border-hairline text-bone hover:border-bone'
+                      : 'border-hairline/50 text-bone/30 cursor-not-allowed line-through'
                 }`}
                 aria-label={`Size ${sizeObj.size} ${sizeObj.available ? 'available' : 'unavailable'}`}
               >
-                <span>{sizeObj.size}</span>
+                <span
+                  className="text-lg leading-none"
+                  style={{ fontFamily: "'PP Editorial New', serif", fontStyle: "italic", letterSpacing: "0.02em" }}
+                >
+                  {sizeObj.size}
+                </span>
                 {isSelected && (
                   <span className="absolute bottom-1 right-1 w-1.5 h-1.5 bg-gold" />
                 )}
@@ -195,68 +187,63 @@ export const ProductPurchasingPanel: React.FC<ProductPurchasingPanelProps> = ({ 
           })}
         </div>
 
-        {/* Size Error Feedback */}
         {sizeError && (
           <motion.div
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
-            className="font-mono text-[11px] text-archive-red font-bold uppercase tracking-wider pt-1"
+            className="font-mono text-[10px] text-gold tracking-[0.28em] uppercase pt-1"
           >
-            SELECT A SIZE TO CONTINUE.
+            Select a size to continue.
           </motion.div>
         )}
       </div>
 
-      {/* 8. Inventory Note */}
-      <div className="border border-line/60 bg-black/50 p-3.5 space-y-1.5 font-mono text-[11px]">
+      {/* Inventory */}
+      <div className="border border-hairline p-4 space-y-2 font-mono text-[10px] tracking-[0.18em] uppercase">
         <div className="flex items-center justify-between">
-          <span className="text-smoke">PRODUCTION ALLOCATION:</span>
-          <span className="text-gold font-bold">LIMITED PRODUCTION RUN</span>
+          <span className="text-bone/40">Production</span>
+          <span className="text-gold font-medium">Limited run</span>
         </div>
-        <div className="flex items-center justify-between text-smoke/80">
-          <span>INVENTORY DISPATCH:</span>
-          <span className="text-bone">SHIPS IN 2–4 BUSINESS DAYS</span>
+        <div className="flex items-center justify-between text-bone/40">
+          <span>Dispatch</span>
+          <span className="text-bone">Ships 2–4 days</span>
         </div>
       </div>
 
-      {/* 9. Add to Cart Button */}
+      {/* Add to bag */}
       <div className="space-y-3">
         <button
           onClick={handleAddToCart}
-          className="w-full relative group overflow-hidden bg-bone hover:bg-gold text-black py-4 px-6 font-mono text-xs font-bold tracking-widest uppercase transition-all duration-300 flex items-center justify-center space-x-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+          className={`w-full py-4 font-mono text-[11px] font-medium tracking-[0.28em] uppercase transition-colors flex items-center justify-center gap-2 border ${
+            isAdded
+              ? 'border-gold bg-gold text-black'
+              : 'border-bone text-bone hover:bg-bone hover:text-black'
+          }`}
         >
-          {/* Animated Gold Motion Line */}
-          <div className="absolute top-0 left-0 w-full h-[2px] bg-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
-
           {isAdded ? (
-            <span className="flex items-center space-x-2">
-              <Check size={16} />
-              <span>ADDED TO BAG</span>
-            </span>
+            <>
+              <Check size={14} /> Added to bag
+            </>
           ) : (
-            <span className="flex items-center space-x-2">
-              <span>ADD TO BAG</span>
-              <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-            </span>
+            <>
+              Add to bag <ArrowRight size={14} />
+            </>
           )}
         </button>
 
-        {/* 10. Shipping Line Guarantee */}
-        <div className="flex items-center justify-center space-x-4 font-mono text-[10px] text-smoke pt-1">
-          <div className="flex items-center space-x-1">
-            <Truck size={12} className="text-gold" />
-            <span>COMPLIMENTARY COURIER</span>
-          </div>
-          <span className="text-gold">•</span>
-          <div className="flex items-center space-x-1">
-            <ShieldCheck size={12} className="text-gold" />
-            <span>SERIALIZED PACKAGING</span>
-          </div>
+        <div className="flex items-center justify-center gap-4 font-mono text-[10px] text-bone/50 tracking-[0.24em] uppercase pt-1">
+          <span className="flex items-center gap-1.5">
+            <Truck size={11} className="text-gold" strokeWidth={1.5} /> Complimentary
+          </span>
+          <span className="text-gold">·</span>
+          <span className="flex items-center gap-1.5">
+            <ShieldCheck size={11} className="text-gold" strokeWidth={1.5} /> Serialized
+          </span>
         </div>
       </div>
 
-      {/* 12. Accordions */}
-      <div className="pt-4">
+      {/* Accordions */}
+      <div className="pt-2">
         <ProductAccordion items={accordionItems} />
       </div>
     </div>

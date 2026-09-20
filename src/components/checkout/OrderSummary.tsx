@@ -19,84 +19,69 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
   total
 }) => {
   return (
-    <div className="bg-graphite/50 border border-line p-6 sm:p-8 space-y-6">
-      <div className="flex items-center justify-between border-b border-line pb-4 font-mono text-xs">
-        <span className="text-gold uppercase tracking-widest font-bold">ORDER SPECIFICATION</span>
-        <span className="text-smoke">[{items.length} {items.length === 1 ? 'ITEM' : 'ITEMS'}]</span>
+    <div className="bg-black border border-hairline p-6 sm:p-8 space-y-8">
+      <div className="flex items-center justify-between border-b border-hairline pb-4">
+        <span className="folio text-gold">Order specification</span>
+        <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-white/40">
+          {items.length.toString().padStart(2, '0')} {items.length === 1 ? 'item' : 'items'}
+        </span>
       </div>
 
-      {/* Item List */}
-      <div className="space-y-4 max-h-80 overflow-y-auto pr-1">
+      <div className="space-y-4 max-h-80 overflow-y-auto pr-1 no-scrollbar">
         {items.map((item) => (
-          <div
-            key={item.cartItemId}
-            className="flex items-center space-x-4 border-b border-line/40 pb-4 last:border-0 last:pb-0"
-          >
-            {/* Thumbnail */}
-            <div className="w-16 h-20 bg-black border border-line/60 overflow-hidden flex-shrink-0 relative">
-              <img
-                src={item.image}
-                alt={item.name}
-                className="w-full h-full object-cover grayscale brightness-95"
-              />
-              <div className="absolute top-1 left-1 font-mono text-[8px] bg-black/80 px-1 text-gold">
+          <div key={item.cartItemId} className="flex items-center gap-4 border-b border-hairline pb-4 last:border-0 last:pb-0">
+            <div className="w-16 h-20 bg-ink border border-hairline overflow-hidden shrink-0 relative">
+              <img src={item.image} alt={item.name} className="w-full h-full object-cover img-mono" />
+              <div className="absolute top-1 left-1 font-mono text-[8px] bg-black/85 px-1 py-0.5 text-gold tracking-wider">
                 {item.size}
               </div>
             </div>
 
-            {/* Info */}
-            <div className="flex-1 space-y-1">
-              <div className="font-mono text-[9px] text-smoke">{item.code}</div>
-              <h4 className="font-display text-sm font-bold text-bone leading-tight">
-                {item.name}
-              </h4>
-              <div className="font-mono text-[10px] text-smoke">
-                COLOR: {item.color} • QTY: {item.quantity}
+            <div className="flex-1 space-y-1 min-w-0">
+              <div className="font-mono text-[9px] tracking-[0.2em] uppercase text-white/40">{item.code}</div>
+              <h4 className="font-display-mega text-sm text-white leading-[0.95]">{item.name}</h4>
+              <div className="font-mono text-[10px] text-white/40 tracking-[0.15em] uppercase">
+                {item.color} · Qty {item.quantity}
               </div>
             </div>
 
-            {/* Price */}
-            <div className="font-mono text-xs font-bold text-bone">
+            <div className="font-display text-base text-gold shrink-0">
               {formatCurrency(item.price * item.quantity)}
             </div>
           </div>
         ))}
       </div>
 
-      {/* Financial Breakdown */}
-      <div className="border-t border-line pt-4 space-y-2 font-mono text-xs">
-        <div className="flex items-center justify-between text-smoke">
-          <span>SUBTOTAL</span>
-          <span className="text-bone">{formatCurrency(subtotal)}</span>
+      <div className="border-t border-hairline pt-5 space-y-3">
+        <div className="flex items-center justify-between font-mono text-[10px] tracking-[0.2em] uppercase text-white/50">
+          <span>Subtotal</span>
+          <span className="text-white">{formatCurrency(subtotal)}</span>
+        </div>
+        <div className="flex items-center justify-between font-mono text-[10px] tracking-[0.2em] uppercase text-white/50">
+          <span>Shipping</span>
+          <span className="text-gold">{shippingCost === 0 ? 'Complimentary' : formatCurrency(shippingCost)}</span>
+        </div>
+        <div className="flex items-center justify-between font-mono text-[10px] tracking-[0.2em] uppercase text-white/50">
+          <span>Estimated tax</span>
+          <span className="text-white">{formatCurrency(tax)}</span>
         </div>
 
-        <div className="flex items-center justify-between text-smoke">
-          <span>SHIPPING (CARBON-NEUTRAL COURIER)</span>
-          <span className="text-gold">
-            {shippingCost === 0 ? 'COMPLIMENTARY' : formatCurrency(shippingCost)}
+        <div className="flex items-baseline justify-between pt-4 border-t border-hairline">
+          <span className="folio text-white">Total</span>
+          <span className="font-display text-3xl text-white">
+            {formatCurrency(total)}
           </span>
-        </div>
-
-        <div className="flex items-center justify-between text-smoke">
-          <span>ESTIMATED TAX</span>
-          <span className="text-bone">{formatCurrency(tax)}</span>
-        </div>
-
-        <div className="flex items-center justify-between font-mono text-sm pt-3 border-t border-line/60">
-          <span className="font-bold text-bone uppercase tracking-wider">TOTAL</span>
-          <span className="font-bold text-gold text-lg">{formatCurrency(total)}</span>
         </div>
       </div>
 
-      {/* Assurance Notes */}
-      <div className="border-t border-line pt-4 space-y-2 font-mono text-[10px] text-smoke">
-        <div className="flex items-center space-x-2">
-          <ShieldCheck size={13} className="text-gold" />
-          <span>SQUARE ENCRYPTED TRANSACTION</span>
+      <div className="border-t border-hairline pt-4 space-y-2 font-mono text-[10px] tracking-[0.2em] uppercase text-white/40">
+        <div className="flex items-center gap-2">
+          <ShieldCheck size={12} className="text-gold" />
+          <span>Square encrypted transaction</span>
         </div>
-        <div className="flex items-center space-x-2">
-          <Truck size={13} className="text-gold" />
-          <span>SHIPS IN 2–4 BUSINESS DAYS WITH SIGNATURE</span>
+        <div className="flex items-center gap-2">
+          <Truck size={12} className="text-gold" />
+          <span>Ships in 2–4 business days with signature</span>
         </div>
       </div>
     </div>

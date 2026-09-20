@@ -6,170 +6,91 @@ interface ShippingFormProps {
   onChange: (field: keyof OrderCustomerInfo, value: any) => void;
 }
 
+const inputClass = "w-full bg-transparent border-b border-hairline focus:border-gold py-3 font-body text-base text-white placeholder:text-white/30 focus:outline-none transition-colors";
+
 export const ShippingForm: React.FC<ShippingFormProps> = ({ info, onChange }) => {
   return (
-    <div className="space-y-6">
-      {/* Contact Information */}
-      <div className="space-y-4">
-        <div className="flex items-center space-x-2 border-b border-line pb-2">
-          <span className="w-1.5 h-1.5 bg-gold" />
-          <span className="font-mono text-xs text-gold uppercase tracking-widest font-bold">
-            1. CONTACT INFORMATION
-          </span>
-        </div>
+    <div className="space-y-10">
+      {/* Email */}
+      <div className="space-y-3">
+        <label className="folio text-gold">Email</label>
+        <input
+          type="email"
+          required
+          value={info.email}
+          onChange={(e) => onChange('email', e.target.value)}
+          placeholder="Enter your email"
+          className={inputClass}
+        />
+      </div>
 
-        <div>
-          <label className="block font-mono text-[11px] text-smoke uppercase tracking-wider mb-1">
-            CLIENT DISPATCH EMAIL *
-          </label>
-          <input
-            type="email"
-            required
-            value={info.email}
-            onChange={(e) => onChange('email', e.target.value)}
-            placeholder="client@domain.com"
-            className="w-full bg-black border border-line px-4 py-3 font-mono text-xs text-bone placeholder:text-smoke/40 focus:border-gold focus:outline-none transition-colors"
-          />
+      {/* Name */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="space-y-3">
+          <label className="folio">First name</label>
+          <input type="text" required value={info.firstName} onChange={(e) => onChange('firstName', e.target.value)} placeholder="First name" className={inputClass} />
+        </div>
+        <div className="space-y-3">
+          <label className="folio">Last name</label>
+          <input type="text" required value={info.lastName} onChange={(e) => onChange('lastName', e.target.value)} placeholder="Last name" className={inputClass} />
         </div>
       </div>
 
-      {/* Shipping Address */}
+      {/* Address */}
+      <div className="space-y-3">
+        <label className="folio">Address</label>
+        <input type="text" required value={info.address} onChange={(e) => onChange('address', e.target.value)} placeholder="Street address" className={inputClass} />
+      </div>
+
+      {/* City / State / Postal / Country */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+        <div className="space-y-3 col-span-2 sm:col-span-2">
+          <label className="folio">City</label>
+          <input type="text" required value={info.city} onChange={(e) => onChange('city', e.target.value)} placeholder="City" className={inputClass} />
+        </div>
+        <div className="space-y-3">
+          <label className="folio">State</label>
+          <input type="text" value={info.stateProvince} onChange={(e) => onChange('stateProvince', e.target.value)} placeholder="State" className={inputClass} />
+        </div>
+        <div className="space-y-3">
+          <label className="folio">Postal</label>
+          <input type="text" required value={info.postalCode} onChange={(e) => onChange('postalCode', e.target.value)} placeholder="Postal code" className={inputClass} />
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <label className="folio">Country</label>
+        <input type="text" required value={info.country} onChange={(e) => onChange('country', e.target.value)} placeholder="Country" className={inputClass} />
+      </div>
+
+      {/* Shipping method */}
       <div className="space-y-4 pt-2">
-        <div className="flex items-center space-x-2 border-b border-line pb-2">
-          <span className="w-1.5 h-1.5 bg-gold" />
-          <span className="font-mono text-xs text-gold uppercase tracking-widest font-bold">
-            2. DELIVERY ADDRESS
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block font-mono text-[11px] text-smoke uppercase tracking-wider mb-1">
-              FIRST NAME *
-            </label>
-            <input
-              type="text"
-              required
-              value={info.firstName}
-              onChange={(e) => onChange('firstName', e.target.value)}
-              placeholder="First Name"
-              className="w-full bg-black border border-line px-4 py-3 font-mono text-xs text-bone placeholder:text-smoke/40 focus:border-gold focus:outline-none transition-colors"
-            />
-          </div>
-
-          <div>
-            <label className="block font-mono text-[11px] text-smoke uppercase tracking-wider mb-1">
-              LAST NAME *
-            </label>
-            <input
-              type="text"
-              required
-              value={info.lastName}
-              onChange={(e) => onChange('lastName', e.target.value)}
-              placeholder="Last Name"
-              className="w-full bg-black border border-line px-4 py-3 font-mono text-xs text-bone placeholder:text-smoke/40 focus:border-gold focus:outline-none transition-colors"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block font-mono text-[11px] text-smoke uppercase tracking-wider mb-1">
-            STREET ADDRESS *
-          </label>
-          <input
-            type="text"
-            required
-            value={info.address}
-            onChange={(e) => onChange('address', e.target.value)}
-            placeholder="Street Address, Apt / Suite"
-            className="w-full bg-black border border-line px-4 py-3 font-mono text-xs text-bone placeholder:text-smoke/40 focus:border-gold focus:outline-none transition-colors"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div>
-            <label className="block font-mono text-[11px] text-smoke uppercase tracking-wider mb-1">
-              CITY / LOCALITY *
-            </label>
-            <input
-              type="text"
-              required
-              value={info.city}
-              onChange={(e) => onChange('city', e.target.value)}
-              placeholder="City"
-              className="w-full bg-black border border-line px-4 py-3 font-mono text-xs text-bone placeholder:text-smoke/40 focus:border-gold focus:outline-none transition-colors"
-            />
-          </div>
-
-          <div>
-            <label className="block font-mono text-[11px] text-smoke uppercase tracking-wider mb-1">
-              POSTAL / ZIP CODE *
-            </label>
-            <input
-              type="text"
-              required
-              value={info.postalCode}
-              onChange={(e) => onChange('postalCode', e.target.value)}
-              placeholder="Postal Code"
-              className="w-full bg-black border border-line px-4 py-3 font-mono text-xs text-bone placeholder:text-smoke/40 focus:border-gold focus:outline-none transition-colors"
-            />
-          </div>
-
-          <div>
-            <label className="block font-mono text-[11px] text-smoke uppercase tracking-wider mb-1">
-              DESTINATION REGION *
-            </label>
-            <input
-              type="text"
-              required
-              value={info.country}
-              onChange={(e) => onChange('country', e.target.value)}
-              placeholder="Country / Territory"
-              className="w-full bg-black border border-line px-4 py-3 font-mono text-xs text-bone placeholder:text-smoke/40 focus:border-gold focus:outline-none transition-colors"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Shipping Courier Method */}
-      <div className="space-y-3 pt-2">
-        <div className="flex items-center space-x-2 border-b border-line pb-2">
-          <span className="w-1.5 h-1.5 bg-gold" />
-          <span className="font-mono text-xs text-gold uppercase tracking-widest font-bold">
-            3. COURIER METHOD
-          </span>
-        </div>
-
+        <label className="folio text-gold">Courier method</label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <label
-            onClick={() => onChange('shippingOption', 'standard')}
-            className={`p-4 border cursor-pointer transition-colors flex items-center justify-between ${
-              info.shippingOption === 'standard'
-                ? 'border-gold bg-black text-bone ring-1 ring-gold'
-                : 'border-line bg-graphite/40 text-smoke'
-            }`}
-          >
-            <div className="space-y-1">
-              <div className="font-mono text-xs font-bold uppercase">STANDARD PRIORITY</div>
-              <div className="font-mono text-[10px] text-smoke">2–4 BUSINESS DAYS</div>
-            </div>
-            <span className="font-mono text-xs text-gold font-bold">FREE</span>
-          </label>
-
-          <label
-            onClick={() => onChange('shippingOption', 'express')}
-            className={`p-4 border cursor-pointer transition-colors flex items-center justify-between ${
-              info.shippingOption === 'express'
-                ? 'border-gold bg-black text-bone ring-1 ring-gold'
-                : 'border-line bg-graphite/40 text-smoke'
-            }`}
-          >
-            <div className="space-y-1">
-              <div className="font-mono text-xs font-bold uppercase">EXPEDITED COURIER</div>
-              <div className="font-mono text-[10px] text-smoke">1–2 BUSINESS DAYS</div>
-            </div>
-            <span className="font-mono text-xs text-bone font-bold">$25.00</span>
-          </label>
+          {[
+            { id: 'standard', label: 'Standard Priority', note: '2–4 business days', price: 'Free' },
+            { id: 'express', label: 'Expedited Courier', note: '1–2 business days', price: '$25.00' },
+          ].map((opt) => (
+            <button
+              key={opt.id}
+              type="button"
+              onClick={() => onChange('shippingOption', opt.id)}
+              className={`p-5 border text-left transition-colors ${
+                info.shippingOption === opt.id
+                  ? 'border-gold bg-gold/5 text-white'
+                  : 'border-hairline text-white/60 hover:border-white/40'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <div className="font-display-mega text-lg text-white">{opt.label}</div>
+                <div className={`w-3 h-3 border ${info.shippingOption === opt.id ? 'border-gold bg-gold' : 'border-white/30'}`} />
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/40">{opt.note}</div>
+                <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-gold">{opt.price}</div>
+              </div>
+            </button>
+          ))}
         </div>
       </div>
     </div>
